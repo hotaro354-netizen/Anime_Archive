@@ -468,7 +468,7 @@ button{cursor:pointer}
   </div>
   <div class="profileMenu">
     <div class="menu" id="supportBtn"><span>پشتیبانی و درخواست انیمه</span><span>›</span></div>
-    <div class="menu adminAccess" id="adminAccessBtn"><span>🔐 پنل مدیریت</span><span>›</span></div>
+    <div class="menu adminAccess" id="adminAccessBtn" style="display:none" hidden><span>🔐 پنل مدیریت</span><span>›</span></div>
   </div>
 </section>
 
@@ -661,9 +661,9 @@ button{cursor:pointer}
 <div id="adminModal" class="modal">
   <div class="modalContent">
     <h3>ورود به پنل مدیریت</h3>
-    <p>با همان حساب Appwrite که ساختید وارد شوید.</p>
-    <input id="adminEmailInput" class="modalInput" type="email" autocomplete="username" placeholder="ایمیل ادمین">
-    <input id="adminPasswordInput" class="modalInput" type="password" autocomplete="current-password" placeholder="رمز عبور">
+    <p>فقط حساب ادمین مجاز است. رمز Appwrite خود را وارد کنید.</p>
+    <input id="adminEmailInput" class="modalInput" type="email" autocomplete="username" placeholder="ایمیل ادمین" readonly>
+    <input id="adminPasswordInput" class="modalInput" type="password" autocomplete="current-password" placeholder="رمز عبور Appwrite">
     <button class="modalBtn" id="checkAdminBtn" type="button">ورود به حساب مدیریت</button>
     <button class="modalBtn" id="closeAdminModal" type="button" style="background:#302119;color:#c8ad90">بستن</button>
   </div>
@@ -901,6 +901,32 @@ function restoreSession(){
   updateProfile();
 }
 
+function normalizeEmail(v){
+  return String(v || "").trim().toLowerCase();
+}
+function isAdminAccountEmail(email){
+  return normalizeEmail(email) === normalizeEmail(ADMIN_EMAIL);
+}
+/* دکمه پنل فقط وقتی کاربر با ایمیل ادمین وارد شده باشد */
+function canSeeAdminButton(){
+  return !!(currentUser && isAdminAccountEmail(currentUser.email));
+}
+function updateAdminAccessVisibility(){
+  const btn = $("adminAccessBtn");
+  if(!btn) return;
+  if(canSeeAdminButton()){
+    btn.style.display = "";
+    btn.removeAttribute("hidden");
+  }else{
+    btn.style.display = "none";
+    btn.setAttribute("hidden", "hidden");
+    /* اگر دیگر ادمین قابل‌مشاهده نیست، پنل را ببند */
+    if(isAdminMode && !canSeeAdminButton()){
+      isAdminMode = false;
+    }
+  }
+}
+
 function updateProfile(){
   const profile = getProfile();
   const openLoginBtn = $("openLoginBtn");
@@ -927,6 +953,7 @@ function updateProfile(){
     $("avatarImg").style.display = "none";
     $("avatarEmpty").style.display = "flex";
   }
+  updateAdminAccessVisibility();
 }
 
 function getSavedIds(){ return loadJSON(STORAGE_SAVED, []); }
@@ -965,6 +992,12 @@ function showPage(id, fromPop){
   }
   if(id === "genresPage") renderGenres();
   if(id === "adminPage"){
+    if(!isAdminMode || !canSeeAdminButton()){
+      isAdminMode = false;
+      showPage("profilePage", true);
+      showToast("دسترسی پنل مدیریت ندارید");
+      return;
+    }
     fillGenreSelect();
     renderGenreAdmin();
     renderPublishedWorks();
@@ -1398,6 +1431,16 @@ $("detailSaveCircle")?.addEventListener("click", ()=>{
   renderHome();
 });
 
+function requireLoginForDownload(){
+  if(currentUser && currentUser.email) return true;
+  showToast("برای دانلود باید ثبت‌نام یا وارد شوید");
+  try{
+    $("loginModal")?.classList.add("active");
+    $("loginTabBtn")?.click();
+  }catch(e){}
+  return false;
+}
+
 function renderEpisodes(episodes){
   const box = $("chaptersList");
   if(!box) return;
@@ -1408,8 +1451,12 @@ function renderEpisodes(episodes){
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "chapterItem";
-    btn.innerHTML = `<span>${escapeHtml(ep.title || ("قسمت " + (idx+1)))}</span><span>دانلود</span>`;
-    btn.addEventListener("click", ()=> forceDownload(ep.link, ep.title || "episode"));
+    const locked = !(currentUser && currentUser.email);
+    btn.innerHTML = `<span>${escapeHtml(ep.title || ("قسمت " + (idx+1)))}</span><span>${locked ? "🔒 ورود" : "دانلود"}</span>`;
+    btn.addEventListener("click", ()=>{
+      if(!requireLoginForDownload()) return;
+      forceDownload(ep.link, ep.title || "episode");
+    });
     box.appendChild(btn);
   });
 }
@@ -1441,14 +1488,15 @@ function renderSimilar(work){
 
 $("downloadBtn")?.addEventListener("click", ()=>{
   if(!currentWork) return;
+  if(!requireLoginForDownload()) return;
   setDetailTab("episodes");
-  /* اسکرول نرم به تب قسمت‌ها */
   try{
     $("detailTabEpisodes")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }catch(e){}
 });
 
 function forceDownload(url, filename){
+  if(!requireLoginForDownload()) return;
   if(!isValidUrl(url)){ showToast("لینک معتبر نیست"); return; }
   const safe = String(filename || "file").replace(/[\\/:*?"<>|]/g, "_").trim();
   try{
@@ -1553,6 +1601,7 @@ $("doRegisterBtn")?.addEventListener("click", ()=>{
   saveJSON(STORAGE_SESSION, { email });
   $("loginModal").classList.remove("active");
   updateProfile();
+  if(currentWork) renderEpisodes(currentWork.episodes || []);
   showToast("حساب ساخته شد");
 });
 
@@ -1567,14 +1616,17 @@ $("doLoginBtn")?.addEventListener("click", ()=>{
   saveJSON(STORAGE_SESSION, { email });
   $("loginModal").classList.remove("active");
   updateProfile();
+  if(currentWork) renderEpisodes(currentWork.episodes || []);
   showToast("خوش آمدید");
 });
 
-$("logoutBtn")?.addEventListener("click", ()=>{
+$("logoutBtn")?.addEventListener("click", async ()=>{
   currentUser = null;
   isAdminMode = false;
   localStorage.removeItem(STORAGE_SESSION);
+  try{ if(account) await account.deleteSession("current"); }catch(e){}
   updateProfile();
+  if(currentWork) renderEpisodes(currentWork.episodes || []);
   showToast("خارج شدید");
 });
 
@@ -1585,16 +1637,34 @@ $("supportBtn")?.addEventListener("click", async ()=>{
   }catch{ showToast("کپی انجام نشد — @animearchive_support"); }
 });
 
-/* Admin — Appwrite */
+/* Admin — Appwrite + سخت‌گیری ایمیل */
+async function verifyAppwriteAdminSession(){
+  if(!account || !appwriteReady) return false;
+  try{
+    const user = await account.get();
+    return !!(user && isAdminAccountEmail(user.email));
+  }catch(e){
+    return false;
+  }
+}
+
 async function loginAdmin(){
+  if(!canSeeAdminButton()){
+    isAdminMode = false;
+    showToast("فقط حساب ادمین به پنل دسترسی دارد");
+    $("adminModal")?.classList.remove("active");
+    return;
+  }
   if(!account || !appwriteReady){
     showToast("Appwrite هنوز آماده نیست");
     return;
   }
-  const email = ($("adminEmailInput")?.value || "").trim().toLowerCase();
+  /* ایمیل ثابت ادمین — قابل تغییر توسط کاربر نیست */
+  const email = normalizeEmail(ADMIN_EMAIL);
+  if($("adminEmailInput")) $("adminEmailInput").value = email;
   const password = $("adminPasswordInput")?.value || "";
-  if(!email || !password){
-    showToast("ایمیل و رمز را وارد کنید");
+  if(!password){
+    showToast("رمز عبور را وارد کنید");
     return;
   }
   const btn = $("checkAdminBtn");
@@ -1603,8 +1673,8 @@ async function loginAdmin(){
   try{
     try{ await account.deleteSession("current"); }catch(e){}
     await account.createEmailPasswordSession(email, password);
-    const user = await account.get();
-    if(!user || String(user.email || "").trim().toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
+    const ok = await verifyAppwriteAdminSession();
+    if(!ok){
       try{ await account.deleteSession("current"); }catch(e){}
       isAdminMode = false;
       showToast("فقط ایمیل ادمین اجازه ورود دارد");
@@ -1612,42 +1682,63 @@ async function loginAdmin(){
     }
     isAdminMode = true;
     $("adminModal")?.classList.remove("active");
+    if($("adminPasswordInput")) $("adminPasswordInput").value = "";
     showPage("adminPage");
     renderPublishedWorks();
     showToast("وارد پنل شدید");
   }catch(error){
     console.error(error);
     isAdminMode = false;
-    showToast("ورود ناموفق — ایمیل یا رمز اشتباه است");
+    showToast("ورود ناموفق — رمز اشتباه است");
   }finally{
     if(btn){ btn.disabled = false; btn.textContent = old || "ورود به حساب مدیریت"; }
   }
 }
 
-$("adminAccessBtn")?.addEventListener("click", async ()=>{
-  if(isAdminMode){ showPage("adminPage"); renderPublishedWorks(); return; }
-  if(account && appwriteReady){
-    try{
-      const user = await account.get();
-      if(user && String(user.email || "").trim().toLowerCase() === ADMIN_EMAIL.toLowerCase()){
-        isAdminMode = true;
-        showPage("adminPage");
-        renderPublishedWorks();
-        return;
-      }
-    }catch(e){}
+async function requireAdminAction(){
+  if(!canSeeAdminButton()){
+    isAdminMode = false;
+    showToast("دسترسی ندارید");
+    return false;
   }
-  if($("adminEmailInput")) $("adminEmailInput").value = ADMIN_EMAIL;
+  if(!isAdminMode){
+    showToast("وارد پنل مدیریت شوید");
+    return false;
+  }
+  const ok = await verifyAppwriteAdminSession();
+  if(!ok){
+    isAdminMode = false;
+    showToast("نشست ادمین منقضی شده — دوباره وارد شوید");
+    return false;
+  }
+  return true;
+}
+
+$("adminAccessBtn")?.addEventListener("click", async ()=>{
+  if(!canSeeAdminButton()){
+    showToast("دسترسی پنل مدیریت ندارید");
+    return;
+  }
+  if(isAdminMode && await verifyAppwriteAdminSession()){
+    showPage("adminPage");
+    renderPublishedWorks();
+    return;
+  }
+  isAdminMode = false;
+  if($("adminEmailInput")) $("adminEmailInput").value = normalizeEmail(ADMIN_EMAIL);
   if($("adminPasswordInput")) $("adminPasswordInput").value = "";
   $("adminModal")?.classList.add("active");
 });
 $("checkAdminBtn")?.addEventListener("click", loginAdmin);
 $("adminPasswordInput")?.addEventListener("keydown", e => { if(e.key === "Enter") loginAdmin(); });
-$("adminEmailInput")?.addEventListener("keydown", e => { if(e.key === "Enter") loginAdmin(); });
-$("closeAdminModal")?.addEventListener("click", ()=> $("adminModal")?.classList.remove("active"));
+$("closeAdminModal")?.addEventListener("click", ()=>{
+  $("adminModal")?.classList.remove("active");
+  if($("adminPasswordInput")) $("adminPasswordInput").value = "";
+});
 $("adminLogoutBtn")?.addEventListener("click", async ()=>{
   isAdminMode = false;
   try{ if(account) await account.deleteSession("current"); }catch(e){}
+  updateAdminAccessVisibility();
   showPage("profilePage");
   showToast("از پنل خارج شدید");
 });
@@ -1738,7 +1829,7 @@ function renderPendingChapters(){
 }
 
 $("publishBtn")?.addEventListener("click", async ()=>{
-  if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
+  if(!(await requireAdminAction())) return;
   if(!appwriteReady || !databases || !appwriteID){
     showToast("اتصال به سرور برقرار نیست");
     return;
@@ -1886,6 +1977,7 @@ function renderPublishedWorks(){
     item.querySelector(".editBtn")?.addEventListener("click", ()=> openEditWork(work));
     item.querySelector(".delete")?.addEventListener("click", async ()=>{
       if(!confirm("«" + (work.title||"") + "» حذف شود؟\nاین کار فقط با تأیید شما انجام می‌شود.")) return;
+      if(!(await requireAdminAction())) return;
       if(!appwriteReady || !databases){ showToast("اتصال برقرار نیست"); return; }
       try{
         await databases.deleteDocument(DATABASE_ID, COLLECTION_WORKS, work.id);
@@ -1972,6 +2064,7 @@ $("addEditChapterBtn")?.addEventListener("click", ()=>{
 
 $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   if(!editingWork) return;
+  if(!(await requireAdminAction())) return;
   if(!appwriteReady || !databases){ showToast("اتصال برقرار نیست"); return; }
   const title = ($("editTitle").value || "").trim();
   if(!title){ showToast("عنوان لازم است"); return; }
