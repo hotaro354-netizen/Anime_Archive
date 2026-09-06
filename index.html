@@ -2093,31 +2093,49 @@ $("downloadBtn")?.addEventListener("click", ()=>{
   }catch(e){}
 });
 
-function forceDownload(url, filename){
-  if(!isValidUrl(url)){ showToast("لینک معتبر نیست"); return; }
-  /* باز کردن سریع لینک در تب جدید — بدون تأخیر شبکه */
-  let opened = null;
-  try{
-    opened = window.open(url, "_blank", "noopener,noreferrer");
-  }catch(e){ opened = null; }
-  if(!opened){
-    try{
-      const a = document.createElement("a");
-      a.href = url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    }catch(e2){
-      try{ window.location.href = url; }catch(e3){
-        showToast("باز کردن لینک ممکن نشد");
-        return;
-      }
-    }
+async function forceDownload(url, filename){
+  if(!isValidUrl(url)){
+    showToast("لینک معتبر نیست");
+    return;
   }
-  showToast("لینک باز شد");
+
+  const safeName = sanitizeFilename(filename);
+
+  /*
+     دانلود سریع:
+     اول همان لحظه با لینک مستقیم شروع می‌شود
+     (بدون منتظر ماندن برای fetch کامل فایل).
+     اگر مرورگر/WebView اجازه داد، فایل دانلود می‌شود.
+  */
+  try{
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = safeName;
+    a.rel = "noopener";
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    showToast("دانلود شروع شد");
+    return;
+  }catch(e){
+    console.warn("Direct download failed:", e);
+  }
+
+  /* fallback: باز کردن مستقیم لینک در همین صفحه */
+  try{
+    window.location.href = url;
+    showToast("در حال باز کردن لینک دانلود...");
+  }catch(fallbackError){
+    console.error("Download fallback failed:", fallbackError);
+    showToast("دانلود در این WebView پشتیبانی نمی‌شود");
+  }
+}
+
+function sanitizeFilename(name){
+  return String(name || "file")
+    .replace(/[\\/:*?"<>|]/g, "_")
+    .trim();
 }
 
 /* Profile */
