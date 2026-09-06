@@ -260,10 +260,10 @@ button{cursor:pointer}
 
 .adminBox{background:#211710;border-radius:18px;padding:15px}
 .adminTabs{
-  display:grid;grid-template-columns:repeat(3,1fr);background:#2b1d14;padding:4px;
-  border-radius:13px;margin-bottom:18px
+  display:grid;grid-template-columns:repeat(4,1fr);background:#2b1d14;padding:4px;
+  border-radius:13px;margin-bottom:18px;gap:3px
 }
-.adminTabs button{border:0;background:none;color:#8f775f;padding:11px 3px;border-radius:10px;font-size:10px}
+.adminTabs button{border:0;background:none;color:#8f775f;padding:10px 2px;border-radius:10px;font-size:9.5px}
 .adminTabs button.active{background:#a96631;color:white}
 .adminSection{display:none}
 .adminSection.active{display:block}
@@ -285,6 +285,33 @@ button{cursor:pointer}
 }
 .keywordChip b{cursor:pointer;font-weight:700;opacity:.85}
 .keywordHint{font-size:9px;color:#8d7660;line-height:1.7;margin:-2px 3px 10px}
+.coinBox{
+  margin:14px 16px 8px;padding:14px;border-radius:14px;background:#241912;
+  border:1px solid #3a2a1c;text-align:center
+}
+.coinAmount{font-size:22px;color:#e0a94e;font-weight:700;margin:6px 0}
+.coinSub{font-size:11px;color:#a89078;line-height:1.7}
+.coinActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.coinBtn{
+  border:0;border-radius:10px;padding:11px 8px;font-size:11px;cursor:pointer;
+  background:#3a2a1c;color:#ead4b8
+}
+.coinBtn.primary{background:#6b4a2a;color:#f5e6c8}
+.coinBtn:disabled{opacity:.45;cursor:not-allowed}
+.buyOption{
+  background:#2a1c14;border:1px solid #3a2a1c;border-radius:12px;padding:12px;
+  margin-bottom:10px;text-align:right;cursor:pointer
+}
+.buyOption h4{color:#e0a94e;font-size:13px;margin-bottom:6px}
+.buyOption p{font-size:10.5px;color:#a89078;line-height:1.75}
+.buyOption.active{border-color:#e0a94e}
+.accountItem{
+  background:#2a1c14;border-radius:12px;padding:12px;margin-bottom:10px
+}
+.accountItem .accEmail{font-size:12px;color:#ead4b8;word-break:break-all}
+.accountItem .accMeta{font-size:10px;color:#a89078;margin-top:4px;line-height:1.7}
+.accountItem .accActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+
 .genreAdminItem{
   display:flex;align-items:center;justify-content:space-between;background:#2a1c14;
   border-radius:10px;padding:10px;margin-bottom:8px;font-size:11px
@@ -317,9 +344,23 @@ button{cursor:pointer}
 .toast{
   position:fixed;bottom:calc(85px + var(--safe-bottom));left:50%;transform:translateX(-50%);
   background:#d9cdbb;color:#302117;padding:11px 17px;border-radius:10px;font-size:11px;
-  opacity:0;pointer-events:none;transition:.25s;z-index:9000;white-space:nowrap
+  opacity:0;pointer-events:none;transition:.25s;z-index:9000;white-space:nowrap;max-width:92%
 }
 .toast.show{opacity:1}
+.errorBox{
+  display:none;margin:10px 0 4px;padding:10px 12px;border-radius:12px;
+  background:#3a221c;border:1px solid #6b3a30;text-align:right
+}
+.errorBox.show{display:block}
+.errorBox .errTitle{font-size:11px;color:#e3b8a5;margin-bottom:6px}
+.errorBox .errText{
+  font-size:10px;color:#f0d4c8;line-height:1.7;word-break:break-word;
+  white-space:pre-wrap;max-height:120px;overflow:auto;dir:ltr;text-align:left
+}
+.errorBox .errCopy{
+  margin-top:8px;width:100%;height:38px;border:0;border-radius:10px;
+  background:#5b3028;color:#e3b8a5;font-size:11px;cursor:pointer
+}
 
 .avatarPreview{
   width:75px;height:75px;border-radius:50%;margin:0 auto 15px;overflow:hidden;background:#2b2018;
@@ -466,6 +507,15 @@ button{cursor:pointer}
     <button class="loginBtnMain" id="openLoginBtn" type="button" style="display:none">ورود / ثبت‌نام</button>
     <button class="logoutBtn" id="logoutBtn" type="button" style="display:none">خروج از حساب</button>
   </div>
+  <div class="coinBox" id="profileCoinBox">
+    <div class="coinSub">موجودی سکه</div>
+    <div class="coinAmount" id="profileCoinAmount">—</div>
+    <div class="coinSub" id="profileCoinStatus">برای دیدن سکه وارد شوید</div>
+    <div class="coinActions">
+      <button class="coinBtn primary" id="claimDailyBtn" type="button">دریافت سکه امروز</button>
+      <button class="coinBtn" id="buyCoinsBtn" type="button">خرید سکه</button>
+    </div>
+  </div>
   <div class="profileMenu">
     <div class="menu" id="supportBtn"><span>پشتیبانی و درخواست انیمه</span><span>›</span></div>
     <div class="menu adminAccess" id="adminAccessBtn" style="display:none" hidden><span>🔐 پنل مدیریت</span><span>›</span></div>
@@ -544,6 +594,7 @@ button{cursor:pointer}
       <button class="active" data-admin-tab="add" type="button">افزودن</button>
       <button data-admin-tab="genres" type="button">ژانرها</button>
       <button data-admin-tab="published" type="button">منتشرشده</button>
+      <button data-admin-tab="accounts" type="button">اکانت‌ها</button>
     </div>
 
     <div id="adminAdd" class="adminSection active">
@@ -605,6 +656,16 @@ button{cursor:pointer}
       <div id="adminPublishedList"></div>
     </div>
 
+    <div id="adminAccounts" class="adminSection">
+      <p class="adminCount">تعداد اکانت‌ها: <b id="accountsCount">0</b></p>
+      <div class="searchBox" style="margin-bottom:12px">
+        <span>🔍</span>
+        <input id="accountsSearchInput" type="text" placeholder="جستجوی ایمیل یا نام...">
+        <span id="clearAccountsSearch" style="cursor:pointer">×</span>
+      </div>
+      <div id="adminAccountsList"></div>
+    </div>
+
     <button class="modalBtn adminLogoutBtn" id="adminLogoutBtn" type="button">🚪 خروج از پنل</button>
   </div>
 </section>
@@ -651,6 +712,11 @@ button{cursor:pointer}
       <input id="registerEmail" class="modalInput" type="email" placeholder="ایمیل">
       <input id="registerPassword" class="modalInput" type="password" placeholder="رمز (حداقل ۶ کاراکتر)">
       <button class="modalBtn" id="doRegisterBtn" type="button">ایجاد حساب</button>
+    </div>
+    <div id="authErrorBox" class="errorBox">
+      <div class="errTitle">متن خطا (برای ارسال به پشتیبانی)</div>
+      <div class="errText" id="authErrorText"></div>
+      <button class="errCopy" id="copyAuthErrorBtn" type="button">📋 کپی خطا</button>
     </div>
     <p class="authHint">انیمه‌ها روی سرور Appwrite ذخیره می‌شوند. پروفایل و ذخیره‌های شخصی روی همین دستگاه می‌مانند.</p>
     <button class="modalBtn" id="closeLoginModal" type="button" style="background:#302119;color:#c8ad90;margin-top:10px">بستن</button>
@@ -702,6 +768,56 @@ button{cursor:pointer}
   </div>
 </div>
 
+
+<div id="buyCoinsModal" class="modal">
+  <div class="modalContent">
+    <h3>خرید سکه</h3>
+    <div class="buyOption" data-buy="permanent">
+      <h4>سکه نامحدود دائمی</h4>
+      <p>سکه‌ی بی‌نهایت؛ هم زمان و هم تعدادش هیچ‌وقت تمام نمی‌شود. مثل این می‌ماند که دیگر به سکه احتیاجی نداشته باشید.</p>
+    </div>
+    <div class="buyOption" data-buy="timed">
+      <h4>سکه نامحدود زمانی</h4>
+      <p>سکه‌ی نامحدود با مدت مشخص (مثلاً یک‌هفته، یک‌ماه، یک‌سال). بعد از پایان زمان، خودکار قطع می‌شود.</p>
+    </div>
+    <div class="buyOption" data-buy="amount">
+      <h4>سکه تعدادی</h4>
+      <p>می‌توانید هر مقدار سکه که دوست دارید بخرید و به موجودی‌تان اضافه شود.</p>
+    </div>
+    <p class="keywordHint" style="margin-top:8px;text-align:center">برای خرید به این آیدی پیام دهید:<br><b dir="ltr">@rraararar</b><br>(تلگرام و روبیکا)</p>
+    <button class="modalBtn" id="closeBuyCoinsModal" type="button" style="background:#302119;color:#c8ad90">بستن</button>
+  </div>
+</div>
+
+<div id="grantCoinsModal" class="modal">
+  <div class="modalContent">
+    <h3>اعطای سکه</h3>
+    <p class="keywordHint" id="grantTargetLabel">کاربر</p>
+    <div class="buyOption" data-grant="permanent">
+      <h4>سکه نامحدود دائمی</h4>
+      <p>بی‌نهایت و بدون انقضا</p>
+    </div>
+    <div class="buyOption" data-grant="timed">
+      <h4>سکه نامحدود زمانی</h4>
+      <p>مدت را به روز وارد کنید</p>
+    </div>
+    <div class="buyOption" data-grant="amount">
+      <h4>سکه تعدادی</h4>
+      <p>موجودی سکه کاربر روی این عدد تنظیم می‌شود</p>
+    </div>
+    <div id="grantTimedFields" style="display:none">
+      <label>مدت (روز)</label>
+      <input id="grantTimedDays" class="modalInput" type="number" min="1" placeholder="مثلاً 7 یا 30 یا 365">
+    </div>
+    <div id="grantAmountFields" style="display:none">
+      <label>تعداد سکه</label>
+      <input id="grantAmountInput" class="modalInput" type="number" min="0" placeholder="مثلاً 500">
+    </div>
+    <button class="modalBtn" id="confirmGrantCoinsBtn" type="button">تأیید</button>
+    <button class="modalBtn" id="closeGrantCoinsModal" type="button" style="background:#302119;color:#c8ad90">لغو</button>
+  </div>
+</div>
+
 <div id="toast" class="toast">انجام شد</div>
 
 <script>
@@ -713,7 +829,14 @@ const APPWRITE_ENDPOINT = "https://fra.cloud.appwrite.io/v1";
 const APPWRITE_PROJECT = "6a9c13d8002a280adb24";
 const DATABASE_ID = "6a9c15f700270e8a347d";
 const COLLECTION_WORKS = "works";
+const COLLECTION_USERS = "app_users";
 const ADMIN_EMAIL = "hotaro354@gmail.com";
+const DAILY_FREE_COINS = 4;
+const START_COINS = 30;
+const COST_SERIAL_EP = 2;
+const COST_MOVIE = 4;
+const SUPPORT_HANDLE = "@rraararar";
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 const STORAGE_GENRES = "animearchive_genres_v1";
 const STORAGE_PROFILE = "animearchive_profile_v1";
@@ -747,14 +870,69 @@ let recentRandomIds = [];
 
 function $(id){ return document.getElementById(id); }
 
+let lastAuthError = "";
+
 function showToast(text){
   const t = $("toast");
   if(!t) return;
   t.textContent = text;
   t.classList.add("show");
   clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(()=> t.classList.remove("show"), 2300);
+  window.__toastTimer = setTimeout(()=> t.classList.remove("show"), 2800);
 }
+
+function formatAppwriteError(e){
+  if(!e) return "خطای نامشخص";
+  const parts = [];
+  if(e.message) parts.push(String(e.message));
+  if(e.code != null) parts.push("code: " + e.code);
+  if(e.type) parts.push("type: " + e.type);
+  if(e.response && typeof e.response === "string") parts.push(e.response);
+  try{
+    if(e.response && typeof e.response === "object") parts.push(JSON.stringify(e.response));
+  }catch(err){}
+  if(!parts.length) parts.push(String(e));
+  return parts.join("\n");
+}
+
+function showAuthError(eOrText){
+  const raw = typeof eOrText === "string" ? eOrText : formatAppwriteError(eOrText);
+  lastAuthError = raw;
+  const box = $("authErrorBox");
+  const txt = $("authErrorText");
+  if(txt) txt.textContent = raw;
+  if(box) box.classList.add("show");
+  const short = raw.split("\n")[0] || "خطا";
+  showToast(short.slice(0, 100));
+  console.error(eOrText);
+}
+
+function clearAuthError(){
+  lastAuthError = "";
+  $("authErrorBox")?.classList.remove("show");
+  if($("authErrorText")) $("authErrorText").textContent = "";
+}
+
+$("copyAuthErrorBtn")?.addEventListener("click", async ()=>{
+  const text = lastAuthError || ($("authErrorText")?.textContent || "");
+  if(!text){ showToast("خطایی برای کپی نیست"); return; }
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast("خطا کپی شد — اینجا بفرست");
+  }catch(err){
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      showToast("خطا کپی شد — اینجا بفرست");
+    }catch(e2){
+      showToast("کپی نشد؛ متن را دستی انتخاب کنید");
+    }
+  }
+});
 
 function escapeHtml(v){
   return String(v ?? "")
@@ -793,6 +971,413 @@ function loadJSON(key, fallback){
 function saveJSON(key, value){
   localStorage.setItem(key, JSON.stringify(value));
 }
+
+/* ========== Users & Coins (Appwrite app_users) ========== */
+function toInt(v, fallback){
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) ? n : (fallback || 0);
+}
+function mapUserDoc(doc){
+  if(!doc) return null;
+  let mode = String(doc.unlimitedMode || "none").toLowerCase().trim();
+  if(mode !== "permanent" && mode !== "timed") mode = "none";
+  return {
+    id: doc.$id,
+    email: normalizeEmail(doc.email),
+    name: doc.name || "",
+    password: doc.password || "",
+    coins: Math.max(0, toInt(doc.coins, 0)),
+    unlimitedMode: mode,
+    unlimitedUntil: toInt(doc.unlimitedUntil, 0),
+    lastDailyClaim: toInt(doc.lastDailyClaim, 0)
+  };
+}
+function applyUserToSession(u){
+  if(!u) return;
+  currentUser = {
+    id: u.id,
+    name: u.name || "",
+    email: u.email,
+    coins: u.coins,
+    unlimitedMode: u.unlimitedMode,
+    unlimitedUntil: u.unlimitedUntil,
+    lastDailyClaim: u.lastDailyClaim
+  };
+  saveJSON(STORAGE_SESSION, { email: u.email, id: u.id });
+}
+
+async function hashPassword(pass){
+  try{
+    const data = new TextEncoder().encode("animearchive:" + String(pass || ""));
+    const buf = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+  }catch(e){
+    return "plain:" + String(pass || "");
+  }
+}
+
+async function passwordMatches(stored, pass){
+  if(!stored) return false;
+  if(stored === pass) return true; /* legacy plain */
+  const h = await hashPassword(pass);
+  return stored === h;
+}
+
+function formatRemain(ms){
+  if(ms <= 0) return "منقضی";
+  const d = Math.floor(ms / DAY_MS);
+  const h = Math.floor((ms % DAY_MS) / (60*60*1000));
+  if(d > 0) return d + " روز و " + h + " ساعت";
+  const m = Math.floor((ms % (60*60*1000)) / (60*1000));
+  return h + " ساعت و " + m + " دقیقه";
+}
+
+async function expireUnlimitedIfNeeded(user){
+  if(!user) return user;
+  if(user.unlimitedMode === "timed"){
+    if(!user.unlimitedUntil || user.unlimitedUntil <= Date.now()){
+      user.unlimitedMode = "none";
+      user.unlimitedUntil = 0;
+      await updateUserDoc(user.id, { unlimitedMode: "none", unlimitedUntil: 0 });
+    }
+  }
+  return user;
+}
+
+function hasActiveUnlimited(user){
+  if(!user) return false;
+  if(user.unlimitedMode === "permanent") return true;
+  if(user.unlimitedMode === "timed" && user.unlimitedUntil > Date.now()) return true;
+  return false;
+}
+
+function downloadCostForWork(work){
+  return (work && work.type === "movie") ? COST_MOVIE : COST_SERIAL_EP;
+}
+
+async function fetchUserByEmail(email){
+  if(!appwriteReady || !databases || !appwriteQuery) return null;
+  const em = normalizeEmail(email);
+  if(!em) return null;
+  try{
+    const res = await databases.listDocuments(
+      DATABASE_ID,
+      COLLECTION_USERS,
+      [ appwriteQuery.equal("email", em), appwriteQuery.limit(1) ]
+    );
+    if(res.documents && res.documents[0]) return mapUserDoc(res.documents[0]);
+  }catch(e){ console.error(e); }
+  return null;
+}
+
+async function fetchUserById(id){
+  if(!appwriteReady || !databases || !id) return { user: null, error: null, notFound: false };
+  try{
+    const doc = await databases.getDocument(DATABASE_ID, COLLECTION_USERS, id);
+    return { user: mapUserDoc(doc), error: null, notFound: false };
+  }catch(e){
+    const code = e && e.code;
+    const notFound = code === 404 || /not found/i.test(String(e && e.message || ""));
+    console.error(e);
+    return { user: null, error: e, notFound };
+  }
+}
+
+async function updateUserDoc(id, data){
+  if(!appwriteReady || !databases || !id) throw new Error("no db");
+  /* Appwrite Integer باید عدد واقعی باشد */
+  const payload = { ...data };
+  if("coins" in payload) payload.coins = toInt(payload.coins, 0);
+  if("unlimitedUntil" in payload) payload.unlimitedUntil = toInt(payload.unlimitedUntil, 0);
+  if("lastDailyClaim" in payload) payload.lastDailyClaim = toInt(payload.lastDailyClaim, 0);
+  const doc = await databases.updateDocument(DATABASE_ID, COLLECTION_USERS, id, payload);
+  return mapUserDoc(doc);
+}
+
+async function refreshCurrentUserCoins(){
+  if(!currentUser || (!currentUser.id && !currentUser.email)){
+    updateCoinUI();
+    return;
+  }
+  let fresh = null;
+  if(currentUser.id){
+    const res = await fetchUserById(currentUser.id);
+    if(res.notFound){
+      currentUser = null;
+      localStorage.removeItem(STORAGE_SESSION);
+      updateProfile();
+      showToast("اکانت شما حذف شده است");
+      return;
+    }
+    if(res.error && !res.user){
+      /* خطای موقت — لاگ‌اوت نکن؛ UI را با دادهٔ فعلی نشان بده */
+      updateCoinUI();
+      return;
+    }
+    fresh = res.user;
+  }
+  if(!fresh && currentUser.email){
+    try{ fresh = await fetchUserByEmail(currentUser.email); }catch(e){ console.error(e); }
+  }
+  if(!fresh){
+    updateCoinUI();
+    return;
+  }
+  try{ await expireUnlimitedIfNeeded(fresh); }catch(e){ console.error(e); }
+  /* بعد از انقضا دوباره بخوان */
+  if(currentUser.id){
+    const again = await fetchUserById(currentUser.id);
+    if(again.user) fresh = again.user;
+  }
+  applyUserToSession(fresh);
+  updateAdminAccessVisibility();
+  updateCoinUI();
+}
+
+function updateCoinUI(){
+  const amountEl = $("profileCoinAmount");
+  const statusEl = $("profileCoinStatus");
+  const claimBtn = $("claimDailyBtn");
+  if(!amountEl || !statusEl) return;
+  if(!currentUser || !currentUser.email){
+    amountEl.textContent = "—";
+    statusEl.textContent = "برای دیدن سکه وارد شوید";
+    if(claimBtn){
+      claimBtn.disabled = true;
+      claimBtn.textContent = "دریافت سکه امروز";
+    }
+    return;
+  }
+  const coins = toInt(currentUser.coins, 0);
+  if(hasActiveUnlimited(currentUser)){
+    amountEl.textContent = "∞";
+    if(currentUser.unlimitedMode === "permanent"){
+      statusEl.textContent = "سکه نامحدود دائمی";
+    }else{
+      const left = toInt(currentUser.unlimitedUntil, 0) - Date.now();
+      statusEl.textContent = "نامحدود زمانی — باقی‌مانده: " + formatRemain(left);
+    }
+  }else{
+    amountEl.textContent = String(coins);
+    statusEl.textContent = coins + " سکه موجود";
+  }
+  if(claimBtn){
+    const last = toInt(currentUser.lastDailyClaim, 0);
+    const wait = (last + DAY_MS) - Date.now();
+    if(last > 0 && wait > 0){
+      claimBtn.disabled = true;
+      claimBtn.textContent = "دریافت بعدی: " + formatRemain(wait);
+    }else{
+      claimBtn.disabled = false;
+      claimBtn.textContent = "دریافت سکه امروز (+" + DAILY_FREE_COINS + ")";
+    }
+  }
+}
+
+async function claimDailyCoins(){
+  if(!currentUser || !currentUser.email){
+    showToast("برای دریافت سکه باید ثبت‌نام کنید");
+    openLoginModal();
+    return;
+  }
+  if(!currentUser.id){
+    showToast("نشست ناقص است — دوباره وارد شوید");
+    openLoginModal();
+    return;
+  }
+  const btn = $("claimDailyBtn");
+  if(btn) btn.disabled = true;
+  try{
+    await refreshCurrentUserCoins();
+    if(!currentUser) return;
+    const last = toInt(currentUser.lastDailyClaim, 0);
+    const wait = (last + DAY_MS) - Date.now();
+    if(last > 0 && wait > 0){
+      showToast("تا " + formatRemain(wait) + " دیگر نمی‌توانید دریافت کنید");
+      updateCoinUI();
+      return;
+    }
+    const newCoins = toInt(currentUser.coins, 0) + DAILY_FREE_COINS;
+    const now = Date.now();
+    const updated = await updateUserDoc(currentUser.id, {
+      coins: newCoins,
+      lastDailyClaim: now
+    });
+    if(updated) applyUserToSession(updated);
+    else{
+      currentUser.coins = newCoins;
+      currentUser.lastDailyClaim = now;
+    }
+    updateCoinUI();
+    showToast(DAILY_FREE_COINS + " سکه دریافت شد — موجودی: " + toInt(currentUser.coins, 0));
+  }catch(e){
+    showAuthError(e);
+    showToast("خطا در ذخیره سکه — دسترسی Update را Any کنید");
+  }finally{
+    updateCoinUI();
+  }
+}
+
+function trySpendCoinsForDownload(work){
+  /* بدون await تا لینک همان لحظه باز شود و پاپ‌آپ بلاک نشود */
+  if(!currentUser || !currentUser.email) return false;
+  if(hasActiveUnlimited(currentUser)) return true;
+  const cost = downloadCostForWork(work);
+  const have = toInt(currentUser.coins, 0);
+  if(have < cost){
+    showToast("سکه کافی نیست (موجودی: " + have + " — نیاز: " + cost + ")");
+    return false;
+  }
+  const msg = work && work.type === "movie"
+    ? ("برای دانلود این انیمه سینمایی " + cost + " سکه از شما کم می‌شود. تأیید می‌کنید؟")
+    : ("برای دانلود این قسمت " + cost + " سکه از شما کم می‌شود. تأیید می‌کنید؟");
+  if(!confirm(msg)) return false;
+  /* سکه را محلی کم کن؛ ذخیره سرور در پس‌زمینه */
+  const left = have - cost;
+  currentUser.coins = left;
+  updateCoinUI();
+  if(currentUser.id && appwriteReady){
+    updateUserDoc(currentUser.id, { coins: left }).then(updated => {
+      if(updated) applyUserToSession(updated);
+      updateCoinUI();
+    }).catch(e => {
+      console.error(e);
+      showToast("دانلود شد؛ ذخیره سکه روی سرور مشکل داشت");
+    });
+  }
+  return true;
+}
+
+let grantTargetUser = null;
+let grantMode = "amount";
+
+function setGrantMode(mode){
+  grantMode = mode;
+  document.querySelectorAll("[data-grant]").forEach(el => {
+    el.classList.toggle("active", el.getAttribute("data-grant") === mode);
+  });
+  const timed = $("grantTimedFields");
+  const amount = $("grantAmountFields");
+  if(timed) timed.style.display = mode === "timed" ? "block" : "none";
+  if(amount) amount.style.display = mode === "amount" ? "block" : "none";
+}
+
+function openGrantModal(user){
+  grantTargetUser = user;
+  if($("grantTargetLabel")) $("grantTargetLabel").textContent = (user.name || "") + " — " + user.email;
+  setGrantMode("amount");
+  if($("grantTimedDays")) $("grantTimedDays").value = "30";
+  if($("grantAmountInput")) $("grantAmountInput").value = String(user.coins || 0);
+  $("grantCoinsModal")?.classList.add("active");
+}
+
+async function confirmGrantCoins(){
+  if(!grantTargetUser) return;
+  if(!(await requireAdminAction())) return;
+  try{
+    if(grantMode === "permanent"){
+      await updateUserDoc(grantTargetUser.id, {
+        unlimitedMode: "permanent",
+        unlimitedUntil: 0
+      });
+      showToast("نامحدود دائمی فعال شد");
+    }else if(grantMode === "timed"){
+      const days = parseInt(($("grantTimedDays")?.value || "0"), 10);
+      if(!days || days < 1){ showToast("تعداد روز معتبر نیست"); return; }
+      const until = Date.now() + days * DAY_MS;
+      await updateUserDoc(grantTargetUser.id, {
+        unlimitedMode: "timed",
+        unlimitedUntil: until
+      });
+      showToast("نامحدود زمانی برای " + days + " روز فعال شد");
+    }else{
+      const n = parseInt(($("grantAmountInput")?.value || "-1"), 10);
+      if(isNaN(n) || n < 0){ showToast("تعداد سکه معتبر نیست"); return; }
+      await updateUserDoc(grantTargetUser.id, {
+        coins: n,
+        unlimitedMode: "none",
+        unlimitedUntil: 0
+      });
+      showToast("موجودی سکه روی " + n + " تنظیم شد");
+    }
+    $("grantCoinsModal")?.classList.remove("active");
+    grantTargetUser = null;
+    await renderAdminAccounts();
+    if(currentUser) await refreshCurrentUserCoins();
+  }catch(e){
+    console.error(e);
+    showToast("خطا در اعطای سکه");
+  }
+}
+
+async function renderAdminAccounts(){
+  const box = $("adminAccountsList");
+  if(!box) return;
+  if(!isAdminMode){ box.innerHTML = ""; return; }
+  box.innerHTML = `<div class="empty">در حال بارگذاری...</div>`;
+  if(!appwriteReady || !databases){
+    showEmpty(box, "اتصال برقرار نیست");
+    return;
+  }
+  try{
+    const res = await databases.listDocuments(
+      DATABASE_ID,
+      COLLECTION_USERS,
+      [ appwriteQuery.orderDesc("$createdAt"), appwriteQuery.limit(100) ]
+    );
+    let list = (res.documents || []).map(mapUserDoc);
+    const q = normalizeText($("accountsSearchInput")?.value || "");
+    if(q){
+      list = list.filter(u =>
+        normalizeText(u.email).includes(q) || normalizeText(u.name).includes(q)
+      );
+    }
+    if($("accountsCount")) $("accountsCount").textContent = String(list.length);
+    box.innerHTML = "";
+    if(!list.length){ showEmpty(box, "اکانتی نیست."); return; }
+    list.forEach(u => {
+      const item = document.createElement("div");
+      item.className = "accountItem";
+      let status = u.coins + " سکه";
+      if(u.unlimitedMode === "permanent") status = "نامحدود دائمی";
+      else if(u.unlimitedMode === "timed"){
+        const left = (u.unlimitedUntil || 0) - Date.now();
+        status = left > 0 ? ("نامحدود زمانی — " + formatRemain(left)) : "منقضی‌شده";
+      }
+      item.innerHTML = `
+        <div class="accEmail">${escapeHtml(u.name || "بدون نام")}</div>
+        <div class="accMeta" dir="ltr">${escapeHtml(u.email)}</div>
+        <div class="accMeta">${escapeHtml(status)}</div>
+        <div class="accActions">
+          <button class="editBtn" type="button">سکه</button>
+          <button class="delete" type="button">حذف</button>
+        </div>`;
+      item.querySelector(".editBtn")?.addEventListener("click", ()=> openGrantModal(u));
+      item.querySelector(".delete")?.addEventListener("click", async ()=>{
+        if(!confirm("اکانت «" + u.email + "» حذف شود؟ دیگر نمی‌تواند وارد شود.")) return;
+        if(!(await requireAdminAction())) return;
+        try{
+          await databases.deleteDocument(DATABASE_ID, COLLECTION_USERS, u.id);
+          if(currentUser && currentUser.id === u.id){
+            currentUser = null;
+            localStorage.removeItem(STORAGE_SESSION);
+            updateProfile();
+          }
+          showToast("اکانت حذف شد");
+          await renderAdminAccounts();
+        }catch(e){
+          console.error(e);
+          showToast("خطا در حذف اکانت");
+        }
+      });
+      box.appendChild(item);
+    });
+  }catch(e){
+    console.error(e);
+    showEmpty(box, "خطا در دریافت اکانت‌ها — Collection app_users را بسازید");
+  }
+}
+
 
 function parseEpisodes(raw){
   if(Array.isArray(raw)) return raw;
@@ -893,12 +1478,18 @@ function saveProfileData(p){ saveJSON(STORAGE_PROFILE, p); }
 
 function restoreSession(){
   const sess = loadJSON(STORAGE_SESSION, null);
-  if(sess && sess.email){
-    const users = loadJSON(STORAGE_USERS, []);
-    const u = users.find(x => x.email === sess.email);
-    if(u) currentUser = { id: u.id, name: u.name, email: u.email };
-  }
+  if(!sess || !sess.email){ updateProfile(); return; }
+  currentUser = {
+    id: sess.id || null,
+    name: "",
+    email: normalizeEmail(sess.email),
+    coins: 0,
+    unlimitedMode: "none",
+    unlimitedUntil: 0,
+    lastDailyClaim: 0
+  };
   updateProfile();
+  /* بعد از Appwrite، اطلاعات کامل لود می‌شود */
 }
 
 function normalizeEmail(v){
@@ -991,6 +1582,12 @@ function showPage(id, fromPop){
     else renderSaved();
   }
   if(id === "genresPage") renderGenres();
+  if(id === "profilePage"){
+    updateCoinUI();
+    if(currentUser && currentUser.email){
+      refreshCurrentUserCoins().catch(()=>{});
+    }
+  }
   if(id === "adminPage"){
     if(!isAdminMode || !canSeeAdminButton()){
       isAdminMode = false;
@@ -1455,6 +2052,7 @@ function renderEpisodes(episodes){
     btn.innerHTML = `<span>${escapeHtml(ep.title || ("قسمت " + (idx+1)))}</span><span>${locked ? "🔒 ورود" : "دانلود"}</span>`;
     btn.addEventListener("click", ()=>{
       if(!requireLoginForDownload()) return;
+      if(!trySpendCoinsForDownload(currentWork)) return;
       forceDownload(ep.link, ep.title || "episode");
     });
     box.appendChild(btn);
@@ -1496,23 +2094,30 @@ $("downloadBtn")?.addEventListener("click", ()=>{
 });
 
 function forceDownload(url, filename){
-  if(!requireLoginForDownload()) return;
   if(!isValidUrl(url)){ showToast("لینک معتبر نیست"); return; }
-  const safe = String(filename || "file").replace(/[\\/:*?"<>|]/g, "_").trim();
+  /* باز کردن سریع لینک در تب جدید — بدون تأخیر شبکه */
+  let opened = null;
   try{
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = safe;
-    a.rel = "noopener";
-    a.target = "_blank";
-    a.style.display = "none";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    showToast("دانلود شروع شد");
-  }catch(e){
-    try{ window.open(url, "_blank"); }catch(e2){ showToast("دانلود پشتیبانی نمی‌شود"); }
+    opened = window.open(url, "_blank", "noopener,noreferrer");
+  }catch(e){ opened = null; }
+  if(!opened){
+    try{
+      const a = document.createElement("a");
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }catch(e2){
+      try{ window.location.href = url; }catch(e3){
+        showToast("باز کردن لینک ممکن نشد");
+        return;
+      }
+    }
   }
+  showToast("لینک باز شد");
 }
 
 /* Profile */
@@ -1541,16 +2146,18 @@ $("profileAvatarUrlInput")?.addEventListener("input", ()=>{
     $("profilePreviewIcon").style.display = "block";
   }
 });
-$("saveProfileBtn")?.addEventListener("click", ()=>{
+$("saveProfileBtn")?.addEventListener("click", async ()=>{
   const name = ($("profileNameInput").value || "").trim() || "کاربر";
   let avatar = ($("profileAvatarUrlInput").value || "").trim();
   if(avatar && !isValidUrl(avatar)){ showToast("لینک عکس نامعتبر است"); return; }
   saveProfileData({ name, avatar });
   if(currentUser){
     currentUser.name = name;
-    const users = loadJSON(STORAGE_USERS, []);
-    const u = users.find(x => x.id === currentUser.id);
-    if(u){ u.name = name; saveJSON(STORAGE_USERS, users); }
+    try{
+      if(currentUser.id && appwriteReady){
+        await updateUserDoc(currentUser.id, { name });
+      }
+    }catch(e){ console.error(e); }
   }
   updateProfile();
   $("profileModal").classList.remove("active");
@@ -1568,6 +2175,7 @@ function openLoginModal(){
   $("registerTabBtn").classList.remove("active");
   $("loginPanel").classList.add("active");
   $("registerPanel").classList.remove("active");
+  clearAuthError();
   $("loginModal").classList.add("active");
 }
 $("openLoginBtn")?.addEventListener("click", openLoginModal);
@@ -1585,39 +2193,105 @@ $("registerTabBtn")?.addEventListener("click", ()=>{
   $("loginPanel").classList.remove("active");
 });
 
-$("doRegisterBtn")?.addEventListener("click", ()=>{
+$("doRegisterBtn")?.addEventListener("click", async ()=>{
   const name = ($("registerName").value || "").trim();
-  const email = ($("registerEmail").value || "").trim().toLowerCase();
+  const email = normalizeEmail($("registerEmail").value);
   const pass = $("registerPassword").value || "";
   if(!name || !email || !pass){ showToast("همه فیلدها را پر کنید"); return; }
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast("ایمیل نامعتبر است"); return; }
   if(pass.length < 6){ showToast("رمز حداقل ۶ کاراکتر"); return; }
-  const users = loadJSON(STORAGE_USERS, []);
-  if(users.some(u => u.email === email)){ showToast("این ایمیل قبلاً ثبت شده"); return; }
-  const user = { id: uid(), name, email, password: pass };
-  users.push(user);
-  saveJSON(STORAGE_USERS, users);
-  currentUser = { id: user.id, name, email };
-  saveJSON(STORAGE_SESSION, { email });
-  $("loginModal").classList.remove("active");
-  updateProfile();
-  if(currentWork) renderEpisodes(currentWork.episodes || []);
-  showToast("حساب ساخته شد");
+  if(!appwriteReady || !databases || !appwriteID){
+    showToast("اتصال به سرور برقرار نیست");
+    return;
+  }
+  const btn = $("doRegisterBtn");
+  const old = btn ? btn.textContent : "";
+  if(btn){ btn.disabled = true; btn.textContent = "در حال ثبت..."; }
+  clearAuthError();
+  try{
+    let exists = null;
+    try{
+      exists = await fetchUserByEmail(email);
+    }catch(findErr){
+      showAuthError(findErr);
+      return;
+    }
+    if(exists){ showToast("این ایمیل قبلاً ثبت شده"); return; }
+    const password = await hashPassword(pass);
+    const doc = await databases.createDocument(
+      DATABASE_ID,
+      COLLECTION_USERS,
+      appwriteID.unique(),
+      {
+        email,
+        name,
+        password,
+        coins: START_COINS,
+        unlimitedMode: "none",
+        unlimitedUntil: 0,
+        lastDailyClaim: 0
+      }
+    );
+    let u = mapUserDoc(doc);
+    /* اگر سرور coins برنگرداند، همان ۵۰ را نگه دار */
+    if(u && toInt(u.coins, 0) === 0 && START_COINS > 0){
+      u.coins = START_COINS;
+    }
+    applyUserToSession(u);
+    clearAuthError();
+    $("loginModal").classList.remove("active");
+    updateProfile();
+    updateCoinUI();
+    if(currentWork) renderEpisodes(currentWork.episodes || []);
+    showToast("حساب ساخته شد — " + toInt(currentUser && currentUser.coins, START_COINS) + " سکه");
+    /* یک‌بار از سرور هم تازه کن */
+    refreshCurrentUserCoins().catch(()=>{});
+  }catch(e){
+    showAuthError(e);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = old || "ایجاد حساب"; }
+  }
 });
 
-$("doLoginBtn")?.addEventListener("click", ()=>{
-  const email = ($("loginEmail").value || "").trim().toLowerCase();
+$("doLoginBtn")?.addEventListener("click", async ()=>{
+  const email = normalizeEmail($("loginEmail").value);
   const pass = $("loginPassword").value || "";
   if(!email || !pass){ showToast("ایمیل و رمز را وارد کنید"); return; }
-  const users = loadJSON(STORAGE_USERS, []);
-  const u = users.find(x => x.email === email && x.password === pass);
-  if(!u){ showToast("ایمیل یا رمز اشتباه است"); return; }
-  currentUser = { id: u.id, name: u.name, email: u.email };
-  saveJSON(STORAGE_SESSION, { email });
-  $("loginModal").classList.remove("active");
-  updateProfile();
-  if(currentWork) renderEpisodes(currentWork.episodes || []);
-  showToast("خوش آمدید");
+  if(!appwriteReady){ showToast("اتصال برقرار نیست"); return; }
+  const btn = $("doLoginBtn");
+  const old = btn ? btn.textContent : "";
+  if(btn){ btn.disabled = true; btn.textContent = "در حال ورود..."; }
+  clearAuthError();
+  try{
+    let u = null;
+    try{
+      u = await fetchUserByEmail(email);
+    }catch(findErr){
+      showAuthError(findErr);
+      return;
+    }
+    if(!u){
+      showToast("این ایمیل ثبت‌نام نشده — اول ثبت‌نام کنید");
+      try{ $("registerTabBtn")?.click(); }catch(e){}
+      return;
+    }
+    if(!(await passwordMatches(u.password, pass))){
+      showToast("رمز عبور اشتباه است");
+      return;
+    }
+    await expireUnlimitedIfNeeded(u);
+    applyUserToSession(u);
+    $("loginModal").classList.remove("active");
+    updateProfile();
+    updateCoinUI();
+    if(currentWork) renderEpisodes(currentWork.episodes || []);
+    showToast("خوش آمدید — موجودی: " + toInt(currentUser.coins, 0) + " سکه");
+    refreshCurrentUserCoins().catch(()=>{});
+  }catch(e){
+    showAuthError(e);
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = old || "ورود"; }
+  }
 });
 
 $("logoutBtn")?.addEventListener("click", async ()=>{
@@ -1626,6 +2300,7 @@ $("logoutBtn")?.addEventListener("click", async ()=>{
   localStorage.removeItem(STORAGE_SESSION);
   try{ if(account) await account.deleteSession("current"); }catch(e){}
   updateProfile();
+  updateCoinUI();
   if(currentWork) renderEpisodes(currentWork.episodes || []);
   showToast("خارج شدید");
 });
@@ -1753,6 +2428,7 @@ document.querySelectorAll("[data-admin-tab]").forEach(btn => {
     if(tab === "add") $("adminAdd").classList.add("active");
     if(tab === "genres"){ $("adminGenres").classList.add("active"); renderGenreAdmin(); }
     if(tab === "published"){ $("adminPublished").classList.add("active"); renderPublishedWorks(); }
+    if(tab === "accounts"){ $("adminAccounts").classList.add("active"); renderAdminAccounts(); }
   });
 });
 
@@ -2122,6 +2798,31 @@ $("closeEditWorkModal")?.addEventListener("click", ()=>{
   editingWork = null;
 });
 
+
+$("claimDailyBtn")?.addEventListener("click", claimDailyCoins);
+$("buyCoinsBtn")?.addEventListener("click", ()=>{
+  if(!currentUser){
+    showToast("برای خرید باید ثبت‌نام کنید");
+    openLoginModal();
+    return;
+  }
+  $("buyCoinsModal")?.classList.add("active");
+});
+$("closeBuyCoinsModal")?.addEventListener("click", ()=> $("buyCoinsModal")?.classList.remove("active"));
+document.querySelectorAll("[data-grant]").forEach(el => {
+  el.addEventListener("click", ()=> setGrantMode(el.getAttribute("data-grant")));
+});
+$("confirmGrantCoinsBtn")?.addEventListener("click", confirmGrantCoins);
+$("closeGrantCoinsModal")?.addEventListener("click", ()=>{
+  $("grantCoinsModal")?.classList.remove("active");
+  grantTargetUser = null;
+});
+$("accountsSearchInput")?.addEventListener("input", renderAdminAccounts);
+$("clearAccountsSearch")?.addEventListener("click", ()=>{
+  if($("accountsSearchInput")) $("accountsSearchInput").value = "";
+  renderAdminAccounts();
+});
+
 async function init(){
   fillGenreSelect();
   renderGenres();
@@ -2138,12 +2839,12 @@ async function init(){
   const ok = await initAppwrite();
   if(ok){
     await loadWorks();
-    try{
-      const user = await account.get();
-      if(user && String(user.email || "").trim().toLowerCase() === ADMIN_EMAIL.toLowerCase()){
-        isAdminMode = false; /* فقط با ورود پنل فعال شود */
-      }
-    }catch(e){}
+    if(currentUser && currentUser.email){
+      await refreshCurrentUserCoins();
+      updateProfile();
+    }else{
+      updateCoinUI();
+    }
   }else{
     allWorks = [];
     renderHome();
