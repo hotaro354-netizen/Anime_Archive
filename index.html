@@ -258,6 +258,45 @@ button{cursor:pointer}
 .chapterItem span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .chapterItem span:last-child{color:#c37934;margin-right:8px;flex-shrink:0}
 
+/* فصل‌ها — سریالی */
+.seasonTabs{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:2px 0
+}
+.seasonTab{
+  border:1px solid #3a2a1c;background:#241912;color:#a89078;
+  border-radius:20px;padding:8px 14px;font-size:11px;font-weight:600;
+  transition:background .15s,color .15s,border-color .15s
+}
+.seasonTab.active{
+  background:var(--orange);color:#21150e;border-color:var(--orange)
+}
+.seasonTab .epCount{
+  font-size:9px;opacity:.75;margin-right:4px
+}
+.adminSeasonBox{
+  background:#1a120e;border:1px solid #302119;border-radius:14px;padding:12px;margin-bottom:12px
+}
+.adminSeasonHead{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px
+}
+.adminSeasonHead b{font-size:12px;color:#e0a94e}
+.adminSeasonTabs{
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px
+}
+.adminSeasonTab{
+  border:1px solid #3a2a1c;background:#2a1c14;color:#c0a78b;
+  border-radius:16px;padding:7px 12px;font-size:10.5px;cursor:pointer
+}
+.adminSeasonTab.active{
+  background:#a96631;color:white;border-color:#a96631
+}
+.adminSeasonActions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.adminSeasonActions .addBtn,.adminSeasonActions .delete{
+  width:auto;height:36px;padding:0 12px;font-size:10px;margin:0
+}
+.seasonEpList{margin-top:8px}
+.seasonEmptyHint{font-size:10px;color:#8d7660;text-align:center;padding:12px 0}
+
 .adminBox{background:#211710;border-radius:18px;padding:15px}
 .adminTabs{
   display:grid;grid-template-columns:repeat(4,1fr);background:#2b1d14;padding:4px;
@@ -561,6 +600,7 @@ button{cursor:pointer}
       <div class="description" id="detailDescription"></div>
     </div>
     <div id="detailPanelEpisodes" class="detailPanel">
+      <div id="detailSeasonTabs" class="seasonTabs" style="display:none"></div>
       <div class="searchBox" style="margin-bottom:12px">
         <span>🔍</span>
         <input id="episodeSearchInput" type="text" placeholder="جستجوی قسمت...">
@@ -625,11 +665,33 @@ button{cursor:pointer}
         <input id="adminKeywordsInput" placeholder="کلیدواژه را بنویس و Enter بزن">
         <div class="keywordHint">هر کلیدواژه را جدا بنویس و Enter بزن (فارسی یا انگلیسی)</div>
 
-        <label style="margin-top:14px" id="episodeSectionLabel">قسمت‌ها</label>
-        <input id="chapterTitle" placeholder="عنوان قسمت (مثلاً قسمت ۱)">
-        <input id="chapterLinkInput" type="url" placeholder="لینک مستقیم فایل">
-        <button class="addBtn" id="addChapterBtn" type="button">+ افزودن قسمت</button>
-        <div id="pendingChapters" style="margin-top:10px"></div>
+        <!-- بخش قسمت‌ها / فصل‌ها -->
+        <div id="adminEpisodesFlatBlock">
+          <label style="margin-top:14px" id="episodeSectionLabel">قسمت‌ها</label>
+          <input id="chapterTitle" placeholder="عنوان قسمت (مثلاً قسمت ۱)">
+          <input id="chapterLinkInput" type="url" placeholder="لینک مستقیم فایل">
+          <button class="addBtn" id="addChapterBtn" type="button">+ افزودن قسمت</button>
+          <div id="pendingChapters" style="margin-top:10px"></div>
+        </div>
+
+        <div id="adminSeasonsBlock" style="display:none">
+          <label style="margin-top:14px">فصل‌ها</label>
+          <div class="adminSeasonBox">
+            <div class="adminSeasonActions">
+              <input id="newSeasonTitle" class="modalInput" style="margin:0;flex:1;min-width:120px" placeholder="نام فصل (مثلاً فصل ۱)">
+              <button class="addBtn" id="addSeasonBtn" type="button" style="width:auto;height:46px;padding:0 14px;margin:0">+ فصل</button>
+            </div>
+            <div id="adminSeasonTabs" class="adminSeasonTabs"></div>
+            <div id="adminSeasonEpisodesPanel" style="display:none">
+              <label style="margin-top:4px;margin-bottom:6px">قسمت‌های این فصل</label>
+              <input id="seasonChapterTitle" placeholder="عنوان قسمت">
+              <input id="seasonChapterLink" type="url" placeholder="لینک مستقیم فایل">
+              <button class="addBtn" id="addSeasonEpisodeBtn" type="button">+ افزودن قسمت به این فصل</button>
+              <div id="pendingSeasonEpisodes" class="seasonEpList" style="margin-top:10px"></div>
+            </div>
+            <div id="adminNoSeasonHint" class="seasonEmptyHint">اول یک فصل بساز، بعد قسمت‌ها را به آن اضافه کن.</div>
+          </div>
+        </div>
 
         <button class="addBtn" id="publishBtn" type="button" style="margin-top:16px">🚀 انتشار انیمه</button>
       </div>
@@ -759,9 +821,30 @@ button{cursor:pointer}
       <div class="keywordHint">هر کلیدواژه را جدا بنویس و Enter بزن</div>
       <label>لینک جلد</label>
       <input id="editCoverUrl" type="url" placeholder="https://...">
-      <label>قسمت‌ها / بخش‌ها</label>
-      <div id="editChaptersList"></div>
-      <button class="addBtn" id="addEditChapterBtn" type="button">+ افزودن قسمت</button>
+
+      <!-- ویرایش قسمت‌های تخت (سینمایی) -->
+      <div id="editFlatEpisodesBlock">
+        <label>قسمت‌ها / بخش‌ها</label>
+        <div id="editChaptersList"></div>
+        <button class="addBtn" id="addEditChapterBtn" type="button">+ افزودن قسمت</button>
+      </div>
+
+      <!-- ویرایش فصل‌ها (سریالی) -->
+      <div id="editSeasonsBlock" style="display:none">
+        <label>فصل‌ها</label>
+        <div class="adminSeasonBox">
+          <div class="adminSeasonActions">
+            <input id="editNewSeasonTitle" class="modalInput" style="margin:0;flex:1;min-width:100px" placeholder="نام فصل جدید">
+            <button class="addBtn" id="editAddSeasonBtn" type="button" style="width:auto;height:42px;padding:0 12px;margin:0">+ فصل</button>
+          </div>
+          <div id="editSeasonTabs" class="adminSeasonTabs"></div>
+          <div id="editSeasonEpisodesPanel" style="display:none">
+            <label style="margin-top:4px">قسمت‌های این فصل</label>
+            <div id="editSeasonEpisodesList"></div>
+            <button class="addBtn" id="editAddSeasonEpBtn" type="button" style="margin-top:8px">+ افزودن قسمت به این فصل</button>
+          </div>
+        </div>
+      </div>
     </div>
     <button class="modalBtn" id="saveEditWorkBtn" type="button">ذخیره ویرایش</button>
     <button class="modalBtn" id="closeEditWorkModal" type="button" style="background:#302119;color:#c8ad90">انصراف</button>
@@ -862,8 +945,13 @@ let currentWork = null;
 let currentUser = null;
 let isAdminMode = false;
 let pendingChapters = [];
+let pendingSeasons = []; /* [{id, title, episodes:[{id,title,link}]}] */
+let selectedAdminSeasonIdx = -1;
 let editingWork = null;
 let editingChapters = [];
+let editingSeasons = [];
+let selectedEditSeasonIdx = -1;
+let selectedDetailSeasonIdx = -1; /* -1 = لیست فصل‌ها، >=0 = داخل فصل */
 let homeCategory = "all"; /* all | serial | movie */
 let appPageStack = ["homePage"];
 let recentRandomIds = [];
@@ -1390,7 +1478,48 @@ function parseEpisodes(raw){
   return [];
 }
 
+/** نرمال‌سازی فصل‌ها — سازگار با داده‌های قدیمی (لیست تخت قسمت‌ها) */
+function normalizeWorkSeasons(rawEpisodes, type){
+  const parsed = parseEpisodes(rawEpisodes);
+  if(type === "movie"){
+    return { seasons: [], flatEpisodes: parsed };
+  }
+  /* فرمت جدید: آرایهٔ فصل‌ها که هر کدام episodes دارند */
+  if(parsed.length && Array.isArray(parsed[0]?.episodes)){
+    return {
+      seasons: parsed.map(s => ({
+        id: s.id || uid(),
+        title: s.title || "فصل",
+        episodes: Array.isArray(s.episodes) ? s.episodes.map(e => ({
+          id: e.id || uid(),
+          title: e.title || "",
+          link: e.link || ""
+        })) : []
+      })),
+      flatEpisodes: []
+    };
+  }
+  /* فرمت قدیمی: لیست تخت → خودکار داخل فصل ۱ */
+  if(parsed.length){
+    return {
+      seasons: [{
+        id: uid(),
+        title: "فصل ۱",
+        episodes: parsed.map(e => ({
+          id: e.id || uid(),
+          title: e.title || "",
+          link: e.link || ""
+        }))
+      }],
+      flatEpisodes: []
+    };
+  }
+  return { seasons: [], flatEpisodes: [] };
+}
+
 function mapWorkDoc(doc){
+  const type = doc.type === "movie" ? "movie" : "serial";
+  const norm = normalizeWorkSeasons(doc.episodes, type);
   return {
     id: doc.$id,
     title: doc.title || "",
@@ -1398,11 +1527,29 @@ function mapWorkDoc(doc){
     genre: doc.genre || "",
     description: doc.description || "",
     keywords: doc.keywords || "",
-    type: doc.type === "movie" ? "movie" : "serial",
+    type,
     coverUrl: doc.coverUrl || "",
-    episodes: parseEpisodes(doc.episodes),
+    seasons: norm.seasons,
+    episodes: type === "movie" ? norm.flatEpisodes : flattenSeasonsEpisodes(norm.seasons),
     createdAt: doc.$createdAt ? new Date(doc.$createdAt).getTime() : Date.now()
   };
+}
+
+function flattenSeasonsEpisodes(seasons){
+  const out = [];
+  (seasons || []).forEach(s => {
+    (s.episodes || []).forEach(e => out.push(e));
+  });
+  return out;
+}
+
+function countWorkEpisodes(work){
+  if(!work) return 0;
+  if(work.type === "movie") return (work.episodes || []).length;
+  if(work.seasons && work.seasons.length){
+    return work.seasons.reduce((n, s) => n + (s.episodes || []).length, 0);
+  }
+  return (work.episodes || []).length;
 }
 
 async function initAppwrite(){
@@ -1616,6 +1763,21 @@ function showPage(id, fromPop){
 }
 
 window.addEventListener("popstate", ()=>{
+  /* دکمه Back گوشی: اگر داخل فصل هستیم فقط برگرد به لیست فصل‌ها */
+  if(
+    currentWork &&
+    $("detailPage")?.classList.contains("active") &&
+    currentWork.type === "serial" &&
+    currentWork.seasons &&
+    currentWork.seasons.length &&
+    selectedDetailSeasonIdx >= 0
+  ){
+    selectedDetailSeasonIdx = -1;
+    if($("episodeSearchInput")) $("episodeSearchInput").value = "";
+    setDetailTab("episodes");
+    renderDetailEpisodesUI(currentWork);
+    return;
+  }
   if(appPageStack.length > 1){
     appPageStack.pop();
     showPage(appPageStack[appPageStack.length - 1], true);
@@ -1990,7 +2152,9 @@ function openDetail(work){
 
   updateDetailSaveBtn();
   setDetailTab("details");
-  renderEpisodes(work.episodes || []);
+  selectedDetailSeasonIdx = -1; /* اول لیست فصل‌ها */
+  if($("episodeSearchInput")) $("episodeSearchInput").value = "";
+  renderDetailEpisodesUI(work);
   renderSimilar(work);
   showPage("detailPage");
 }
@@ -2016,6 +2180,22 @@ $("detailTabDetails")?.addEventListener("click", ()=> setDetailTab("details"));
 $("detailTabEpisodes")?.addEventListener("click", ()=> setDetailTab("episodes"));
 $("detailTabSimilar")?.addEventListener("click", ()=> setDetailTab("similar"));
 $("detailBack")?.addEventListener("click", ()=>{
+  /* اگر داخل فصل هستیم، با history.back تا هم UI و هم دکمه Back گوشی هم‌خوان بمانند */
+  if(
+    currentWork &&
+    currentWork.type === "serial" &&
+    currentWork.seasons &&
+    currentWork.seasons.length &&
+    selectedDetailSeasonIdx >= 0
+  ){
+    try{ history.back(); }catch(e){
+      selectedDetailSeasonIdx = -1;
+      if($("episodeSearchInput")) $("episodeSearchInput").value = "";
+      setDetailTab("episodes");
+      renderDetailEpisodesUI(currentWork);
+    }
+    return;
+  }
   if(appPageStack.length > 1){ appPageStack.pop(); showPage(appPageStack[appPageStack.length-1], true); }
   else showPage("homePage");
 });
@@ -2038,7 +2218,16 @@ function requireLoginForDownload(){
   return false;
 }
 
-function renderEpisodes(episodes){
+function getActiveDetailEpisodes(work){
+  if(!work) return [];
+  if(work.type === "movie") return work.episodes || [];
+  const seasons = work.seasons || [];
+  if(!seasons.length) return work.episodes || [];
+  if(selectedDetailSeasonIdx < 0 || selectedDetailSeasonIdx >= seasons.length) return [];
+  return seasons[selectedDetailSeasonIdx]?.episodes || [];
+}
+
+function renderEpisodesList(episodes){
   const box = $("chaptersList");
   if(!box) return;
   box.innerHTML = "";
@@ -2059,15 +2248,104 @@ function renderEpisodes(episodes){
   });
 }
 
+/** لیست فصل‌ها به‌جای قسمت‌ها — حتی اگر فقط یک فصل باشد */
+function renderSeasonsAsList(work){
+  const box = $("chaptersList");
+  const tabs = $("detailSeasonTabs");
+  if(tabs){ tabs.innerHTML = ""; tabs.style.display = "none"; }
+  if(!box) return;
+  box.innerHTML = "";
+  window.currentEpisodes = [];
+  const seasons = work.seasons || [];
+  if(!seasons.length){
+    showEmpty(box, "فصلی ثبت نشده است.");
+    return;
+  }
+  seasons.forEach((s, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "chapterItem";
+    const epN = (s.episodes || []).length;
+    btn.innerHTML = `<span>${escapeHtml(s.title || ("فصل " + (i+1)))}</span><span>${epN} قسمت ‹</span>`;
+    btn.addEventListener("click", ()=>{
+      selectedDetailSeasonIdx = i;
+      if($("episodeSearchInput")) $("episodeSearchInput").value = "";
+      try{ history.pushState({ page: "detailPage", season: i }, ""); }catch(e){}
+      renderDetailEpisodesUI(work);
+    });
+    box.appendChild(btn);
+  });
+}
+
+function renderSeasonBackBar(work){
+  const tabs = $("detailSeasonTabs");
+  if(!tabs) return;
+  const seasons = work.seasons || [];
+  const season = seasons[selectedDetailSeasonIdx];
+  if(!season){ tabs.style.display = "none"; tabs.innerHTML = ""; return; }
+  tabs.style.display = "flex";
+  tabs.innerHTML = "";
+  const back = document.createElement("button");
+  back.type = "button";
+  back.className = "seasonTab";
+  back.style.flex = "0 0 auto";
+  back.innerHTML = "→ فصل‌ها";
+  back.addEventListener("click", ()=>{
+    try{ history.back(); }catch(e){
+      selectedDetailSeasonIdx = -1;
+      if($("episodeSearchInput")) $("episodeSearchInput").value = "";
+      renderDetailEpisodesUI(work);
+    }
+  });
+  const label = document.createElement("button");
+  label.type = "button";
+  label.className = "seasonTab active";
+  label.style.flex = "1";
+  label.style.cursor = "default";
+  const epN = (season.episodes || []).length;
+  label.innerHTML = `${escapeHtml(season.title || "فصل")} <span class="epCount">(${epN} قسمت)</span>`;
+  tabs.appendChild(back);
+  tabs.appendChild(label);
+}
+
+function renderDetailEpisodesUI(work){
+  if(!work) return;
+  const searchBox = $("episodeSearchInput")?.closest(".searchBox");
+
+  /* سینمایی یا بدون فصل → لیست تخت قسمت‌ها */
+  if(work.type === "movie" || !(work.seasons && work.seasons.length)){
+    const tabs = $("detailSeasonTabs");
+    if(tabs){ tabs.innerHTML = ""; tabs.style.display = "none"; }
+    if(searchBox) searchBox.style.display = "";
+    renderEpisodesList(work.episodes || []);
+    return;
+  }
+
+  /* سریالی با فصل: اول لیست فصل‌ها، بعد قسمت‌های فصل انتخاب‌شده */
+  if(selectedDetailSeasonIdx < 0){
+    if(searchBox) searchBox.style.display = "none"; /* در لیست فصل‌ها جستجو لازم نیست */
+    renderSeasonsAsList(work);
+  }else{
+    if(searchBox) searchBox.style.display = "";
+    renderSeasonBackBar(work);
+    renderEpisodesList(getActiveDetailEpisodes(work));
+  }
+}
+
+/* سازگاری با فراخوانی‌های قدیمی */
+function renderEpisodes(episodes){
+  renderEpisodesList(episodes || []);
+}
+
 $("episodeSearchInput")?.addEventListener("input", ()=>{
   const q = normalizeText($("episodeSearchInput").value);
-  const all = window.currentEpisodes || [];
-  if(!q){ renderEpisodes(all); return; }
-  renderEpisodes(all.filter(e => normalizeText(e.title).includes(q)));
+  const all = getActiveDetailEpisodes(currentWork);
+  if(!q){ renderEpisodesList(all); return; }
+  renderEpisodesList(all.filter(e => normalizeText(e.title).includes(q)));
 });
 $("clearEpisodeSearch")?.addEventListener("click", ()=>{
   if($("episodeSearchInput")) $("episodeSearchInput").value = "";
-  renderEpisodes(window.currentEpisodes || []);
+  renderEpisodesList(getActiveDetailEpisodes(currentWork));
 });
 
 function renderSimilar(work){
@@ -2260,7 +2538,7 @@ $("doRegisterBtn")?.addEventListener("click", async ()=>{
     $("loginModal").classList.remove("active");
     updateProfile();
     updateCoinUI();
-    if(currentWork) renderEpisodes(currentWork.episodes || []);
+    if(currentWork) renderDetailEpisodesUI(currentWork);
     showToast("حساب ساخته شد — " + toInt(currentUser && currentUser.coins, START_COINS) + " سکه");
     /* یک‌بار از سرور هم تازه کن */
     refreshCurrentUserCoins().catch(()=>{});
@@ -2302,7 +2580,7 @@ $("doLoginBtn")?.addEventListener("click", async ()=>{
     $("loginModal").classList.remove("active");
     updateProfile();
     updateCoinUI();
-    if(currentWork) renderEpisodes(currentWork.episodes || []);
+    if(currentWork) renderDetailEpisodesUI(currentWork);
     showToast("خوش آمدید — موجودی: " + toInt(currentUser.coins, 0) + " سکه");
     refreshCurrentUserCoins().catch(()=>{});
   }catch(e){
@@ -2319,7 +2597,7 @@ $("logoutBtn")?.addEventListener("click", async ()=>{
   try{ if(account) await account.deleteSession("current"); }catch(e){}
   updateProfile();
   updateCoinUI();
-  if(currentWork) renderEpisodes(currentWork.episodes || []);
+  if(currentWork) renderDetailEpisodesUI(currentWork);
   showToast("خارج شدید");
 });
 
@@ -2472,6 +2750,11 @@ function nextEpisodeDefaultTitle(){
   return "قسمت " + n;
 }
 
+function nextSeasonEpisodeDefaultTitle(season){
+  const n = ((season && season.episodes) || []).length + 1;
+  return "قسمت " + n;
+}
+
 function setDefaultEpisodeTitleInput(){
   if($("chapterTitle")) $("chapterTitle").value = nextEpisodeDefaultTitle();
   if($("chapterLinkInput")) $("chapterLinkInput").value = "";
@@ -2480,11 +2763,16 @@ function setDefaultEpisodeTitleInput(){
 function updateEpisodeLabels(){
   const type = $("adminType")?.value;
   const isMovie = type === "movie";
+  const flatBlock = $("adminEpisodesFlatBlock");
+  const seasonsBlock = $("adminSeasonsBlock");
+  if(flatBlock) flatBlock.style.display = isMovie ? "" : "none";
+  if(seasonsBlock) seasonsBlock.style.display = isMovie ? "none" : "";
   if($("episodeSectionLabel"))
     $("episodeSectionLabel").textContent = isMovie ? "لینک فیلم / بخش‌ها" : "قسمت‌ها";
   if($("addChapterBtn"))
     $("addChapterBtn").textContent = isMovie ? "+ افزودن بخش" : "+ افزودن قسمت";
   setDefaultEpisodeTitleInput();
+  if(!isMovie) renderAdminSeasonsUI();
 }
 $("adminType")?.addEventListener("change", updateEpisodeLabels);
 
@@ -2496,7 +2784,6 @@ $("addChapterBtn")?.addEventListener("click", ()=>{
   if(!isValidUrl(link)){ showToast("لینک معتبر نیست"); return; }
   pendingChapters.push({ id: uid(), title, link });
   renderPendingChapters();
-  /* بعد از افزودن: پیش‌فرض قسمت بعدی + لینک خالی */
   setDefaultEpisodeTitleInput();
 });
 
@@ -2522,6 +2809,104 @@ function renderPendingChapters(){
   });
 }
 
+/* ========== فصل‌ها در پنل افزودن ========== */
+function renderAdminSeasonsUI(){
+  const tabs = $("adminSeasonTabs");
+  const panel = $("adminSeasonEpisodesPanel");
+  const hint = $("adminNoSeasonHint");
+  if(!tabs) return;
+  tabs.innerHTML = "";
+  if(!pendingSeasons.length){
+    selectedAdminSeasonIdx = -1;
+    if(panel) panel.style.display = "none";
+    if(hint) hint.style.display = "";
+    return;
+  }
+  if(hint) hint.style.display = "none";
+  if(selectedAdminSeasonIdx < 0 || selectedAdminSeasonIdx >= pendingSeasons.length){
+    selectedAdminSeasonIdx = 0;
+  }
+  pendingSeasons.forEach((s, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "adminSeasonTab" + (i === selectedAdminSeasonIdx ? " active" : "");
+    const epN = (s.episodes || []).length;
+    btn.innerHTML = `${escapeHtml(s.title)} <span class="epCount">(${epN})</span>`;
+    btn.addEventListener("click", ()=>{
+      selectedAdminSeasonIdx = i;
+      renderAdminSeasonsUI();
+    });
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "delete";
+    del.style.cssText = "width:auto;padding:3px 7px;margin:0 0 0 4px;font-size:9px;height:auto;display:inline";
+    del.textContent = "×";
+    del.title = "حذف فصل";
+    del.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      if(!confirm("فصل «" + s.title + "» حذف شود؟")) return;
+      pendingSeasons.splice(i, 1);
+      if(selectedAdminSeasonIdx >= pendingSeasons.length) selectedAdminSeasonIdx = pendingSeasons.length - 1;
+      renderAdminSeasonsUI();
+    });
+    btn.appendChild(del);
+    tabs.appendChild(btn);
+  });
+  if(panel) panel.style.display = "";
+  renderPendingSeasonEpisodes();
+  const season = pendingSeasons[selectedAdminSeasonIdx];
+  if($("seasonChapterTitle")) $("seasonChapterTitle").value = nextSeasonEpisodeDefaultTitle(season);
+  if($("seasonChapterLink")) $("seasonChapterLink").value = "";
+}
+
+function renderPendingSeasonEpisodes(){
+  const box = $("pendingSeasonEpisodes");
+  if(!box) return;
+  box.innerHTML = "";
+  const season = pendingSeasons[selectedAdminSeasonIdx];
+  if(!season) return;
+  (season.episodes || []).forEach((ch, i) => {
+    const div = document.createElement("div");
+    div.className = "pendingChapter";
+    div.innerHTML = `<span>${escapeHtml(ch.title)}</span>`;
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "delete";
+    del.textContent = "حذف";
+    del.addEventListener("click", ()=>{
+      season.episodes.splice(i, 1);
+      renderAdminSeasonsUI();
+    });
+    div.appendChild(del);
+    box.appendChild(div);
+  });
+}
+
+$("addSeasonBtn")?.addEventListener("click", ()=>{
+  if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
+  const title = ($("newSeasonTitle")?.value || "").trim() || ("فصل " + (pendingSeasons.length + 1));
+  pendingSeasons.push({ id: uid(), title, episodes: [] });
+  selectedAdminSeasonIdx = pendingSeasons.length - 1;
+  if($("newSeasonTitle")) $("newSeasonTitle").value = "";
+  renderAdminSeasonsUI();
+  showToast("فصل «" + title + "» اضافه شد");
+});
+
+$("addSeasonEpisodeBtn")?.addEventListener("click", ()=>{
+  if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
+  if(selectedAdminSeasonIdx < 0 || !pendingSeasons[selectedAdminSeasonIdx]){
+    showToast("اول یک فصل انتخاب کنید");
+    return;
+  }
+  const season = pendingSeasons[selectedAdminSeasonIdx];
+  const title = ($("seasonChapterTitle")?.value || "").trim() || nextSeasonEpisodeDefaultTitle(season);
+  const link = ($("seasonChapterLink")?.value || "").trim();
+  if(!link){ showToast("لینک قسمت را وارد کنید"); return; }
+  if(!isValidUrl(link)){ showToast("لینک معتبر نیست"); return; }
+  season.episodes.push({ id: uid(), title, link });
+  renderAdminSeasonsUI();
+});
+
 $("publishBtn")?.addEventListener("click", async ()=>{
   if(!(await requireAdminAction())) return;
   if(!appwriteReady || !databases || !appwriteID){
@@ -2538,9 +2923,33 @@ $("publishBtn")?.addEventListener("click", async ()=>{
 
   if(!title){ showToast("عنوان را وارد کنید"); return; }
   if(coverUrl && !isValidUrl(coverUrl)){ showToast("لینک جلد نامعتبر است"); return; }
-  if(!pendingChapters.length){
-    showToast(type === "movie" ? "حداقل یک لینک فیلم اضافه کنید" : "حداقل یک قسمت اضافه کنید");
-    return;
+
+  let episodesPayload = [];
+  if(type === "movie"){
+    if(!pendingChapters.length){
+      showToast("حداقل یک لینک فیلم اضافه کنید");
+      return;
+    }
+    episodesPayload = pendingChapters.map(c => ({
+      id: c.id || uid(),
+      title: c.title,
+      link: c.link
+    }));
+  }else{
+    const totalEps = pendingSeasons.reduce((n, s) => n + (s.episodes || []).length, 0);
+    if(!pendingSeasons.length || totalEps === 0){
+      showToast("حداقل یک فصل با یک قسمت اضافه کنید");
+      return;
+    }
+    episodesPayload = pendingSeasons.map(s => ({
+      id: s.id || uid(),
+      title: s.title,
+      episodes: (s.episodes || []).map(e => ({
+        id: e.id || uid(),
+        title: e.title,
+        link: e.link
+      }))
+    }));
   }
 
   const button = $("publishBtn");
@@ -2560,15 +2969,14 @@ $("publishBtn")?.addEventListener("click", async ()=>{
         keywords,
         type,
         coverUrl,
-        episodes: JSON.stringify(pendingChapters.map(c => ({
-          id: c.id || uid(),
-          title: c.title,
-          link: c.link
-        })))
+        episodes: JSON.stringify(episodesPayload)
       }
     );
     pendingChapters = [];
+    pendingSeasons = [];
+    selectedAdminSeasonIdx = -1;
     renderPendingChapters();
+    renderAdminSeasonsUI();
     adminKeywordsList = [];
     renderKeywordsPicker("adminKeywordsPicker", adminKeywordsList);
     if($("adminKeywordsInput")) $("adminKeywordsInput").value = "";
@@ -2661,7 +3069,7 @@ function renderPublishedWorks(){
     item.innerHTML = `
       <div class="adminItemInfo">
         <b>${escapeHtml(work.title || "بدون عنوان")}</b>
-        <small>${escapeHtml(work.Author || "—")} · ${typeLabel(work.type)} · ${(work.episodes||[]).length} قسمت</small>
+        <small>${escapeHtml(work.Author || "—")} · ${typeLabel(work.type)} · ${countWorkEpisodes(work)} قسمت${work.type === "serial" && work.seasons && work.seasons.length ? " · " + work.seasons.length + " فصل" : ""}</small>
       </div>
       <div class="adminActions">
         <button class="editBtn" type="button">✏️ ویرایش</button>
@@ -2694,8 +3102,8 @@ $("clearPublishedSearch")?.addEventListener("click", ()=>{
 
 function openEditWork(work){
   editingWork = work;
-  editingChapters = (work.episodes || []).map(e => ({...e}));
-  $("editType").value = work.type === "movie" ? "movie" : "serial";
+  const isMovie = work.type === "movie";
+  $("editType").value = isMovie ? "movie" : "serial";
   $("editTitle").value = work.title || "";
   $("editAuthor").value = work.Author || "";
   fillGenreSelect();
@@ -2705,9 +3113,41 @@ function openEditWork(work){
   renderKeywordsPicker("editKeywordsPicker", editKeywordsList);
   if($("editKeywordsInput")) $("editKeywordsInput").value = "";
   $("editCoverUrl").value = work.coverUrl || "";
-  renderEditChapters();
+
+  if(isMovie){
+    editingChapters = (work.episodes || []).map(e => ({...e}));
+    editingSeasons = [];
+    selectedEditSeasonIdx = -1;
+  }else{
+    editingSeasons = (work.seasons || []).map(s => ({
+      id: s.id || uid(),
+      title: s.title || "فصل",
+      episodes: (s.episodes || []).map(e => ({...e}))
+    }));
+    if(!editingSeasons.length && (work.episodes || []).length){
+      editingSeasons = [{
+        id: uid(),
+        title: "فصل ۱",
+        episodes: (work.episodes || []).map(e => ({...e}))
+      }];
+    }
+    editingChapters = [];
+    selectedEditSeasonIdx = editingSeasons.length ? 0 : -1;
+  }
+  updateEditTypeUI();
   $("editWorkModal").classList.add("active");
 }
+
+function updateEditTypeUI(){
+  const isMovie = $("editType")?.value === "movie";
+  const flat = $("editFlatEpisodesBlock");
+  const seasons = $("editSeasonsBlock");
+  if(flat) flat.style.display = isMovie ? "" : "none";
+  if(seasons) seasons.style.display = isMovie ? "none" : "";
+  if(isMovie) renderEditChapters();
+  else renderEditSeasonsUI();
+}
+$("editType")?.addEventListener("change", updateEditTypeUI);
 
 function renderEditChapters(){
   const box = $("editChaptersList");
@@ -2756,6 +3196,110 @@ $("addEditChapterBtn")?.addEventListener("click", ()=>{
   renderEditChapters();
 });
 
+function renderEditSeasonsUI(){
+  const tabs = $("editSeasonTabs");
+  const panel = $("editSeasonEpisodesPanel");
+  if(!tabs) return;
+  tabs.innerHTML = "";
+  if(!editingSeasons.length){
+    selectedEditSeasonIdx = -1;
+    if(panel) panel.style.display = "none";
+    return;
+  }
+  if(selectedEditSeasonIdx < 0 || selectedEditSeasonIdx >= editingSeasons.length){
+    selectedEditSeasonIdx = 0;
+  }
+  editingSeasons.forEach((s, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "adminSeasonTab" + (i === selectedEditSeasonIdx ? " active" : "");
+    const epN = (s.episodes || []).length;
+    btn.innerHTML = `${escapeHtml(s.title)} <span class="epCount">(${epN})</span>`;
+    btn.addEventListener("click", ()=>{
+      selectedEditSeasonIdx = i;
+      renderEditSeasonsUI();
+    });
+    /* دکمه حذف فصل */
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "delete";
+    del.style.cssText = "width:auto;padding:4px 8px;margin:0;font-size:9px;height:auto";
+    del.textContent = "×";
+    del.title = "حذف فصل";
+    del.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      if(!confirm("فصل «" + s.title + "» و همه قسمت‌هایش حذف شود؟")) return;
+      editingSeasons.splice(i, 1);
+      if(selectedEditSeasonIdx >= editingSeasons.length) selectedEditSeasonIdx = editingSeasons.length - 1;
+      renderEditSeasonsUI();
+    });
+    btn.appendChild(document.createTextNode(" "));
+    btn.appendChild(del);
+    tabs.appendChild(btn);
+  });
+  if(panel) panel.style.display = "";
+  renderEditSeasonEpisodes();
+}
+
+function renderEditSeasonEpisodes(){
+  const box = $("editSeasonEpisodesList");
+  if(!box) return;
+  box.innerHTML = "";
+  const season = editingSeasons[selectedEditSeasonIdx];
+  if(!season) return;
+  (season.episodes || []).forEach((ch, i) => {
+    const div = document.createElement("div");
+    div.className = "pendingChapter";
+    div.style.flexDirection = "column";
+    div.style.alignItems = "stretch";
+    div.style.gap = "6px";
+    const t = document.createElement("input");
+    t.className = "modalInput";
+    t.style.marginBottom = "0";
+    t.value = ch.title || "";
+    t.placeholder = "عنوان قسمت";
+    t.addEventListener("input", ()=> { ch.title = t.value; });
+    const l = document.createElement("input");
+    l.className = "modalInput";
+    l.style.marginBottom = "0";
+    l.type = "url";
+    l.value = ch.link || "";
+    l.placeholder = "لینک مستقیم";
+    l.addEventListener("input", ()=> { ch.link = l.value; });
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "delete";
+    del.textContent = "حذف";
+    del.addEventListener("click", ()=>{
+      season.episodes.splice(i, 1);
+      renderEditSeasonsUI();
+    });
+    div.appendChild(t);
+    div.appendChild(l);
+    div.appendChild(del);
+    box.appendChild(div);
+  });
+}
+
+$("editAddSeasonBtn")?.addEventListener("click", ()=>{
+  const title = ($("editNewSeasonTitle")?.value || "").trim() || ("فصل " + (editingSeasons.length + 1));
+  editingSeasons.push({ id: uid(), title, episodes: [] });
+  selectedEditSeasonIdx = editingSeasons.length - 1;
+  if($("editNewSeasonTitle")) $("editNewSeasonTitle").value = "";
+  renderEditSeasonsUI();
+});
+
+$("editAddSeasonEpBtn")?.addEventListener("click", ()=>{
+  if(selectedEditSeasonIdx < 0 || !editingSeasons[selectedEditSeasonIdx]){
+    showToast("اول یک فصل انتخاب کنید");
+    return;
+  }
+  const season = editingSeasons[selectedEditSeasonIdx];
+  const n = (season.episodes || []).length + 1;
+  season.episodes.push({ id: uid(), title: "قسمت " + n, link: "" });
+  renderEditSeasonsUI();
+});
+
 $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   if(!editingWork) return;
   if(!(await requireAdminAction())) return;
@@ -2764,24 +3308,53 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   if(!title){ showToast("عنوان لازم است"); return; }
   const coverUrl = ($("editCoverUrl").value || "").trim();
   if(coverUrl && !isValidUrl(coverUrl)){ showToast("لینک جلد نامعتبر"); return; }
-  for(const ch of editingChapters){
-    if(!(ch.title||"").trim()){ showToast("عنوان یکی از قسمت‌ها خالی است"); return; }
-    if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از قسمت‌ها نامعتبر است"); return; }
+
+  const type = $("editType").value === "movie" ? "movie" : "serial";
+  let episodesPayload = [];
+
+  if(type === "movie"){
+    for(const ch of editingChapters){
+      if(!(ch.title||"").trim()){ showToast("عنوان یکی از قسمت‌ها خالی است"); return; }
+      if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از قسمت‌ها نامعتبر است"); return; }
+    }
+    if(!editingChapters.length){ showToast("حداقل یک لینک اضافه کنید"); return; }
+    episodesPayload = editingChapters.map(c => ({
+      id: c.id || uid(),
+      title: (c.title||"").trim(),
+      link: (c.link||"").trim()
+    }));
+  }else{
+    for(const s of editingSeasons){
+      for(const ch of (s.episodes || [])){
+        if(!(ch.title||"").trim()){ showToast("عنوان یکی از قسمت‌ها خالی است"); return; }
+        if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از قسمت‌ها نامعتبر است"); return; }
+      }
+    }
+    const total = editingSeasons.reduce((n, s) => n + (s.episodes || []).length, 0);
+    if(!editingSeasons.length || total === 0){
+      showToast("حداقل یک فصل با یک قسمت لازم است");
+      return;
+    }
+    episodesPayload = editingSeasons.map(s => ({
+      id: s.id || uid(),
+      title: s.title,
+      episodes: (s.episodes || []).map(e => ({
+        id: e.id || uid(),
+        title: (e.title||"").trim(),
+        link: (e.link||"").trim()
+      }))
+    }));
   }
 
   const payload = {
-    type: $("editType").value === "movie" ? "movie" : "serial",
+    type,
     title,
     Author: ($("editAuthor").value || "").trim(),
     genre: $("editGenre").value,
     description: ($("editDescription").value || "").trim(),
     keywords: keywordsToStorage(editKeywordsList),
     coverUrl,
-    episodes: JSON.stringify(editingChapters.map(c => ({
-      id: c.id || uid(),
-      title: (c.title||"").trim(),
-      link: (c.link||"").trim()
-    })))
+    episodes: JSON.stringify(episodesPayload)
   };
 
   const button = $("saveEditWorkBtn");
