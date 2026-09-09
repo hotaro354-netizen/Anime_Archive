@@ -257,6 +257,7 @@ button{cursor:pointer}
 }
 .chapterItem span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .chapterItem span:last-child{color:#c37934;margin-right:8px;flex-shrink:0}
+.chapterItem.downloaded span:last-child{color:#7fbf78;font-size:10px}
 
 /* فصل‌ها — سریالی */
 .seasonTabs{
@@ -356,6 +357,22 @@ button{cursor:pointer}
   border-radius:10px;padding:10px;margin-bottom:8px;font-size:11px
 }
 .adminLogoutBtn{background:#5b3028!important;color:#e3b8a5!important;margin-top:15px}
+
+.referralCard{
+  background:#211710;border:1px solid #3a2a1c;border-radius:18px;padding:20px 16px;
+  text-align:center;margin-top:20px
+}
+.referralIcon{font-size:36px;margin-bottom:10px}
+.referralCard h3{font-size:15px;color:#e7d6bf;margin-bottom:9px}
+.referralCard p{font-size:11px;color:#a89078;line-height:2;margin-bottom:20px}
+.referralCard p b{color:#e0a94e}
+.referralCodeLabel{font-size:10px;color:#927d67;margin-bottom:7px}
+.referralCodeBox{
+  direction:ltr;word-break:break-all;user-select:all;
+  background:#2b1d14;border:1px solid #4a3222;border-radius:12px;
+  padding:14px 10px;color:#e0a94e;font-size:12px;font-weight:700;letter-spacing:1.2px;
+  line-height:1.8;margin-bottom:10px
+}
 
 .nav{
   position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;
@@ -544,7 +561,6 @@ button{cursor:pointer}
     <div class="profileEmail" id="profileEmail">کاربر مهمان</div>
     <button class="outlineBtn" id="editProfileBtn" type="button">✏️ ویرایش پروفایل</button>
     <button class="loginBtnMain" id="openLoginBtn" type="button" style="display:none">ورود / ثبت‌نام</button>
-    <button class="logoutBtn" id="logoutBtn" type="button" style="display:none">خروج از حساب</button>
   </div>
   <div class="coinBox" id="profileCoinBox">
     <div class="coinSub">موجودی سکه</div>
@@ -558,6 +574,23 @@ button{cursor:pointer}
   <div class="profileMenu">
     <div class="menu" id="supportBtn"><span>پشتیبانی و درخواست انیمه</span><span>›</span></div>
     <div class="menu adminAccess" id="adminAccessBtn" style="display:none" hidden><span>🔐 پنل مدیریت</span><span>›</span></div>
+    <div class="menu" id="referralAccessBtn"><span>🎁 کد معرف</span><span>›</span></div>
+  </div>
+</section>
+
+<!-- ========== REFERRAL ========== -->
+<section id="referralPage" class="page">
+  <div class="top">
+    <button class="back" id="referralBack" type="button">←</button>
+    <h2>کد معرف</h2>
+  </div>
+  <div class="referralCard">
+    <div class="referralIcon">🎁</div>
+    <h3>دوستت را دعوت کن</h3>
+    <p>هر نفر کد معرف تو را هنگام ثبت‌نام وارد کند، <b>۵۰ سکه</b> به تو تعلق می‌گیرد.</p>
+    <div class="referralCodeLabel">کد معرف شما</div>
+    <div class="referralCodeBox" id="referralCodeBox">—</div>
+    <button class="modalBtn" id="copyReferralBtn" type="button">📋 کپی کد معرف</button>
   </div>
 </section>
 
@@ -773,6 +806,7 @@ button{cursor:pointer}
       <input id="registerName" class="modalInput" type="text" placeholder="نام">
       <input id="registerEmail" class="modalInput" type="email" placeholder="ایمیل">
       <input id="registerPassword" class="modalInput" type="password" placeholder="رمز (حداقل ۶ کاراکتر)">
+      <input id="registerReferralCode" class="modalInput" type="text" placeholder="کد معرف (اختیاری)" autocomplete="off" autocapitalize="characters" spellcheck="false">
       <button class="modalBtn" id="doRegisterBtn" type="button">ایجاد حساب</button>
     </div>
     <div id="authErrorBox" class="errorBox">
@@ -914,12 +948,15 @@ const DATABASE_ID = "6a9c15f700270e8a347d";
 const COLLECTION_WORKS = "works";
 const COLLECTION_USERS = "app_users";
 const ADMIN_EMAIL = "hotaro354@gmail.com";
-const DAILY_FREE_COINS = 4;
+const DAILY_FREE_COINS = 5;
 const START_COINS = 30;
 const COST_SERIAL_EP = 2;
 const COST_MOVIE = 4;
 const SUPPORT_HANDLE = "@rraararar";
 const DAY_MS = 24 * 60 * 60 * 1000;
+const COIN_CLAIM_INTERVAL_MS = 8 * 60 * 60 * 1000;
+const REFERRAL_REWARD_COINS = 30;
+const REFERRAL_PREFIX = "AA";
 
 const STORAGE_GENRES = "animearchive_genres_v1";
 const STORAGE_PROFILE = "animearchive_profile_v1";
@@ -927,6 +964,7 @@ const STORAGE_SAVED = "animearchive_saved_v1";
 const STORAGE_HISTORY = "animearchive_history_v1";
 const STORAGE_USERS = "animearchive_users_v1";
 const STORAGE_SESSION = "animearchive_session_v1";
+const STORAGE_DOWNLOADS = "animearchive_downloads_v1";
 
 let client = null;
 let databases = null;
@@ -1251,7 +1289,7 @@ function updateCoinUI(){
   }
   if(claimBtn){
     const last = toInt(currentUser.lastDailyClaim, 0);
-    const wait = (last + DAY_MS) - Date.now();
+    const wait = (last + COIN_CLAIM_INTERVAL_MS) - Date.now();
     if(last > 0 && wait > 0){
       claimBtn.disabled = true;
       claimBtn.textContent = "دریافت بعدی: " + formatRemain(wait);
@@ -1279,7 +1317,7 @@ async function claimDailyCoins(){
     await refreshCurrentUserCoins();
     if(!currentUser) return;
     const last = toInt(currentUser.lastDailyClaim, 0);
-    const wait = (last + DAY_MS) - Date.now();
+    const wait = (last + COIN_CLAIM_INTERVAL_MS) - Date.now();
     if(last > 0 && wait > 0){
       showToast("تا " + formatRemain(wait) + " دیگر نمی‌توانید دریافت کنید");
       updateCoinUI();
@@ -1692,6 +1730,7 @@ function updateProfile(){
     $("avatarEmpty").style.display = "flex";
   }
   updateAdminAccessVisibility();
+  updateReferralPage();
 }
 
 function getSavedIds(){ return loadJSON(STORAGE_SAVED, []); }
@@ -2227,6 +2266,56 @@ function getActiveDetailEpisodes(work){
   return seasons[selectedDetailSeasonIdx]?.episodes || [];
 }
 
+function getDownloadStorageKey(){
+  return currentUser && currentUser.id ? (STORAGE_DOWNLOADS + "_" + currentUser.id) : null;
+}
+function getDownloadedEpisodeKeys(){
+  const key = getDownloadStorageKey();
+  return key ? loadJSON(key, []) : [];
+}
+function isEpisodeDownloaded(work, ep, idx){
+  if(!currentUser || !work || !ep) return false;
+  const episodeKey = String(work.id || "") + "::" + String(ep.id || ep.title || idx);
+  return getDownloadedEpisodeKeys().includes(episodeKey);
+}
+function markEpisodeDownloaded(work, ep, idx){
+  if(!currentUser || !work || !ep) return;
+  const key = getDownloadStorageKey();
+  if(!key) return;
+  const episodeKey = String(work.id || "") + "::" + String(ep.id || ep.title || idx);
+  const list = getDownloadedEpisodeKeys();
+  if(!list.includes(episodeKey)){
+    list.push(episodeKey);
+    saveJSON(key, list);
+  }
+}
+function simpleReferralHash(value){
+  let h = 2166136261;
+  const text = String(value || "");
+  for(let i=0;i<text.length;i++){
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0).toString(36).padStart(8, "0").slice(-8);
+}
+function makeReferralCode(userId){
+  const id = String(userId || "").trim();
+  if(!id) return "";
+  return REFERRAL_PREFIX + id + simpleReferralHash(id);
+}
+function referralOwnerIdFromCode(code){
+  const c = String(code || "").trim().toLowerCase();
+  const prefix = REFERRAL_PREFIX.toLowerCase();
+  if(!c.startsWith(prefix)) return null;
+  const body = c.slice(prefix.length);
+  if(body.length < 28) return null;
+  const ownerId = body.slice(0, 20);
+  return makeReferralCode(ownerId).toLowerCase() === c ? ownerId : null;
+}
+function updateReferralPage(){
+  const box = $("referralCodeBox");
+  if(box) box.textContent = currentUser && currentUser.id ? makeReferralCode(currentUser.id) : "برای دیدن کد معرف وارد شوید";
+}
 function renderEpisodesList(episodes){
   const box = $("chaptersList");
   if(!box) return;
@@ -2238,11 +2327,17 @@ function renderEpisodesList(episodes){
     btn.type = "button";
     btn.className = "chapterItem";
     const locked = !(currentUser && currentUser.email);
-    btn.innerHTML = `<span>${escapeHtml(ep.title || ("قسمت " + (idx+1)))}</span><span>${locked ? "🔒 ورود" : "دانلود"}</span>`;
+    const downloaded = isEpisodeDownloaded(currentWork, ep, idx);
+    btn.innerHTML = `<span>${escapeHtml(ep.title || ("قسمت " + (idx+1)))}</span><span>${locked ? "🔒 ورود" : (downloaded ? "✓ دانلود شده" : "دانلود")}</span>`;
+    if(downloaded) btn.classList.add("downloaded");
     btn.addEventListener("click", ()=>{
       if(!requireLoginForDownload()) return;
       if(!trySpendCoinsForDownload(currentWork)) return;
       forceDownload(ep.link, ep.title || "episode");
+      markEpisodeDownloaded(currentWork, ep, idx);
+      btn.classList.add("downloaded");
+      const action = btn.querySelector("span:last-child");
+      if(action) action.textContent = "✓ دانلود شده";
     });
     box.appendChild(btn);
   });
@@ -2467,6 +2562,7 @@ function openLoginModal(){
   $("registerName").value = "";
   $("registerEmail").value = "";
   $("registerPassword").value = "";
+  if($("registerReferralCode")) $("registerReferralCode").value = "";
   $("loginTabBtn").classList.add("active");
   $("registerTabBtn").classList.remove("active");
   $("loginPanel").classList.add("active");
@@ -2493,6 +2589,7 @@ $("doRegisterBtn")?.addEventListener("click", async ()=>{
   const name = ($("registerName").value || "").trim();
   const email = normalizeEmail($("registerEmail").value);
   const pass = $("registerPassword").value || "";
+  const referralCode = ($("registerReferralCode")?.value || "").trim();
   if(!name || !email || !pass){ showToast("همه فیلدها را پر کنید"); return; }
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast("ایمیل نامعتبر است"); return; }
   if(pass.length < 6){ showToast("رمز حداقل ۶ کاراکتر"); return; }
@@ -2513,11 +2610,28 @@ $("doRegisterBtn")?.addEventListener("click", async ()=>{
       return;
     }
     if(exists){ showToast("این ایمیل قبلاً ثبت شده"); return; }
+
+    let referralOwner = null;
+    if(referralCode){
+      const ownerId = referralOwnerIdFromCode(referralCode);
+      if(!ownerId){
+        showToast("کد معرف نامعتبر است");
+        return;
+      }
+      const ownerRes = await fetchUserById(ownerId);
+      if(!ownerRes.user){
+        showToast("صاحب کد معرف پیدا نشد");
+        return;
+      }
+      referralOwner = ownerRes.user;
+    }
+
     const password = await hashPassword(pass);
+    const newUserId = appwriteID.unique();
     const doc = await databases.createDocument(
       DATABASE_ID,
       COLLECTION_USERS,
-      appwriteID.unique(),
+      newUserId,
       {
         email,
         name,
@@ -2529,10 +2643,20 @@ $("doRegisterBtn")?.addEventListener("click", async ()=>{
       }
     );
     let u = mapUserDoc(doc);
-    /* اگر سرور coins برنگرداند، همان ۵۰ را نگه دار */
     if(u && toInt(u.coins, 0) === 0 && START_COINS > 0){
       u.coins = START_COINS;
     }
+
+    if(referralOwner && referralOwner.id !== u.id){
+      try{
+        const ownerCoins = toInt(referralOwner.coins, 0) + REFERRAL_REWARD_COINS;
+        await updateUserDoc(referralOwner.id, { coins: ownerCoins });
+      }catch(refErr){
+        console.error(refErr);
+        showToast("حساب ساخته شد، اما پاداش معرف ذخیره نشد");
+      }
+    }
+
     applyUserToSession(u);
     clearAuthError();
     $("loginModal").classList.remove("active");
@@ -2590,15 +2714,38 @@ $("doLoginBtn")?.addEventListener("click", async ()=>{
   }
 });
 
-$("logoutBtn")?.addEventListener("click", async ()=>{
-  currentUser = null;
-  isAdminMode = false;
-  localStorage.removeItem(STORAGE_SESSION);
-  try{ if(account) await account.deleteSession("current"); }catch(e){}
-  updateProfile();
-  updateCoinUI();
-  if(currentWork) renderDetailEpisodesUI(currentWork);
-  showToast("خارج شدید");
+$("referralAccessBtn")?.addEventListener("click", ()=>{
+  if(!currentUser || !currentUser.id){
+    showToast("برای دیدن کد معرف باید وارد شوید");
+    openLoginModal();
+    return;
+  }
+  updateReferralPage();
+  showPage("referralPage");
+});
+$("referralBack")?.addEventListener("click", ()=> showPage("profilePage"));
+$("copyReferralBtn")?.addEventListener("click", async ()=>{
+  if(!currentUser || !currentUser.id){
+    showToast("برای کپی کد معرف باید وارد شوید");
+    return;
+  }
+  const code = makeReferralCode(currentUser.id);
+  try{
+    await navigator.clipboard.writeText(code);
+    showToast("کد معرف کپی شد");
+  }catch(e){
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      showToast("کد معرف کپی شد");
+    }catch(e2){
+      showToast("کپی نشد؛ کد را دستی انتخاب کنید");
+    }
+  }
 });
 
 $("supportBtn")?.addEventListener("click", async ()=>{
@@ -3418,6 +3565,7 @@ async function init(){
   fillGenreSelect();
   renderGenres();
   restoreSession();
+  updateReferralPage();
   updateEpisodeLabels();
   adminKeywordsList = [];
   editKeywordsList = [];
