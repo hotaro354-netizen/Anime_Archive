@@ -457,6 +457,30 @@ button{cursor:pointer}
   color:#796655;font-size:13px;gap:12px;text-align:center;padding:24px
 }
 
+/* بنر هشدار مهم */
+.importantBannerOverlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:5000;display:none;
+  align-items:center;justify-content:center;padding:18px
+}
+.importantBannerOverlay.active{display:flex}
+.importantBannerBox{
+  width:100%;max-width:360px;background:#211710;border:1px solid #4a3222;border-radius:18px;
+  padding:20px 16px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.45)
+}
+.importantBannerBox .ibEmoji{font-size:28px;margin-bottom:8px;letter-spacing:4px}
+.importantBannerBox h3{
+  font-size:15px;color:#e0a94e;margin-bottom:10px;line-height:1.6
+}
+.importantBannerBox p{
+  font-size:12px;color:#d6b994;line-height:1.95;margin-bottom:16px
+}
+.importantBannerBox .ibActions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.importantBannerBox .ibBtn{
+  border:0;border-radius:12px;padding:12px 8px;font-size:11px;font-weight:600;cursor:pointer
+}
+.importantBannerBox .ibBtn.ok{background:#bd7232;color:#fff}
+.importantBannerBox .ibBtn.read{background:#302119;color:#c8ad90}
+
 @media(min-width:700px){
   .app{box-shadow:0 0 50px rgba(0,0,0,.4)}
 }
@@ -587,7 +611,7 @@ button{cursor:pointer}
   <div class="referralCard">
     <div class="referralIcon">🎁</div>
     <h3>دوستت را دعوت کن</h3>
-    <p>هر نفر کد معرف تو را هنگام ثبت‌نام وارد کند، <b>۵۰ سکه</b> به تو تعلق می‌گیرد.</p>
+    <p>هر نفر کد معرف تو را هنگام ثبت‌نام وارد کند، <b>۳۰ سکه</b> به تو تعلق می‌گیرد.</p>
     <div class="referralCodeLabel">کد معرف شما</div>
     <div class="referralCodeBox" id="referralCodeBox">—</div>
     <button class="modalBtn" id="copyReferralBtn" type="button">📋 کپی کد معرف</button>
@@ -697,6 +721,12 @@ button{cursor:pointer}
         <div id="adminKeywordsPicker" class="keywordPicker"></div>
         <input id="adminKeywordsInput" placeholder="کلیدواژه را بنویس و Enter بزن">
         <div class="keywordHint">هر کلیدواژه را جدا بنویس و Enter بزن (فارسی یا انگلیسی)</div>
+
+        <label style="margin-top:14px;display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input id="adminUnpublished" type="checkbox" style="width:18px;height:18px;accent-color:#c47a35">
+          <span>انتشار نشده (بدون نیاز به افزودن قسمت)</span>
+        </label>
+        <div class="keywordHint" style="margin-top:2px">اگر این تیک فعال باشد، می‌توانید بدون افزودن قسمت/فصل منتشر کنید. در صفحهٔ جزئیات نوشته می‌شود «این انیمه هنوز منتشر نشده».</div>
 
         <!-- بخش قسمت‌ها / فصل‌ها -->
         <div id="adminEpisodesFlatBlock">
@@ -856,6 +886,12 @@ button{cursor:pointer}
       <label>لینک جلد</label>
       <input id="editCoverUrl" type="url" placeholder="https://...">
 
+      <label style="margin-top:10px;display:flex;align-items:center;gap:10px;cursor:pointer">
+        <input id="editUnpublished" type="checkbox" style="width:18px;height:18px;accent-color:#c47a35">
+        <span>انتشار نشده (بدون نیاز به قسمت)</span>
+      </label>
+      <div class="keywordHint">اگر فعال باشد، در صفحهٔ جزئیات نوشته می‌شود «این انیمه هنوز منتشر نشده».</div>
+
       <!-- ویرایش قسمت‌های تخت (سینمایی) -->
       <div id="editFlatEpisodesBlock">
         <label>قسمت‌ها / بخش‌ها</label>
@@ -937,6 +973,22 @@ button{cursor:pointer}
 
 <div id="toast" class="toast">انجام شد</div>
 
+<!-- بنر هشدار مهم (فیلترشکن) -->
+<div id="importantBanner" class="importantBannerOverlay">
+  <div class="importantBannerBox">
+    <div class="ibEmoji">⚠️ 🔔 ❗</div>
+    <h3>خیلی مهم — حتماً بخوانید</h3>
+    <p>
+      برای عملکرد بهتر اپ حتماً از <b>فیلترشکن</b> استفاده کنید.<br>
+      اما <b>بعد از پرداخت سکه</b>، فیلترشکن را خاموش کنید تا دانلود به‌درستی انجام شود.
+    </p>
+    <div class="ibActions">
+      <button type="button" class="ibBtn ok" id="importantBannerOk">تأیید</button>
+      <button type="button" class="ibBtn read" id="importantBannerRead">خوانده شد</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* =========================================================
    Anime Archive — Appwrite connected | Cafe Ketab brown theme
@@ -965,6 +1017,9 @@ const STORAGE_HISTORY = "animearchive_history_v1";
 const STORAGE_USERS = "animearchive_users_v1";
 const STORAGE_SESSION = "animearchive_session_v1";
 const STORAGE_DOWNLOADS = "animearchive_downloads_v1";
+const STORAGE_BANNER_READ = "animearchive_banner_read_v1";
+const COLLECTION_SETTINGS = "settings";
+const SETTINGS_GENRES_DOC_ID = "genres_config";
 
 let client = null;
 let databases = null;
@@ -1567,6 +1622,7 @@ function mapWorkDoc(doc){
     keywords: doc.keywords || "",
     type,
     coverUrl: doc.coverUrl || "",
+    unpublished: !!(doc.unpublished === true || doc.unpublished === 1 || doc.unpublished === "true"),
     seasons: norm.seasons,
     episodes: type === "movie" ? norm.flatEpisodes : flattenSeasonsEpisodes(norm.seasons),
     createdAt: doc.$createdAt ? new Date(doc.$createdAt).getTime() : Date.now()
@@ -1654,7 +1710,57 @@ function getGenres(){
   }
   return g;
 }
-function saveGenres(list){ saveJSON(STORAGE_GENRES, list); }
+function saveGenresLocal(list){ saveJSON(STORAGE_GENRES, list); }
+
+async function loadGenresFromServer(){
+  if(!appwriteReady || !databases) return getGenres();
+  try{
+    const doc = await databases.getDocument(DATABASE_ID, COLLECTION_SETTINGS, SETTINGS_GENRES_DOC_ID);
+    const raw = doc && (doc.value || doc.genres || doc.data);
+    let list = [];
+    if(typeof raw === "string"){
+      try{ list = JSON.parse(raw); }catch(e){ list = []; }
+    }else if(Array.isArray(raw)){
+      list = raw;
+    }
+    if(Array.isArray(list) && list.length){
+      const cleaned = list.map(x => String(x || "").trim()).filter(Boolean);
+      saveGenresLocal(cleaned);
+      return cleaned;
+    }
+  }catch(e){
+    /* سند یا کالکشن وجود ندارد — از لوکال استفاده کن */
+  }
+  return getGenres();
+}
+
+async function saveGenresToServer(list){
+  const cleaned = (list || []).map(x => String(x || "").trim()).filter(Boolean);
+  saveGenresLocal(cleaned);
+  if(!appwriteReady || !databases) return;
+  const payload = { value: JSON.stringify(cleaned), key: "genres" };
+  try{
+    await databases.updateDocument(DATABASE_ID, COLLECTION_SETTINGS, SETTINGS_GENRES_DOC_ID, payload);
+  }catch(e){
+    try{
+      await databases.createDocument(
+        DATABASE_ID,
+        COLLECTION_SETTINGS,
+        SETTINGS_GENRES_DOC_ID,
+        payload
+      );
+    }catch(e2){
+      console.error("saveGenresToServer", e2);
+      showToast("ژانر محلی ذخیره شد؛ همگام‌سازی سرور ناموفق (کالکشن settings را بسازید)");
+    }
+  }
+}
+
+function saveGenres(list){
+  /* همگام فوری لوکال + تلاش سرور */
+  saveGenresLocal(list);
+  saveGenresToServer(list).catch(()=>{});
+}
 
 function getProfile(){
   return loadJSON(STORAGE_PROFILE, { name: "کاربر", avatar: "" });
@@ -1733,8 +1839,13 @@ function updateProfile(){
   updateReferralPage();
 }
 
-function getSavedIds(){ return loadJSON(STORAGE_SAVED, []); }
-function setSavedIds(ids){ saveJSON(STORAGE_SAVED, ids); }
+function getSavedStorageKey(){
+  if(currentUser && currentUser.id) return STORAGE_SAVED + "_" + currentUser.id;
+  if(currentUser && currentUser.email) return STORAGE_SAVED + "_" + normalizeEmail(currentUser.email);
+  return STORAGE_SAVED + "_guest";
+}
+function getSavedIds(){ return loadJSON(getSavedStorageKey(), []); }
+function setSavedIds(ids){ saveJSON(getSavedStorageKey(), ids); }
 function isSaved(id){ return getSavedIds().includes(id); }
 function toggleSave(id){
   let ids = getSavedIds();
@@ -1744,12 +1855,17 @@ function toggleSave(id){
   return ids.includes(id);
 }
 
-function getHistoryIds(){ return loadJSON(STORAGE_HISTORY, []); }
+function getHistoryStorageKey(){
+  if(currentUser && currentUser.id) return STORAGE_HISTORY + "_" + currentUser.id;
+  if(currentUser && currentUser.email) return STORAGE_HISTORY + "_" + normalizeEmail(currentUser.email);
+  return STORAGE_HISTORY + "_guest";
+}
+function getHistoryIds(){ return loadJSON(getHistoryStorageKey(), []); }
 function pushHistory(id){
   let ids = getHistoryIds().filter(x => x !== id);
   ids.unshift(id);
   if(ids.length > 60) ids = ids.slice(0, 60);
-  saveJSON(STORAGE_HISTORY, ids);
+  saveJSON(getHistoryStorageKey(), ids);
 }
 
 function showPage(id, fromPop){
@@ -2406,10 +2522,23 @@ function renderSeasonBackBar(work){
 function renderDetailEpisodesUI(work){
   if(!work) return;
   const searchBox = $("episodeSearchInput")?.closest(".searchBox");
+  const tabs = $("detailSeasonTabs");
+  const box = $("chaptersList");
+
+  /* انیمه هنوز منتشر نشده */
+  if(work.unpublished){
+    if(tabs){ tabs.innerHTML = ""; tabs.style.display = "none"; }
+    if(searchBox) searchBox.style.display = "none";
+    if(box){
+      box.innerHTML = "";
+      showEmpty(box, "این انیمه هنوز منتشر نشده");
+    }
+    window.currentEpisodes = [];
+    return;
+  }
 
   /* سینمایی یا بدون فصل → لیست تخت قسمت‌ها */
   if(work.type === "movie" || !(work.seasons && work.seasons.length)){
-    const tabs = $("detailSeasonTabs");
     if(tabs){ tabs.innerHTML = ""; tabs.style.display = "none"; }
     if(searchBox) searchBox.style.display = "";
     renderEpisodesList(work.episodes || []);
@@ -2662,7 +2791,11 @@ $("doRegisterBtn")?.addEventListener("click", async ()=>{
     $("loginModal").classList.remove("active");
     updateProfile();
     updateCoinUI();
-    if(currentWork) renderDetailEpisodesUI(currentWork);
+    renderHome();
+    if(currentWork){
+      updateDetailSaveBtn();
+      renderDetailEpisodesUI(currentWork);
+    }
     showToast("حساب ساخته شد — " + toInt(currentUser && currentUser.coins, START_COINS) + " سکه");
     /* یک‌بار از سرور هم تازه کن */
     refreshCurrentUserCoins().catch(()=>{});
@@ -2704,7 +2837,11 @@ $("doLoginBtn")?.addEventListener("click", async ()=>{
     $("loginModal").classList.remove("active");
     updateProfile();
     updateCoinUI();
-    if(currentWork) renderDetailEpisodesUI(currentWork);
+    renderHome();
+    if(currentWork){
+      updateDetailSaveBtn();
+      renderDetailEpisodesUI(currentWork);
+    }
     showToast("خوش آمدید — موجودی: " + toInt(currentUser.coins, 0) + " سکه");
     refreshCurrentUserCoins().catch(()=>{});
   }catch(e){
@@ -3067,14 +3204,18 @@ $("publishBtn")?.addEventListener("click", async ()=>{
   const description = ($("adminDescription").value || "").trim();
   const keywords = keywordsToStorage(adminKeywordsList);
   const coverUrl = ($("adminCoverUrl").value || "").trim();
+  const isUnpublished = !!($("adminUnpublished")?.checked);
 
   if(!title){ showToast("عنوان را وارد کنید"); return; }
   if(coverUrl && !isValidUrl(coverUrl)){ showToast("لینک جلد نامعتبر است"); return; }
 
   let episodesPayload = [];
-  if(type === "movie"){
+  if(isUnpublished){
+    /* بدون نیاز به قسمت */
+    episodesPayload = [];
+  }else if(type === "movie"){
     if(!pendingChapters.length){
-      showToast("حداقل یک لینک فیلم اضافه کنید");
+      showToast("حداقل یک لینک فیلم اضافه کنید (یا تیک انتشار نشده را بزنید)");
       return;
     }
     episodesPayload = pendingChapters.map(c => ({
@@ -3085,7 +3226,7 @@ $("publishBtn")?.addEventListener("click", async ()=>{
   }else{
     const totalEps = pendingSeasons.reduce((n, s) => n + (s.episodes || []).length, 0);
     if(!pendingSeasons.length || totalEps === 0){
-      showToast("حداقل یک فصل با یک قسمت اضافه کنید");
+      showToast("حداقل یک فصل با یک قسمت اضافه کنید (یا تیک انتشار نشده را بزنید)");
       return;
     }
     episodesPayload = pendingSeasons.map(s => ({
@@ -3116,6 +3257,7 @@ $("publishBtn")?.addEventListener("click", async ()=>{
         keywords,
         type,
         coverUrl,
+        unpublished: isUnpublished,
         episodes: JSON.stringify(episodesPayload)
       }
     );
@@ -3132,9 +3274,10 @@ $("publishBtn")?.addEventListener("click", async ()=>{
     $("adminDescription").value = "";
     $("adminCoverUrl").value = "";
     $("adminType").value = "serial";
+    if($("adminUnpublished")) $("adminUnpublished").checked = false;
     updateEpisodeLabels();
     await loadWorks();
-    showToast("انیمه منتشر شد");
+    showToast(isUnpublished ? "انیمه به‌صورت «انتشار نشده» ثبت شد" : "انیمه منتشر شد");
   }catch(error){
     console.error(error);
     showToast("خطا در انتشار: " + (error?.message || "نامشخص"));
@@ -3216,7 +3359,7 @@ function renderPublishedWorks(){
     item.innerHTML = `
       <div class="adminItemInfo">
         <b>${escapeHtml(work.title || "بدون عنوان")}</b>
-        <small>${escapeHtml(work.Author || "—")} · ${typeLabel(work.type)} · ${countWorkEpisodes(work)} قسمت${work.type === "serial" && work.seasons && work.seasons.length ? " · " + work.seasons.length + " فصل" : ""}</small>
+        <small>${escapeHtml(work.Author || "—")} · ${typeLabel(work.type)}${work.unpublished ? " · انتشار نشده" : ""} · ${countWorkEpisodes(work)} قسمت${work.type === "serial" && work.seasons && work.seasons.length ? " · " + work.seasons.length + " فصل" : ""}</small>
       </div>
       <div class="adminActions">
         <button class="editBtn" type="button">✏️ ویرایش</button>
@@ -3260,6 +3403,7 @@ function openEditWork(work){
   renderKeywordsPicker("editKeywordsPicker", editKeywordsList);
   if($("editKeywordsInput")) $("editKeywordsInput").value = "";
   $("editCoverUrl").value = work.coverUrl || "";
+  if($("editUnpublished")) $("editUnpublished").checked = !!work.unpublished;
 
   if(isMovie){
     editingChapters = (work.episodes || []).map(e => ({...e}));
@@ -3457,14 +3601,17 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   if(coverUrl && !isValidUrl(coverUrl)){ showToast("لینک جلد نامعتبر"); return; }
 
   const type = $("editType").value === "movie" ? "movie" : "serial";
+  const isUnpublished = !!($("editUnpublished")?.checked);
   let episodesPayload = [];
 
-  if(type === "movie"){
+  if(isUnpublished){
+    episodesPayload = [];
+  }else if(type === "movie"){
     for(const ch of editingChapters){
       if(!(ch.title||"").trim()){ showToast("عنوان یکی از قسمت‌ها خالی است"); return; }
       if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از قسمت‌ها نامعتبر است"); return; }
     }
-    if(!editingChapters.length){ showToast("حداقل یک لینک اضافه کنید"); return; }
+    if(!editingChapters.length){ showToast("حداقل یک لینک اضافه کنید (یا تیک انتشار نشده را بزنید)"); return; }
     episodesPayload = editingChapters.map(c => ({
       id: c.id || uid(),
       title: (c.title||"").trim(),
@@ -3479,7 +3626,7 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     }
     const total = editingSeasons.reduce((n, s) => n + (s.episodes || []).length, 0);
     if(!editingSeasons.length || total === 0){
-      showToast("حداقل یک فصل با یک قسمت لازم است");
+      showToast("حداقل یک فصل با یک قسمت لازم است (یا تیک انتشار نشده را بزنید)");
       return;
     }
     episodesPayload = editingSeasons.map(s => ({
@@ -3501,6 +3648,7 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     description: ($("editDescription").value || "").trim(),
     keywords: keywordsToStorage(editKeywordsList),
     coverUrl,
+    unpublished: isUnpublished,
     episodes: JSON.stringify(episodesPayload)
   };
 
@@ -3561,6 +3709,27 @@ $("clearAccountsSearch")?.addEventListener("click", ()=>{
   renderAdminAccounts();
 });
 
+function shouldShowImportantBanner(){
+  try{
+    return localStorage.getItem(STORAGE_BANNER_READ) !== "1";
+  }catch(e){ return true; }
+}
+function showImportantBanner(){
+  if(!shouldShowImportantBanner()) return;
+  $("importantBanner")?.classList.add("active");
+}
+function hideImportantBanner(){
+  $("importantBanner")?.classList.remove("active");
+}
+$("importantBannerOk")?.addEventListener("click", ()=>{
+  hideImportantBanner();
+});
+$("importantBannerRead")?.addEventListener("click", ()=>{
+  try{ localStorage.setItem(STORAGE_BANNER_READ, "1"); }catch(e){}
+  hideImportantBanner();
+  showToast("دیگر نمایش داده نمی‌شود");
+});
+
 async function init(){
   fillGenreSelect();
   renderGenres();
@@ -3575,12 +3744,25 @@ async function init(){
   bindKeywordsInput("editKeywordsInput", "editKeywordsPicker", () => editKeywordsList);
   try{ history.replaceState({ page: "homePage" }, ""); }catch(e){}
 
+  /* بنر هشدار مهم */
+  setTimeout(showImportantBanner, 400);
+
   const ok = await initAppwrite();
   if(ok){
+    /* ژانرها از سرور (سراسری) */
+    try{
+      await loadGenresFromServer();
+      fillGenreSelect();
+      renderGenres();
+      if(isAdminMode) renderGenreAdmin();
+    }catch(e){ console.error(e); }
+
     await loadWorks();
     if(currentUser && currentUser.email){
       await refreshCurrentUserCoins();
       updateProfile();
+      /* بعد از لود کاربر، لیست ذخیره‌ها را تازه کن */
+      if($("savedPage")?.classList.contains("active")) renderSaved();
     }else{
       updateCoinUI();
     }
