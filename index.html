@@ -481,6 +481,117 @@ button{cursor:pointer}
 .importantBannerBox .ibBtn.ok{background:#bd7232;color:#fff}
 .importantBannerBox .ibBtn.read{background:#302119;color:#c8ad90}
 
+
+/* =========================================================
+   بنر سینمایی Anime Archive — فقط تب «همه»
+   ۷ جایگاه: ۳ کارت چپ + ۱ کارت مرکزی + ۳ کارت راست
+========================================================= */
+.animeHero{
+  position:relative;
+  height:292px;
+  margin:2px -16px 26px;
+  overflow:hidden;
+  display:none;
+  touch-action:pan-y;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;
+}
+.animeHero.active{display:block}
+.animeHeroStage{
+  position:absolute;
+  inset:0;
+  perspective:900px;
+  transform-style:preserve-3d;
+}
+.heroCard{
+  position:absolute;
+  top:18px;
+  left:50%;
+  width:128px;
+  height:218px;
+  transform-origin:center center;
+  border:1px solid rgba(229,190,137,.18);
+  border-radius:15px;
+  overflow:hidden;
+  background:#241912;
+  box-shadow:0 10px 28px rgba(0,0,0,.38);
+  cursor:pointer;
+  transition:transform .42s cubic-bezier(.22,.8,.2,1),opacity .36s ease,filter .36s ease,z-index .1s;
+  will-change:transform,opacity;
+}
+.heroCard img{width:100%;height:100%;object-fit:cover;display:block}
+.heroCard::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(14,9,6,.96) 0%,rgba(14,9,6,.18) 38%,transparent 64%);
+  pointer-events:none;
+}
+.heroCard .heroType{
+  position:absolute;top:7px;right:7px;z-index:3;
+  padding:4px 6px;border-radius:7px;background:rgba(25,15,10,.78);
+  color:#e6c89f;font-size:7px;font-weight:700
+}
+.heroCard .heroTitle{
+  position:absolute;z-index:4;left:8px;right:8px;bottom:9px;
+  color:#f4e5d0;font-size:10px;font-weight:700;line-height:1.45;
+  text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  direction:rtl;text-shadow:0 1px 4px #000;
+}
+.heroCard.center{
+  width:174px;height:260px;top:4px;
+  margin-left:-87px;z-index:20;opacity:1;filter:none;
+  border-color:rgba(224,169,78,.5);
+  box-shadow:0 14px 36px rgba(0,0,0,.52),0 0 0 1px rgba(195,121,52,.08);
+}
+.heroCard.center .heroTitle{font-size:13px;bottom:12px}
+.heroCard.side1{z-index:14;opacity:.96;filter:saturate(.9);transform:translateX(-240px) rotateY(13deg) scale(.88)}
+.heroCard.side2{z-index:12;opacity:.82;filter:saturate(.72);transform:translateX(-202px) rotateY(18deg) scale(.78)}
+.heroCard.side3{z-index:10;opacity:.58;filter:saturate(.58);transform:translateX(-276px) rotateY(22deg) scale(.68)}
+.heroCard.side4{z-index:8;opacity:.42;filter:saturate(.52);transform:translateX(-340px) rotateY(24deg) scale(.60)}
+.heroCard.side5{z-index:7;opacity:.30;filter:saturate(.46);transform:translateX(-392px) rotateY(26deg) scale(.54)}
+.heroCard.side6{z-index:6;opacity:.22;filter:saturate(.40);transform:translateX(-438px) rotateY(28deg) scale(.49)}
+.heroCard.side7{z-index:5;opacity:.14;filter:saturate(.34);transform:translateX(-478px) rotateY(30deg) scale(.45)}
+.heroCard.sideR1{z-index:14;opacity:.96;filter:saturate(.9);transform:translateX(111px) rotateY(-13deg) scale(.88)}
+.heroCard.sideR2{z-index:12;opacity:.82;filter:saturate(.72);transform:translateX(74px) rotateY(-18deg) scale(.78)}
+.heroCard.sideR3{z-index:10;opacity:.58;filter:saturate(.58);transform:translateX(148px) rotateY(-22deg) scale(.68)}
+.heroCard.sideR4{z-index:8;opacity:.42;filter:saturate(.52);transform:translateX(212px) rotateY(-24deg) scale(.60)}
+.heroCard.sideR5{z-index:7;opacity:.30;filter:saturate(.46);transform:translateX(264px) rotateY(-26deg) scale(.54)}
+.heroCard.sideR6{z-index:6;opacity:.22;filter:saturate(.40);transform:translateX(310px) rotateY(-28deg) scale(.49)}
+.heroCard.sideR7{z-index:5;opacity:.14;filter:saturate(.34);transform:translateX(350px) rotateY(-30deg) scale(.45)}
+/* فقط نزدیک‌ترین کارت بعدی در هر طرف نمایش داده می‌شود؛
+   بقیهٔ کارت‌ها همچنان در کاروسل هستند تا هنگام حرکت نرم وارد شوند. */
+.heroCard.side2,.heroCard.side3,.heroCard.side4,.heroCard.side5,.heroCard.side6,.heroCard.side7,
+.heroCard.sideR2,.heroCard.sideR3,.heroCard.sideR4,.heroCard.sideR5,.heroCard.sideR6,.heroCard.sideR7{
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+.heroCard.hiddenSide{opacity:0;pointer-events:none;transform:translateX(0) scale(.45)}
+.heroCard.heroWrapTeleport{transition:none !important;opacity:0 !important;pointer-events:none !important;}
+.animeHeroHint{
+  position:absolute;z-index:30;bottom:0;left:50%;transform:translateX(-50%);
+  white-space:nowrap;color:#806c59;font-size:8px;opacity:.9;
+  pointer-events:none;background:rgba(18,12,9,.45);padding:4px 9px;border-radius:10px
+}
+@media(max-width:360px){
+  .animeHero{height:274px}
+  .heroCard{width:112px;height:200px}
+  .heroCard.center{width:158px;height:244px;margin-left:-79px}
+  .heroCard.side1{transform:translateX(-244px) rotateY(13deg) scale(.86)}
+  .heroCard.side2{transform:translateX(-165px) rotateY(18deg) scale(.75)}
+  .heroCard.side3{transform:translateX(-220px) rotateY(22deg) scale(.64)}
+  .heroCard.side4{transform:translateX(-266px) rotateY(24deg) scale(.57)}
+  .heroCard.side5{transform:translateX(-306px) rotateY(26deg) scale(.51)}
+  .heroCard.side6{transform:translateX(-340px) rotateY(28deg) scale(.46)}
+  .heroCard.side7{transform:translateX(-370px) rotateY(30deg) scale(.42)}
+  .heroCard.sideR1{transform:translateX(94px) rotateY(-13deg) scale(.86)}
+  .heroCard.sideR2{transform:translateX(53px) rotateY(-18deg) scale(.75)}
+  .heroCard.sideR3{transform:translateX(108px) rotateY(-22deg) scale(.64)}
+  .heroCard.sideR4{transform:translateX(151px) rotateY(-24deg) scale(.57)}
+  .heroCard.sideR5{transform:translateX(187px) rotateY(-26deg) scale(.51)}
+  .heroCard.sideR6{transform:translateX(220px) rotateY(-28deg) scale(.46)}
+  .heroCard.sideR7{transform:translateX(248px) rotateY(-30deg) scale(.42)}
+}
+
 @media(min-width:700px){
   .app{box-shadow:0 0 50px rgba(0,0,0,.4)}
 }
@@ -497,8 +608,14 @@ button{cursor:pointer}
     <button id="tabMovie" type="button">انیمه‌ی سینمایی</button>
   </div>
 
+  <!-- بنر سینمایی فقط در تب «همه» -->
+  <div id="animeHero" class="animeHero" aria-label="انیمه‌های ویژه">
+    <div class="animeHeroStage" id="animeHeroStage"></div>
+    <div class="animeHeroHint">‹  برای دیدن انیمه‌های دیگر بکشید  ›</div>
+  </div>
+
   <div class="sectionHead">
-    <h3>تازه انتشار شده</h3>
+    <h3 id="latestSectionTitle">تازه انتشار شده</h3>
     <button class="arrow" id="latestArrow" type="button">›</button>
   </div>
   <div id="latestBooks" class="books"></div>
@@ -1048,6 +1165,14 @@ let selectedDetailSeasonIdx = -1; /* -1 = لیست فصل‌ها، >=0 = داخ�
 let homeCategory = "all"; /* all | serial | movie */
 let appPageStack = ["homePage"];
 let recentRandomIds = [];
+
+/* وضعیت بنر: همیشه از بین ۱۵ انیمهٔ جدیدتر، جدیدترین اثر مرکز است. */
+const HERO_MAX_ITEMS = 15;
+let heroIndex = 0;
+let heroTouchStartX = null;
+let heroTouchStartY = null;
+let heroAnimating = false;
+let heroAnimationTimer = null;
 
 function $(id){ return document.getElementById(id); }
 
@@ -1625,7 +1750,11 @@ function mapWorkDoc(doc){
     unpublished: !!(doc.unpublished === true || doc.unpublished === 1 || doc.unpublished === "true"),
     seasons: norm.seasons,
     episodes: type === "movie" ? norm.flatEpisodes : flattenSeasonsEpisodes(norm.seasons),
-    createdAt: doc.$createdAt ? new Date(doc.$createdAt).getTime() : Date.now()
+    createdAt: doc.$createdAt ? new Date(doc.$createdAt).getTime() : Date.now(),
+    rating: Number(doc.rating ?? doc.score ?? doc.imdb ?? 0) || 0,
+    views: Number(doc.views ?? doc.viewCount ?? 0) || 0,
+    likes: Number(doc.likes ?? doc.likeCount ?? 0) || 0,
+    downloads: Number(doc.downloads ?? doc.downloadCount ?? 0) || 0
   };
 }
 
@@ -1869,6 +1998,18 @@ function pushHistory(id){
 }
 
 function showPage(id, fromPop){
+  const previousPage = appPageStack[appPageStack.length - 1] || "homePage";
+  if(id === "homePage" && !fromPop && previousPage !== "homePage" && previousPage !== "adminPage"){
+    /* هر بار از جستجو/ژانر/ذخیره‌ها/پروفایل به خانه برگردیم، بنر به حالت خودکار برگردد. */
+    resetHeroToAutomatic();
+  }
+  if(id === "homePage"){
+    /* با برگشت به خانه، هر سه ردیف همیشه از ابتدای لیست شروع شوند. */
+    ["latestBooks","newBooks","forYou"].forEach(id => {
+      const el = $(id);
+      if(el) el.scrollLeft = 0;
+    });
+  }
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   const page = $(id);
   if(page) page.classList.add("active");
@@ -2036,6 +2177,8 @@ function fillBooksStrip(boxId, list, emptyText){
   track.className = "booksStripTrack";
   list.forEach(w => track.appendChild(createBookCard(w)));
   box.appendChild(track);
+
+  box.scrollLeft = 0;
 }
 
 function shuffleArray(arr){
@@ -2060,18 +2203,334 @@ function getForYouList(base){
   return forYou;
 }
 
+function takeUniqueWorks(pool, usedIds, count){
+  const out = [];
+  const seen = usedIds || new Set();
+  for(const w of shuffleArray(pool || [])){
+    const id = String(w?.id ?? "");
+    if(!id || seen.has(id)) continue;
+    seen.add(id);
+    out.push(w);
+    if(out.length >= count) break;
+  }
+  return out;
+}
+
+/* ردیف‌های صفحهٔ خانه: تا وقتی انیمهٔ کافی داریم، عنوان‌ها بین هر سه ردیف تکرار نمی‌شوند.
+   اگر تعداد انیمه کم باشد، اول ۳-۴ کارت هر ردیف تا حد ممکن متفاوت می‌ماند و
+   فقط وقتی گزینهٔ تازه‌ای باقی نماند، برای خالی نماندن ردیف تکرار می‌کنیم. */
+function buildHomeRows(rowPools, basePool, count=10, uniqueFirst=4){
+  const base = shuffleArray(basePool || []);
+  if(!base.length) return rowPools.map(()=>[]);
+
+  const rows = rowPools.map(()=>[]);
+  const globallyUsed = new Set();
+  const leadUsed = new Set();
+
+  /* اول ۳-۴ کارت هر ردیف را از کل آرشیو جدا می‌کنیم تا حتی با آرشیو کوچک،
+     ابتدای ردیف‌ها تا جای ممکن متفاوت باشد. */
+  for(let r=0; r<rowPools.length; r++){
+    const pool = shuffleArray((rowPools[r] && rowPools[r].length) ? rowPools[r] : base);
+    const fallback = base.filter(w => !leadUsed.has(String(w?.id ?? "")));
+    const candidates = pool.concat(fallback);
+    const need = Math.min(uniqueFirst, base.length);
+
+    for(const w of candidates){
+      const id = String(w?.id ?? "");
+      if(!id || leadUsed.has(id)) continue;
+      rows[r].push(w);
+      leadUsed.add(id);
+      globallyUsed.add(id);
+      if(rows[r].length >= need) break;
+    }
+  }
+
+  /* سپس باقی کارت‌ها را تا ۱۰تایی شدن، بدون تکرار سراسری پر می‌کنیم. */
+  for(let r=0; r<rowPools.length; r++){
+    const pool = shuffleArray((rowPools[r] && rowPools[r].length) ? rowPools[r] : base);
+    const candidates = pool.concat(base);
+
+    for(const w of candidates){
+      if(rows[r].length >= count) break;
+      const id = String(w?.id ?? "");
+      if(!id || globallyUsed.has(id)) continue;
+      rows[r].push(w);
+      globallyUsed.add(id);
+    }
+
+    /* اگر کل آرشیو برای سه ردیف کافی نباشد، فقط در این مرحله تکرار می‌کنیم.
+     تا جای ممکن یک عنوان دوبار پشت سر هم (یا با فاصلهٔ یک کارت) نیاید. */
+    let fallbackPool = shuffleArray((rowPools[r] && rowPools[r].length) ? rowPools[r] : base);
+    if(!fallbackPool.length) break;
+    while(rows[r].length < count){
+      const recentIds = new Set(rows[r].slice(-2).map(w => String(w?.id ?? "")));
+      let candidates = fallbackPool.filter(w => {
+        const id = String(w?.id ?? "");
+        return id && !recentIds.has(id);
+      });
+      if(!candidates.length){
+        candidates = fallbackPool.filter(w => {
+          const id = String(w?.id ?? "");
+          return id && String(rows[r].at(-1)?.id ?? "") !== id;
+        });
+      }
+      if(!candidates.length) candidates = fallbackPool.slice();
+      const pick = candidates[Math.floor(Math.random() * candidates.length)];
+      rows[r].push(pick);
+    }
+  }
+
+  return rows;
+}
+
+function getBestList(base){
+  const list = (base || []).slice();
+  const hasQualityData = list.some(w => Number(w.rating||0)>0 || Number(w.views||0)>0 || Number(w.likes||0)>0 || Number(w.downloads||0)>0);
+  if(!hasQualityData) return shuffleArray(list);
+  return list.sort((a,b)=>{
+    const scoreA = Number(a.rating||0)*1000 + Number(a.likes||0)*4 + Number(a.downloads||0)*2 + Number(a.views||0);
+    const scoreB = Number(b.rating||0)*1000 + Number(b.likes||0)*4 + Number(b.downloads||0)*2 + Number(b.views||0);
+    return scoreB-scoreA || (b.createdAt||0)-(a.createdAt||0);
+  });
+}
+
+function getHeroWorks(){
+  /* همیشه فقط ۱۵ انیمهٔ منتشرشدهٔ جدیدتر */
+  return filteredByCategory(allWorks)
+    .slice()
+    .sort((a,b)=> (b.createdAt||0) - (a.createdAt||0))
+    .slice(0, HERO_MAX_ITEMS);
+}
+
+function heroWrapIndex(i, n){
+  if(!n) return 0;
+  return (i % n + n) % n;
+}
+
+// ترتیب حلقه‌ای مخصوص بنر ۱۵تایی:
+// مرکز = جدیدترین (0)
+// سمت راستِ نزدیک = 1،2،3
+// سمت چپِ نزدیک = 4،5،6
+// ۸ تای باقی‌مانده هم ۴ تا راست = 7،8،9،10
+// و ۴ تا چپ = 11،12،13،14
+// این ترتیب یک چرخهٔ واقعی است؛ پس هنگام حرکت، کارت بعدی همیشه
+// دقیقاً همسایهٔ منطقی مرکز فعلی می‌شود و چرخه هیچ‌وقت تمام نمی‌شود.
+function getHeroCycleOrder(list){
+  const n = list.length;
+  if(n <= 1) return [0];
+  if(n === 15){
+    return [0,1,2,3,7,8,9,10,14,13,12,11,6,5,4];
+  }
+  // اگر موقتاً تعداد آیتم‌ها کمتر از ۱۵ شد، چرخهٔ عادی حفظ می‌شود.
+  return Array.from({length:n}, (_,i)=>i);
+}
+
+function buildHeroCard(work, role){
+  const card = document.createElement("div");
+  card.className = "heroCard " + role;
+  card.dataset.workId = work.id;
+  card.setAttribute("role", "button");
+  card.setAttribute("tabindex", "0");
+  card.setAttribute("aria-label", work.title || "انیمه");
+  if(work.coverUrl && isValidUrl(work.coverUrl)){
+    const img = document.createElement("img");
+    img.src = work.coverUrl;
+    img.alt = work.title || "";
+    img.draggable = false;
+    img.onerror = ()=>{ img.remove(); };
+    card.appendChild(img);
+  }else{
+    const t = document.createElement("div");
+    t.className = "coverType";
+    t.textContent = "Anime Archive";
+    card.appendChild(t);
+  }
+  const type = document.createElement("span");
+  type.className = "heroType";
+  type.textContent = typeLabel(work.type);
+  card.appendChild(type);
+  const title = document.createElement("div");
+  title.className = "heroTitle";
+  title.textContent = work.title || "بدون عنوان";
+  card.appendChild(title);
+  const open = ()=> openDetail(work);
+  card.addEventListener("click", open);
+  card.addEventListener("keydown", e=>{ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); open(); } });
+  return card;
+}
+
+/*
+  کاروسل بی‌نهایت ۱۵تایی:
+  - لیست همیشه از جدیدترین به قدیمی‌ترین مرتب است.
+  - جدیدترین (index 0) ابتدا وسط است.
+  - ۷ کارت در هر طرف داریم؛ ۳ کارت اول نزدیک‌تر و ۴ کارت بعدی دورترند.
+  - با رسیدن به آخر لیست، دوباره از اول ادامه می‌دهیم؛ هیچ «ته»یی وجود ندارد.
+*/
+function heroLayout(index, length){
+  if(length <= 1) return [[0,"center"]];
+  const out = [[0,"center"]];
+  const maxSide = Math.min(7, length - 1);
+  for(let d=1; d<=maxSide; d++){
+    // در جهت جلو (قدیمی‌ترها) سمت راست
+    out.push([d, "sideR" + d]);
+    // در جهت عقب، با wrap شدن، سمت چپ
+    out.push([-d, "side" + d]);
+  }
+  return out;
+}
+
+function heroCardsForLayout(list, centerIndex){
+  const wanted = new Map();
+  const n = list.length;
+  if(!n) return wanted;
+
+  // heroIndex «موقعیت در چرخه» است، نه شمارهٔ مستقیمِ لیست.
+  // به این شکل ترتیب ویژهٔ ۱۵ کارت حفظ می‌شود.
+  const cycle = getHeroCycleOrder(list);
+  const centerPos = heroWrapIndex(centerIndex, cycle.length);
+  const center = cycle[centerPos];
+  const centerWork = list[center];
+  if(!centerWork) return wanted;
+  wanted.set(String(centerWork.id), {work:centerWork, role:"center"});
+
+  // هر کارت سمت راست = d خانه جلوتر در همان چرخه،
+  // و هر کارت سمت چپ = d خانه عقب‌تر.
+  // بنابراین اگر از 0 به 1 برویم، 0 دقیقاً سمت چپ 1 می‌آید
+  // و 2 دقیقاً سمت راست 1 قرار می‌گیرد.
+  const maxSide = Math.min(7, n - 1);
+  for(let d=1; d<=maxSide; d++){
+    const rightPos = heroWrapIndex(centerPos + d, cycle.length);
+    const leftPos  = heroWrapIndex(centerPos - d, cycle.length);
+    const rw = list[cycle[rightPos]];
+    const lw = list[cycle[leftPos]];
+    if(rw) wanted.set(String(rw.id), {work:rw, role:"sideR"+d});
+    if(lw) wanted.set(String(lw.id), {work:lw, role:"side"+d});
+  }
+  return wanted;
+}
+function renderHero(animate=false){
+  const hero = $("animeHero");
+  const stage = $("animeHeroStage");
+  if(!hero || !stage) return;
+  const list = getHeroWorks();
+  if(homeCategory !== "all" || !list.length){
+    stage.innerHTML = "";
+    hero.classList.remove("active");
+    return;
+  }
+  hero.classList.add("active");
+  heroIndex = 0;
+  renderHeroAtCurrentIndex(false);
+}
+
+function renderHeroAtCurrentIndex(animate=true){
+  const hero = $("animeHero");
+  const stage = $("animeHeroStage");
+  const list = getHeroWorks();
+  if(!hero || !stage || homeCategory !== "all" || !list.length) return;
+  hero.classList.add("active");
+
+  const n = list.length;
+  heroIndex = heroWrapIndex(heroIndex, n);
+  const wanted = heroCardsForLayout(list, heroIndex);
+
+  // اگر لیست تغییر کرده، کارت‌ها را یک بار کامل می‌سازیم.
+  const existingIds = new Set([...stage.querySelectorAll(".heroCard")].map(c=>String(c.dataset.workId)));
+  const wantedIds = new Set(wanted.keys());
+  const structureChanged = existingIds.size !== wantedIds.size || [...existingIds].some(id=>!wantedIds.has(id));
+
+  if(structureChanged){
+    stage.innerHTML = "";
+    list.forEach(work=>{
+      const info = wanted.get(String(work.id));
+      const card = buildHeroCard(work, info ? info.role : "hiddenSide");
+      stage.appendChild(card);
+    });
+    return;
+  }
+
+  // هنگام حرکت فقط transform کلاس‌ها تغییر می‌کند؛ کارت‌ها دوباره ساخته نمی‌شوند.
+  // چون ترتیب حلقه پیوسته است، کارت‌ها فقط بین جایگاه‌های مجاور می‌چرخند
+  // و چرخه در انتها دوباره به ابتدای لیست وصل می‌شود.
+  stage.querySelectorAll(".heroCard").forEach(card=>{
+    const info = wanted.get(String(card.dataset.workId));
+    const oldClass = card.className;
+    const oldRole = (oldClass.match(/\b(?:sideR|side)\d+\b|\bcenter\b/) || [""])[0];
+    const newRole = info ? info.role : "hiddenSide";
+    // ترتیب چرخه واقعی است؛ فقط نقش کارت‌ها عوض می‌شود تا حرکت نرم بماند.
+    // ظاهر و جایگاه‌های CSS عمداً دست‌نخورده‌اند.
+    card.className = "heroCard " + newRole;
+  });
+}
+
+function moveHero(direction){
+  const list = getHeroWorks();
+  if(homeCategory !== "all" || list.length < 2 || heroAnimating) return;
+
+  heroAnimating = true;
+  // یک خانه در همان حلقهٔ ۱۵تایی حرکت کن؛ هیچ نقطهٔ پایانی وجود ندارد.
+  heroIndex = heroWrapIndex(heroIndex + direction, list.length);
+  renderHeroAtCurrentIndex(true);
+
+  // هم‌زمانی چند swipe باعث لگ نمی‌شود؛ بعد از پایان transition دوباره آماده است.
+  window.clearTimeout(heroAnimationTimer);
+  heroAnimationTimer = window.setTimeout(()=>{ heroAnimating=false; }, 470);
+}
+
+function resetHeroToAutomatic(){
+  heroAnimating = false;
+  window.clearTimeout(heroAnimationTimer);
+  heroIndex = 0;
+  renderHero(false);
+}
+
+$("animeHero")?.addEventListener("touchstart", e=>{
+  if(e.touches?.length !== 1) return;
+  heroTouchStartX=e.touches[0].clientX;
+  heroTouchStartY=e.touches[0].clientY;
+},{passive:true});
+
+$("animeHero")?.addEventListener("touchend", e=>{
+  if(heroTouchStartX==null) return;
+  const endX=e.changedTouches?.[0]?.clientX ?? heroTouchStartX;
+  const endY=e.changedTouches?.[0]?.clientY ?? heroTouchStartY;
+  const dx=endX-heroTouchStartX;
+  const dy=endY-(heroTouchStartY ?? endY);
+  heroTouchStartX=null;
+  heroTouchStartY=null;
+
+  // فقط حرکت افقی واضح را به عنوان swipe حساب کن.
+  if(Math.abs(dx) < 28 || Math.abs(dx) < Math.abs(dy)*1.15) return;
+  moveHero(dx < 0 ? 1 : -1);
+},{passive:true});
+
+// جلوگیری از drag شدن خود تصویرها هنگام swipe
+$("animeHero")?.addEventListener("dragstart", e=> e.preventDefault());
+
 function renderHome(){
+  renderHero();
   const base = filteredByCategory(allWorks);
   const byDate = base.slice().sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+  const isAll = homeCategory === "all";
 
-  /* تازه انتشار شده — جدیدترین‌ها، ردیف افقی ~۱۰ تا */
-  fillBooksStrip("latestBooks", byDate.slice(0, 10), "هنوز انیمه‌ای منتشر نشده.");
+  /* هر سه ردیف با یک مجموعهٔ مشترک ساخته می‌شوند؛ بنابراین اگر مثلاً ۳۰ انیمه یا بیشتر
+     داشته باشیم، هر ۱۰ کارت هر ردیف کاملاً متفاوت خواهد بود. در آرشیو کوچک‌تر،
+     فقط بعد از تمام شدن گزینه‌های یکتا تکرار می‌کنیم تا هیچ ردیفی خالی نماند. */
+  const firstPool = isAll ? getBestList(base) : byDate;
+  const forYouPool = getForYouList(base);
+  const [firstRow, recommended, forYou] = buildHomeRows(
+    [firstPool, base, forYouPool.length ? forYouPool : base],
+    base,
+    10,
+    4
+  );
 
-  /* پیشنهادی — هر بار ترتیب تصادفی در نوار افقی */
-  fillBooksStrip("newBooks", shuffleArray(base).slice(0, 10), "پیشنهادی موجود نیست.");
+  fillBooksStrip("latestBooks", firstRow, isAll ? "هنوز انیمه‌ای برای بهترین‌ها نیست." : "هنوز انیمه‌ای منتشر نشده.");
+  fillBooksStrip("newBooks", recommended, "پیشنهادی موجود نیست.");
+  fillBooksStrip("forYou", forYou, "برای شروع چند انیمه ببینید.");
 
-  /* برای شما — بر اساس علاقه + تصادفی */
-  fillBooksStrip("forYou", shuffleArray(getForYouList(base)).slice(0, 10), "برای شروع چند انیمه ببینید.");
+  const titleEl = $("latestSectionTitle");
+  if(titleEl) titleEl.textContent = isAll ? "بهترین ها" : "تازه انتشار شده";
 }
 
 function setHomeTab(cat){
@@ -2417,14 +2876,20 @@ function simpleReferralHash(value){
 function makeReferralCode(userId){
   const id = String(userId || "").trim();
   if(!id) return "";
-  return REFERRAL_PREFIX + id + simpleReferralHash(id);
+  /* کد معرف طولانی‌تر و ثابت برای هر حساب؛ با هر ثبت‌نام، کد همان کاربر
+     به‌صورت خودکار از شناسهٔ حساب ساخته می‌شود و نیازی به ذخیرهٔ دستی ندارد. */
+  return REFERRAL_PREFIX + id +
+    simpleReferralHash(id + "|A") +
+    simpleReferralHash(id + "|B") +
+    simpleReferralHash(id + "|C");
 }
 function referralOwnerIdFromCode(code){
   const c = String(code || "").trim().toLowerCase();
   const prefix = REFERRAL_PREFIX.toLowerCase();
   if(!c.startsWith(prefix)) return null;
   const body = c.slice(prefix.length);
-  if(body.length < 28) return null;
+  /* 20 کاراکتر شناسه + سه بخش ۸ کاراکتری اعتبارسنجی */
+  if(body.length !== 44) return null;
   const ownerId = body.slice(0, 20);
   return makeReferralCode(ownerId).toLowerCase() === c ? ownerId : null;
 }
@@ -3245,7 +3710,7 @@ $("publishBtn")?.addEventListener("click", async ()=>{
   if(button){ button.disabled = true; button.textContent = "در حال انتشار..."; }
 
   try{
-    await databases.createDocument(
+    const createdWorkDoc = await databases.createDocument(
       DATABASE_ID,
       COLLECTION_WORKS,
       appwriteID.unique(),
