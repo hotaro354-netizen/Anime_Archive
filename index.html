@@ -825,8 +825,12 @@ button{cursor:pointer}
         <label>استودیو / سازنده</label>
         <input id="adminAuthor" placeholder="مثلاً MAPPA">
 
-        <label>ژانر</label>
-        <select id="adminGenre"></select>
+        <label>ژانر (حداکثر ۳ تا)</label>
+        <div id="adminGenrePicker" class="keywordPicker"></div>
+        <select id="adminGenreSelect">
+          <option value="">+ افزودن ژانر</option>
+        </select>
+        <div class="keywordHint">تا ۳ ژانر می‌توانید انتخاب کنید</div>
 
         <label>لینک مستقیم جلد</label>
         <input id="adminCoverUrl" type="url" placeholder="https://...">
@@ -851,6 +855,12 @@ button{cursor:pointer}
           <input id="chapterTitle" placeholder="عنوان قسمت (مثلاً قسمت ۱)">
           <input id="chapterLinkInput" type="url" placeholder="لینک مستقیم فایل">
           <button class="addBtn" id="addChapterBtn" type="button">+ افزودن قسمت</button>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+            <input id="bulkChapterCount" type="number" min="1" max="500" placeholder="تعداد" style="width:90px;margin:0">
+            <button class="addBtn" id="bulkAddChaptersBtn" type="button" style="width:auto;height:42px;padding:0 12px;margin:0">+ ساخت خودکار</button>
+            <button class="delete" id="clearAllChaptersBtn" type="button" style="width:auto;height:42px;padding:0 12px;margin:0">حذف همه</button>
+          </div>
+          <div class="keywordHint">شماره‌گذاری از ادامهٔ آخرین قسمت موجود شروع می‌شود</div>
           <div id="pendingChapters" style="margin-top:10px"></div>
         </div>
 
@@ -863,10 +873,20 @@ button{cursor:pointer}
             </div>
             <div id="adminSeasonTabs" class="adminSeasonTabs"></div>
             <div id="adminSeasonEpisodesPanel" style="display:none">
+              <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
+                <input id="renameSeasonInput" class="modalInput" style="margin:0;flex:1;min-width:100px" placeholder="نام جدید فصل">
+                <button class="addBtn" id="renameSeasonBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">تغییر نام</button>
+              </div>
               <label style="margin-top:4px;margin-bottom:6px">قسمت‌های این فصل</label>
               <input id="seasonChapterTitle" placeholder="عنوان قسمت">
               <input id="seasonChapterLink" type="url" placeholder="لینک مستقیم فایل">
               <button class="addBtn" id="addSeasonEpisodeBtn" type="button">+ افزودن قسمت به این فصل</button>
+              <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+                <input id="bulkSeasonEpCount" type="number" min="1" max="500" placeholder="تعداد" style="width:90px;margin:0">
+                <button class="addBtn" id="bulkAddSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">+ ساخت خودکار</button>
+                <button class="delete" id="clearSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">حذف همه</button>
+              </div>
+              <div class="keywordHint">شماره‌گذاری از ادامهٔ آخرین قسمت این فصل شروع می‌شود</div>
               <div id="pendingSeasonEpisodes" class="seasonEpList" style="margin-top:10px"></div>
             </div>
             <div id="adminNoSeasonHint" class="seasonEmptyHint">اول یک فصل بساز، بعد قسمت‌ها را به آن اضافه کن.</div>
@@ -905,6 +925,7 @@ button{cursor:pointer}
         <input id="accountsSearchInput" type="text" placeholder="جستجوی ایمیل یا نام...">
         <span id="clearAccountsSearch" style="cursor:pointer">×</span>
       </div>
+      <button class="addBtn" id="bulkGrantCoinsBtn" type="button" style="margin-bottom:12px">🪙 سکه به همه کاربران</button>
       <div id="adminAccountsList"></div>
     </div>
 
@@ -992,8 +1013,12 @@ button{cursor:pointer}
       <input id="editTitle" placeholder="عنوان">
       <label>استودیو</label>
       <input id="editAuthor" placeholder="استودیو">
-      <label>ژانر</label>
-      <select id="editGenre"></select>
+      <label>ژانر (حداکثر ۳ تا)</label>
+      <div id="editGenrePicker" class="keywordPicker"></div>
+      <select id="editGenreSelect">
+        <option value="">+ افزودن ژانر</option>
+      </select>
+      <div class="keywordHint">تا ۳ ژانر می‌توانید انتخاب کنید</div>
       <label>توضیحات</label>
       <textarea id="editDescription"></textarea>
       <label>کلیدواژه‌ها</label>
@@ -1014,6 +1039,11 @@ button{cursor:pointer}
         <label>قسمت‌ها / بخش‌ها</label>
         <div id="editChaptersList"></div>
         <button class="addBtn" id="addEditChapterBtn" type="button">+ افزودن قسمت</button>
+        <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+          <input id="editBulkChapterCount" type="number" min="1" max="500" placeholder="تعداد" style="width:90px;margin:0">
+          <button class="addBtn" id="editBulkAddChaptersBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">+ ساخت خودکار</button>
+          <button class="delete" id="editClearAllChaptersBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">حذف همه</button>
+        </div>
       </div>
 
       <!-- ویرایش فصل‌ها (سریالی) -->
@@ -1026,9 +1056,18 @@ button{cursor:pointer}
           </div>
           <div id="editSeasonTabs" class="adminSeasonTabs"></div>
           <div id="editSeasonEpisodesPanel" style="display:none">
+            <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
+              <input id="editRenameSeasonInput" class="modalInput" style="margin:0;flex:1;min-width:100px" placeholder="نام جدید فصل">
+              <button class="addBtn" id="editRenameSeasonBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">تغییر نام</button>
+            </div>
             <label style="margin-top:4px">قسمت‌های این فصل</label>
             <div id="editSeasonEpisodesList"></div>
             <button class="addBtn" id="editAddSeasonEpBtn" type="button" style="margin-top:8px">+ افزودن قسمت به این فصل</button>
+            <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+              <input id="editBulkSeasonEpCount" type="number" min="1" max="500" placeholder="تعداد" style="width:90px;margin:0">
+              <button class="addBtn" id="editBulkAddSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">+ ساخت خودکار</button>
+              <button class="delete" id="editClearSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">حذف همه</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1085,6 +1124,30 @@ button{cursor:pointer}
     </div>
     <button class="modalBtn" id="confirmGrantCoinsBtn" type="button">تأیید</button>
     <button class="modalBtn" id="closeGrantCoinsModal" type="button" style="background:#302119;color:#c8ad90">لغو</button>
+  </div>
+</div>
+
+<div id="bulkGrantModal" class="modal">
+  <div class="modalContent">
+    <h3>سکه به همه کاربران</h3>
+    <p class="keywordHint">این تعداد سکه به موجودی فعلی <b>همه</b> اکانت‌ها اضافه می‌شود.</p>
+    <label>تعداد سکه</label>
+    <input id="bulkGrantAmount" class="modalInput" type="number" min="1" placeholder="مثلاً ۵۰">
+    <button class="modalBtn" id="confirmBulkGrantBtn" type="button">تأیید و اعطا به همه</button>
+    <button class="modalBtn" id="closeBulkGrantModal" type="button" style="background:#302119;color:#c8ad90">لغو</button>
+  </div>
+</div>
+
+<div id="vpnDownloadBanner" class="importantBannerOverlay">
+  <div class="importantBannerBox">
+    <div class="ibEmoji">🔒</div>
+    <h3>قبل از دانلود</h3>
+    <p>
+      برای کیفیت بهتر دانلود، لطفاً <b>VPN / فیلترشکن</b> را خاموش کنید، سپس تأیید کنید.
+    </p>
+    <div class="ibActions" style="grid-template-columns:1fr">
+      <button type="button" class="ibBtn ok" id="vpnDownloadOk">تأیید — VPN خاموش است</button>
+    </div>
   </div>
 </div>
 
@@ -1283,10 +1346,25 @@ function toInt(v, fallback){
   const n = parseInt(v, 10);
   return Number.isFinite(n) ? n : (fallback || 0);
 }
+function parseStringOrArrayField(raw){
+  let out = [];
+  try{
+    if(typeof raw === "string" && raw.trim()){
+      const p = JSON.parse(raw);
+      if(Array.isArray(p)) out = p.map(String);
+    }else if(Array.isArray(raw)){
+      out = raw.map(String);
+    }
+  }catch(e){ out = []; }
+  return out;
+}
+
 function mapUserDoc(doc){
   if(!doc) return null;
   let mode = String(doc.unlimitedMode || "none").toLowerCase().trim();
   if(mode !== "permanent" && mode !== "timed") mode = "none";
+  const downloaded = parseStringOrArrayField(doc.downloaded);
+  const saved = parseStringOrArrayField(doc.saved);
   return {
     id: doc.$id,
     email: normalizeEmail(doc.email),
@@ -1295,7 +1373,9 @@ function mapUserDoc(doc){
     coins: Math.max(0, toInt(doc.coins, 0)),
     unlimitedMode: mode,
     unlimitedUntil: toInt(doc.unlimitedUntil, 0),
-    lastDailyClaim: toInt(doc.lastDailyClaim, 0)
+    lastDailyClaim: toInt(doc.lastDailyClaim, 0),
+    downloaded,
+    saved
   };
 }
 function applyUserToSession(u){
@@ -1307,9 +1387,18 @@ function applyUserToSession(u){
     coins: u.coins,
     unlimitedMode: u.unlimitedMode,
     unlimitedUntil: u.unlimitedUntil,
-    lastDailyClaim: u.lastDailyClaim
+    lastDailyClaim: u.lastDailyClaim,
+    downloaded: Array.isArray(u.downloaded) ? u.downloaded.slice() : [],
+    saved: Array.isArray(u.saved) ? u.saved.slice() : []
   };
   saveJSON(STORAGE_SESSION, { email: u.email, id: u.id });
+  /* همگام‌سازی محلی برای سرعت نمایش */
+  if(u.id){
+    try{
+      if(Array.isArray(u.downloaded)) saveJSON(STORAGE_DOWNLOADS + "_" + u.id, u.downloaded);
+      if(Array.isArray(u.saved)) saveJSON(STORAGE_SAVED + "_" + u.id, u.saved);
+    }catch(e){}
+  }
 }
 
 async function hashPassword(pass){
@@ -1524,6 +1613,8 @@ async function claimDailyCoins(){
   }
 }
 
+let pendingDownloadAction = null;
+
 function trySpendCoinsForDownload(work){
   /* بدون await تا لینک همان لحظه باز شود و پاپ‌آپ بلاک نشود */
   if(!currentUser || !currentUser.email) return false;
@@ -1553,6 +1644,17 @@ function trySpendCoinsForDownload(work){
   }
   return true;
 }
+
+function showVpnDownloadBannerThen(action){
+  pendingDownloadAction = action;
+  $("vpnDownloadBanner")?.classList.add("active");
+}
+$("vpnDownloadOk")?.addEventListener("click", ()=>{
+  $("vpnDownloadBanner")?.classList.remove("active");
+  const act = pendingDownloadAction;
+  pendingDownloadAction = null;
+  if(typeof act === "function") act();
+});
 
 let grantTargetUser = null;
 let grantMode = "amount";
@@ -1613,6 +1715,53 @@ async function confirmGrantCoins(){
   }catch(e){
     console.error(e);
     showToast("خطا در اعطای سکه");
+  }
+}
+
+async function confirmBulkGrantCoins(){
+  if(!(await requireAdminAction())) return;
+  const n = parseInt(($("bulkGrantAmount")?.value || "0"), 10);
+  if(!n || n < 1){ showToast("تعداد سکه معتبر نیست"); return; }
+  if(!confirm("به همه کاربران " + n + " سکه اضافه شود؟")) return;
+  if(!appwriteReady || !databases){ showToast("اتصال برقرار نیست"); return; }
+  const btn = $("confirmBulkGrantBtn");
+  const old = btn ? btn.textContent : "";
+  if(btn){ btn.disabled = true; btn.textContent = "در حال اعطا..."; }
+  try{
+    let offset = 0;
+    let total = 0;
+    let failed = 0;
+    while(true){
+      const res = await databases.listDocuments(
+        DATABASE_ID,
+        COLLECTION_USERS,
+        [ appwriteQuery.limit(50), appwriteQuery.offset(offset) ]
+      );
+      const docs = res.documents || [];
+      if(!docs.length) break;
+      for(const doc of docs){
+        try{
+          const u = mapUserDoc(doc);
+          const newCoins = toInt(u.coins, 0) + n;
+          await updateUserDoc(u.id, { coins: newCoins });
+          total++;
+        }catch(e){
+          console.error(e);
+          failed++;
+        }
+      }
+      if(docs.length < 50) break;
+      offset += 50;
+    }
+    $("bulkGrantModal")?.classList.remove("active");
+    showToast("سکه به " + total + " کاربر اضافه شد" + (failed ? (" — خطا: " + failed) : ""));
+    await renderAdminAccounts();
+    if(currentUser) await refreshCurrentUserCoins();
+  }catch(e){
+    console.error(e);
+    showToast("خطا در اعطای گروهی");
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = old || "تأیید و اعطا به همه"; }
   }
 }
 
@@ -1735,14 +1884,39 @@ function normalizeWorkSeasons(rawEpisodes, type){
   return { seasons: [], flatEpisodes: [] };
 }
 
+function parseGenresList(raw){
+  if(Array.isArray(raw)) return raw.map(g => String(g||"").trim()).filter(Boolean).slice(0, 3);
+  if(typeof raw === "string" && raw.trim()){
+    return raw.split(/[,،|]+/).map(s => s.trim()).filter(Boolean).slice(0, 3);
+  }
+  return [];
+}
+function genresToStorage(list){
+  return (list || []).map(s => String(s||"").trim()).filter(Boolean).slice(0, 3).join(",");
+}
+function workGenres(work){
+  if(!work) return [];
+  if(Array.isArray(work.genres) && work.genres.length) return work.genres;
+  return parseGenresList(work.genre);
+}
+function genreOverlapScore(a, b){
+  const ga = new Set(workGenres(a).map(normalizeText));
+  const gb = workGenres(b).map(normalizeText);
+  let score = 0;
+  gb.forEach(g => { if(ga.has(g)) score++; });
+  return score;
+}
+
 function mapWorkDoc(doc){
   const type = doc.type === "movie" ? "movie" : "serial";
   const norm = normalizeWorkSeasons(doc.episodes, type);
+  const genres = parseGenresList(doc.genre);
   return {
     id: doc.$id,
     title: doc.title || "",
     Author: doc.Author || "",
-    genre: doc.genre || "",
+    genre: genres.join("، ") || (doc.genre || ""),
+    genres,
     description: doc.description || "",
     keywords: doc.keywords || "",
     type,
@@ -1775,13 +1949,29 @@ function countWorkEpisodes(work){
   return (work.episodes || []).length;
 }
 
+let appwritePermission = null;
+let appwriteRole = null;
+
+function publicDocPermissions(){
+  try{
+    if(appwritePermission && appwriteRole){
+      return [
+        appwritePermission.read(appwriteRole.any()),
+        appwritePermission.update(appwriteRole.any()),
+        appwritePermission.delete(appwriteRole.any())
+      ];
+    }
+  }catch(e){ console.error(e); }
+  return undefined;
+}
+
 async function initAppwrite(){
   try{
     if(typeof Appwrite === "undefined"){
       showToast("SDK لود نشد");
       return false;
     }
-    const { Client, Databases, Account, ID, Query } = Appwrite;
+    const { Client, Databases, Account, ID, Query, Permission, Role } = Appwrite;
     client = new Client()
       .setEndpoint(APPWRITE_ENDPOINT)
       .setProject(APPWRITE_PROJECT);
@@ -1789,6 +1979,8 @@ async function initAppwrite(){
     account = new Account(client);
     appwriteID = ID;
     appwriteQuery = Query;
+    appwritePermission = Permission || null;
+    appwriteRole = Role || null;
     appwriteReady = true;
     return true;
   }catch(e){
@@ -1831,64 +2023,140 @@ function saveWorks(){
   if(isAdminMode) renderPublishedWorks();
 }
 
+/* منبع حقیقت ژانرها: حافظه + سرور. localStorage فقط کش است. */
+let genresCache = null;
+let genresLoadedFromServer = false;
+
 function getGenres(){
-  let g = loadJSON(STORAGE_GENRES, null);
-  if(!g || !Array.isArray(g) || !g.length){
-    g = [...DEFAULT_GENRES];
-    saveJSON(STORAGE_GENRES, g);
+  if(Array.isArray(genresCache) && genresCache.length){
+    return genresCache.slice();
   }
-  return g;
+  if(Array.isArray(genresCache) && genresLoadedFromServer){
+    return genresCache.slice();
+  }
+  let g = loadJSON(STORAGE_GENRES, null);
+  if(Array.isArray(g) && g.length){
+    genresCache = g.map(x => String(x || "").trim()).filter(Boolean);
+    return genresCache.slice();
+  }
+  /* فقط اگر هنوز هیچ داده‌ای نیست، پیش‌فرض را نشان بده — ولی آن را «سرور» حساب نکن */
+  genresCache = [...DEFAULT_GENRES];
+  return genresCache.slice();
 }
-function saveGenresLocal(list){ saveJSON(STORAGE_GENRES, list); }
+
+function setGenresCache(list, fromServer){
+  const cleaned = (list || []).map(x => String(x || "").trim()).filter(Boolean);
+  genresCache = cleaned;
+  if(fromServer) genresLoadedFromServer = true;
+  try{ saveJSON(STORAGE_GENRES, cleaned); }catch(e){}
+  return cleaned;
+}
+
+function saveGenresLocal(list){ setGenresCache(list, false); }
+
+function parseGenresFromDoc(doc){
+  if(!doc) return null;
+  const raw = doc.value ?? doc.genres ?? doc.data ?? doc.list ?? null;
+  if(raw == null) return null;
+  if(Array.isArray(raw)){
+    return raw.map(x => String(x || "").trim()).filter(Boolean);
+  }
+  if(typeof raw === "string" && raw.trim()){
+    try{
+      const p = JSON.parse(raw);
+      if(Array.isArray(p)) return p.map(x => String(x || "").trim()).filter(Boolean);
+    }catch(e){
+      /* شاید کاما جدا باشد */
+      return raw.split(/[,،\n]+/).map(s => s.trim()).filter(Boolean);
+    }
+  }
+  return null;
+}
+
+async function createGenresDocument(cleaned){
+  const payload = { value: JSON.stringify(cleaned), key: "genres" };
+  const perms = publicDocPermissions();
+  if(perms){
+    return databases.createDocument(
+      DATABASE_ID,
+      COLLECTION_SETTINGS,
+      SETTINGS_GENRES_DOC_ID,
+      payload,
+      perms
+    );
+  }
+  return databases.createDocument(
+    DATABASE_ID,
+    COLLECTION_SETTINGS,
+    SETTINGS_GENRES_DOC_ID,
+    payload
+  );
+}
 
 async function loadGenresFromServer(){
   if(!appwriteReady || !databases) return getGenres();
   try{
     const doc = await databases.getDocument(DATABASE_ID, COLLECTION_SETTINGS, SETTINGS_GENRES_DOC_ID);
-    const raw = doc && (doc.value || doc.genres || doc.data);
-    let list = [];
-    if(typeof raw === "string"){
-      try{ list = JSON.parse(raw); }catch(e){ list = []; }
-    }else if(Array.isArray(raw)){
-      list = raw;
-    }
-    if(Array.isArray(list) && list.length){
-      const cleaned = list.map(x => String(x || "").trim()).filter(Boolean);
-      saveGenresLocal(cleaned);
-      return cleaned;
+    const list = parseGenresFromDoc(doc);
+    if(list !== null){
+      setGenresCache(list, true);
+      return list.slice();
     }
   }catch(e){
-    /* سند یا کالکشن وجود ندارد — از لوکال استفاده کن */
+    const code = e && e.code;
+    const msg = String(e && e.message || "");
+    if(code === 404 || /not found/i.test(msg)){
+      try{
+        const local = loadJSON(STORAGE_GENRES, null);
+        const initial = (Array.isArray(local) && local.length) ? local : [...DEFAULT_GENRES];
+        const cleaned = initial.map(x => String(x || "").trim()).filter(Boolean);
+        await createGenresDocument(cleaned);
+        setGenresCache(cleaned, true);
+        return cleaned.slice();
+      }catch(e2){
+        console.error("create genres_config", e2);
+      }
+    }else{
+      console.error("loadGenresFromServer", e);
+    }
   }
   return getGenres();
 }
 
 async function saveGenresToServer(list){
   const cleaned = (list || []).map(x => String(x || "").trim()).filter(Boolean);
-  saveGenresLocal(cleaned);
-  if(!appwriteReady || !databases) return;
+  setGenresCache(cleaned, true);
+  if(!appwriteReady || !databases){
+    throw new Error("اتصال به سرور برقرار نیست");
+  }
+  /* فقط value و key — بدون فیلد genres تا Attribute اضافه لازم نباشد */
   const payload = { value: JSON.stringify(cleaned), key: "genres" };
   try{
     await databases.updateDocument(DATABASE_ID, COLLECTION_SETTINGS, SETTINGS_GENRES_DOC_ID, payload);
+    return cleaned;
   }catch(e){
-    try{
-      await databases.createDocument(
-        DATABASE_ID,
-        COLLECTION_SETTINGS,
-        SETTINGS_GENRES_DOC_ID,
-        payload
-      );
-    }catch(e2){
-      console.error("saveGenresToServer", e2);
-      showToast("ژانر محلی ذخیره شد؛ همگام‌سازی سرور ناموفق (کالکشن settings را بسازید)");
+    const code = e && e.code;
+    const msg = String(e && e.message || "");
+    if(code === 404 || /not found/i.test(msg)){
+      await createGenresDocument(cleaned);
+      return cleaned;
     }
+    console.error("saveGenresToServer", e);
+    throw e;
   }
 }
 
-function saveGenres(list){
-  /* همگام فوری لوکال + تلاش سرور */
-  saveGenresLocal(list);
-  saveGenresToServer(list).catch(()=>{});
+async function saveGenres(list){
+  const cleaned = (list || []).map(x => String(x || "").trim()).filter(Boolean);
+  setGenresCache(cleaned, false);
+  try{
+    await saveGenresToServer(cleaned);
+    showToast("ژانرها برای همه ذخیره شد ✓");
+  }catch(e){
+    console.error(e);
+    const detail = (e && e.message) ? String(e.message).slice(0, 80) : "";
+    showToast("خطا در ذخیره ژانر روی سرور" + (detail ? (": " + detail) : ""));
+  }
 }
 
 function getProfile(){
@@ -1973,15 +2241,39 @@ function getSavedStorageKey(){
   if(currentUser && currentUser.email) return STORAGE_SAVED + "_" + normalizeEmail(currentUser.email);
   return STORAGE_SAVED + "_guest";
 }
-function getSavedIds(){ return loadJSON(getSavedStorageKey(), []); }
-function setSavedIds(ids){ saveJSON(getSavedStorageKey(), ids); }
+function getSavedIds(){
+  if(currentUser && currentUser.id && Array.isArray(currentUser.saved)){
+    return currentUser.saved.slice();
+  }
+  return loadJSON(getSavedStorageKey(), []);
+}
+function setSavedIds(ids){
+  const list = Array.isArray(ids) ? ids.map(String) : [];
+  if(currentUser && currentUser.id){
+    currentUser.saved = list.slice();
+  }
+  saveJSON(getSavedStorageKey(), list);
+  /* ذخیره روی سرور تا روی همه دستگاه‌ها بماند */
+  if(currentUser && currentUser.id && appwriteReady){
+    updateUserDoc(currentUser.id, { saved: list }).then(updated => {
+      if(updated && Array.isArray(updated.saved)){
+        currentUser.saved = updated.saved.slice();
+        try{ saveJSON(getSavedStorageKey(), currentUser.saved); }catch(e){}
+      }
+    }).catch(e => {
+      console.error("save saved list", e);
+      showToast("نشان‌گذاری محلی شد؛ ذخیره سرور ناموفق بود");
+    });
+  }
+}
 function isSaved(id){ return getSavedIds().includes(id); }
 function toggleSave(id){
   let ids = getSavedIds();
-  if(ids.includes(id)) ids = ids.filter(x => x !== id);
-  else ids.unshift(id);
+  const sid = String(id);
+  if(ids.includes(sid) || ids.includes(id)) ids = ids.filter(x => x !== sid && x !== id);
+  else ids.unshift(sid);
   setSavedIds(ids);
-  return ids.includes(id);
+  return ids.includes(sid);
 }
 
 function getHistoryStorageKey(){
@@ -2024,7 +2316,10 @@ function showPage(id, fromPop){
     if($("savedHistoryTab")?.classList.contains("active")) renderHistory();
     else renderSaved();
   }
-  if(id === "genresPage") renderGenres();
+  if(id === "genresPage"){
+    renderGenres();
+    loadGenresFromServer().then(()=>{ fillGenreSelect(); renderGenres(); }).catch(()=>{});
+  }
   if(id === "profilePage"){
     updateCoinUI();
     if(currentUser && currentUser.email){
@@ -2196,9 +2491,9 @@ function getForYouList(base){
   const likedGenres = new Set();
   [...savedIds, ...histIds].forEach(id => {
     const w = allWorks.find(x => x.id === id);
-    if(w && w.genre) likedGenres.add(normalizeText(w.genre));
+    if(w) workGenres(w).forEach(g => likedGenres.add(normalizeText(g)));
   });
-  let forYou = base.filter(w => likedGenres.has(normalizeText(w.genre)));
+  let forYou = base.filter(w => workGenres(w).some(g => likedGenres.has(normalizeText(g))));
   if(forYou.length < 3) forYou = base.slice();
   return forYou;
 }
@@ -2513,21 +2808,37 @@ function renderHome(){
   const byDate = base.slice().sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
   const isAll = homeCategory === "all";
 
-  /* هر سه ردیف با یک مجموعهٔ مشترک ساخته می‌شوند؛ بنابراین اگر مثلاً ۳۰ انیمه یا بیشتر
-     داشته باشیم، هر ۱۰ کارت هر ردیف کاملاً متفاوت خواهد بود. در آرشیو کوچک‌تر،
-     فقط بعد از تمام شدن گزینه‌های یکتا تکرار می‌کنیم تا هیچ ردیفی خالی نماند. */
-  const firstPool = isAll ? getBestList(base) : byDate;
-  const forYouPool = getForYouList(base);
-  const [firstRow, recommended, forYou] = buildHomeRows(
-    [firstPool, base, forYouPool.length ? forYouPool : base],
-    base,
-    10,
-    4
-  );
-
-  fillBooksStrip("latestBooks", firstRow, isAll ? "هنوز انیمه‌ای برای بهترین‌ها نیست." : "هنوز انیمه‌ای منتشر نشده.");
-  fillBooksStrip("newBooks", recommended, "پیشنهادی موجود نیست.");
-  fillBooksStrip("forYou", forYou, "برای شروع چند انیمه ببینید.");
+  /* ردیف اول:
+     - در تب «همه»: بهترین‌ها (امتیاز)
+     - در سریالی/سینمایی: همیشه تازه انتشار شده از جدید به قدیم (ثابت، بدون شافل) */
+  let firstRow;
+  if(isAll){
+    const firstPool = getBestList(base);
+    const forYouPool = getForYouList(base);
+    const built = buildHomeRows(
+      [firstPool, base, forYouPool.length ? forYouPool : base],
+      base,
+      10,
+      4
+    );
+    firstRow = built[0];
+    fillBooksStrip("latestBooks", firstRow, "هنوز انیمه‌ای برای بهترین‌ها نیست.");
+    fillBooksStrip("newBooks", built[1], "پیشنهادی موجود نیست.");
+    fillBooksStrip("forYou", built[2], "برای شروع چند انیمه ببینید.");
+  }else{
+    /* تازه انتشار شده: جدیدترین اول — بدون شافل و بدون تغییر ترتیب */
+    firstRow = byDate.slice(0, 10);
+    fillBooksStrip("latestBooks", firstRow, "هنوز انیمه‌ای منتشر نشده.");
+    const forYouPool = getForYouList(base);
+    const [, recommended, forYou] = buildHomeRows(
+      [base, base, forYouPool.length ? forYouPool : base],
+      base,
+      10,
+      4
+    );
+    fillBooksStrip("newBooks", recommended, "پیشنهادی موجود نیست.");
+    fillBooksStrip("forYou", forYou, "برای شروع چند انیمه ببینید.");
+  }
 
   const titleEl = $("latestSectionTitle");
   if(titleEl) titleEl.textContent = isAll ? "بهترین ها" : "تازه انتشار شده";
@@ -2706,7 +3017,8 @@ function renderGenres(){
 
 function openGenreDetail(genre){
   $("genreDetailTitle").textContent = genre;
-  const list = allWorks.filter(w => normalizeText(w.genre) === normalizeText(genre));
+  const ng = normalizeText(genre);
+  const list = allWorks.filter(w => workGenres(w).some(g => normalizeText(g) === ng));
   $("genreDetailCount").textContent = list.length + " انیمه";
   fillBooksBox("genreDetailBooks", list, "در این ژانر اثری نیست.");
   showPage("genreDetailPage");
@@ -2845,6 +3157,9 @@ function getDownloadStorageKey(){
   return currentUser && currentUser.id ? (STORAGE_DOWNLOADS + "_" + currentUser.id) : null;
 }
 function getDownloadedEpisodeKeys(){
+  if(currentUser && Array.isArray(currentUser.downloaded) && currentUser.downloaded.length){
+    return currentUser.downloaded.slice();
+  }
   const key = getDownloadStorageKey();
   return key ? loadJSON(key, []) : [];
 }
@@ -2855,13 +3170,20 @@ function isEpisodeDownloaded(work, ep, idx){
 }
 function markEpisodeDownloaded(work, ep, idx){
   if(!currentUser || !work || !ep) return;
-  const key = getDownloadStorageKey();
-  if(!key) return;
   const episodeKey = String(work.id || "") + "::" + String(ep.id || ep.title || idx);
   const list = getDownloadedEpisodeKeys();
-  if(!list.includes(episodeKey)){
-    list.push(episodeKey);
-    saveJSON(key, list);
+  if(list.includes(episodeKey)) return;
+  list.push(episodeKey);
+  if(currentUser) currentUser.downloaded = list;
+  const key = getDownloadStorageKey();
+  if(key) saveJSON(key, list);
+  /* ذخیره سمت سرور تا روی همه دستگاه‌ها بماند (فیلد Array در Appwrite) */
+  if(currentUser.id && appwriteReady){
+    updateUserDoc(currentUser.id, { downloaded: list }).then(updated => {
+      if(updated){
+        if(Array.isArray(updated.downloaded)) currentUser.downloaded = updated.downloaded;
+      }
+    }).catch(e => console.error("save downloaded", e));
   }
 }
 function simpleReferralHash(value){
@@ -2913,12 +3235,20 @@ function renderEpisodesList(episodes){
     if(downloaded) btn.classList.add("downloaded");
     btn.addEventListener("click", ()=>{
       if(!requireLoginForDownload()) return;
+      if(isEpisodeDownloaded(currentWork, ep, idx)){
+        showVpnDownloadBannerThen(()=>{
+          forceDownload(ep.link, ep.title || "episode");
+        });
+        return;
+      }
       if(!trySpendCoinsForDownload(currentWork)) return;
-      forceDownload(ep.link, ep.title || "episode");
-      markEpisodeDownloaded(currentWork, ep, idx);
-      btn.classList.add("downloaded");
-      const action = btn.querySelector("span:last-child");
-      if(action) action.textContent = "✓ دانلود شده";
+      showVpnDownloadBannerThen(()=>{
+        forceDownload(ep.link, ep.title || "episode");
+        markEpisodeDownloaded(currentWork, ep, idx);
+        btn.classList.add("downloaded");
+        const action = btn.querySelector("span:last-child");
+        if(action) action.textContent = "✓ دانلود شده";
+      });
     });
     box.appendChild(btn);
   });
@@ -3041,11 +3371,17 @@ function renderSimilar(work){
   const box = $("similarBooks");
   if(!box) return;
   box.innerHTML = "";
-  let list = allWorks.filter(w => w.id !== work.id && (
-    normalizeText(w.genre) === normalizeText(work.genre) ||
-    w.type === work.type ||
-    normalizeText(w.Author) === normalizeText(work.Author)
-  )).slice(0, 9);
+  const scored = allWorks
+    .filter(w => w.id !== work.id)
+    .map(w => {
+      const overlap = genreOverlapScore(work, w);
+      const typeBonus = w.type === work.type ? 0.3 : 0;
+      const authorBonus = normalizeText(w.Author) === normalizeText(work.Author) && work.Author ? 0.2 : 0;
+      return { w, score: overlap + typeBonus + authorBonus, overlap };
+    })
+    .filter(x => x.score > 0)
+    .sort((a,b)=> b.score - a.score || (b.w.createdAt||0)-(a.w.createdAt||0));
+  let list = scored.map(x => x.w).slice(0, 9);
   if(!list.length) list = allWorks.filter(w => w.id !== work.id).slice(0, 6);
   if(!list.length){ showEmpty(box, "مورد مشابهی نیست."); return; }
   list.forEach(w => box.appendChild(createBookCard(w)));
@@ -3471,27 +3807,65 @@ document.querySelectorAll("[data-admin-tab]").forEach(btn => {
     document.querySelectorAll(".adminSection").forEach(s => s.classList.remove("active"));
     const tab = btn.dataset.adminTab;
     if(tab === "add") $("adminAdd").classList.add("active");
-    if(tab === "genres"){ $("adminGenres").classList.add("active"); renderGenreAdmin(); }
+    if(tab === "genres"){
+      $("adminGenres").classList.add("active");
+      loadGenresFromServer().then(()=>{ fillGenreSelect(); renderGenreAdmin(); renderGenres(); }).catch(()=> renderGenreAdmin());
+    }
     if(tab === "published"){ $("adminPublished").classList.add("active"); renderPublishedWorks(); }
     if(tab === "accounts"){ $("adminAccounts").classList.add("active"); renderAdminAccounts(); }
   });
 });
 
+let adminSelectedGenres = [];
+let editSelectedGenres = [];
+
 function fillGenreSelect(){
   const genres = getGenres();
-  ["adminGenre","editGenre"].forEach(id => {
+  ["adminGenreSelect","editGenreSelect"].forEach(id => {
     const sel = $(id);
     if(!sel) return;
-    const cur = sel.value;
-    sel.innerHTML = "";
+    sel.innerHTML = `<option value="">+ افزودن ژانر</option>`;
     genres.forEach(g => {
       const opt = document.createElement("option");
       opt.value = g;
       opt.textContent = g;
       sel.appendChild(opt);
     });
-    if(cur && genres.includes(cur)) sel.value = cur;
   });
+}
+
+function renderSelectedGenres(boxId, list){
+  const box = $(boxId);
+  if(!box) return;
+  box.innerHTML = "";
+  list.forEach((g, index)=>{
+    const chip = document.createElement("span");
+    chip.className = "keywordChip";
+    chip.innerHTML = `${escapeHtml(g)} <b>×</b>`;
+    chip.querySelector("b")?.addEventListener("click", ()=>{
+      list.splice(index, 1);
+      renderSelectedGenres(boxId, list);
+    });
+    box.appendChild(chip);
+  });
+}
+
+function addGenreToSelected(list, value, boxId, selectEl){
+  const g = String(value || "").trim();
+  if(!g) return;
+  if(list.some(x => normalizeText(x) === normalizeText(g))){
+    showToast("این ژانر قبلاً انتخاب شده");
+    if(selectEl) selectEl.value = "";
+    return;
+  }
+  if(list.length >= 3){
+    showToast("حداکثر ۳ ژانر");
+    if(selectEl) selectEl.value = "";
+    return;
+  }
+  list.push(g);
+  renderSelectedGenres(boxId, list);
+  if(selectEl) selectEl.value = "";
 }
 
 function nextEpisodeDefaultTitle(){
@@ -3534,6 +3908,28 @@ $("addChapterBtn")?.addEventListener("click", ()=>{
   pendingChapters.push({ id: uid(), title, link });
   renderPendingChapters();
   setDefaultEpisodeTitleInput();
+});
+
+$("bulkAddChaptersBtn")?.addEventListener("click", ()=>{
+  if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
+  const n = parseInt(($("bulkChapterCount")?.value || "0"), 10);
+  if(!n || n < 1){ showToast("تعداد معتبر نیست"); return; }
+  const start = pendingChapters.length + 1;
+  for(let i=0;i<n;i++){
+    pendingChapters.push({ id: uid(), title: "قسمت " + (start + i), link: "" });
+  }
+  renderPendingChapters();
+  setDefaultEpisodeTitleInput();
+  if($("bulkChapterCount")) $("bulkChapterCount").value = "";
+  showToast(n + " قسمت اضافه شد (از " + start + ")");
+});
+$("clearAllChaptersBtn")?.addEventListener("click", ()=>{
+  if(!pendingChapters.length) return;
+  if(!confirm("همه قسمت‌ها حذف شوند؟")) return;
+  pendingChapters = [];
+  renderPendingChapters();
+  setDefaultEpisodeTitleInput();
+  showToast("همه قسمت‌ها حذف شدند");
 });
 
 function renderPendingChapters(){
@@ -3614,10 +4010,30 @@ function renderPendingSeasonEpisodes(){
   box.innerHTML = "";
   const season = pendingSeasons[selectedAdminSeasonIdx];
   if(!season) return;
+  if($("renameSeasonInput")) $("renameSeasonInput").value = season.title || "";
   (season.episodes || []).forEach((ch, i) => {
     const div = document.createElement("div");
     div.className = "pendingChapter";
-    div.innerHTML = `<span>${escapeHtml(ch.title)}</span>`;
+    div.style.flexWrap = "wrap";
+    div.innerHTML = `<span style="flex:1">${escapeHtml(ch.title)}</span>`;
+    const moveSel = document.createElement("select");
+    moveSel.style.cssText = "max-width:110px;font-size:10px;background:#2b1d15;color:#e7d6bf;border:0;border-radius:8px;padding:4px";
+    moveSel.innerHTML = `<option value="">انتقال به...</option>`;
+    pendingSeasons.forEach((s, si) => {
+      if(si === selectedAdminSeasonIdx) return;
+      const opt = document.createElement("option");
+      opt.value = String(si);
+      opt.textContent = s.title || ("فصل " + (si+1));
+      moveSel.appendChild(opt);
+    });
+    moveSel.addEventListener("change", ()=>{
+      const ti = parseInt(moveSel.value, 10);
+      if(isNaN(ti) || !pendingSeasons[ti]) return;
+      const [ep] = season.episodes.splice(i, 1);
+      pendingSeasons[ti].episodes.push(ep);
+      renderAdminSeasonsUI();
+      showToast("قسمت منتقل شد");
+    });
     const del = document.createElement("button");
     del.type = "button";
     del.className = "delete";
@@ -3626,10 +4042,45 @@ function renderPendingSeasonEpisodes(){
       season.episodes.splice(i, 1);
       renderAdminSeasonsUI();
     });
+    div.appendChild(moveSel);
     div.appendChild(del);
     box.appendChild(div);
   });
 }
+
+$("renameSeasonBtn")?.addEventListener("click", ()=>{
+  if(selectedAdminSeasonIdx < 0 || !pendingSeasons[selectedAdminSeasonIdx]) return;
+  const name = ($("renameSeasonInput")?.value || "").trim();
+  if(!name){ showToast("نام فصل را وارد کنید"); return; }
+  pendingSeasons[selectedAdminSeasonIdx].title = name;
+  renderAdminSeasonsUI();
+  showToast("نام فصل تغییر کرد");
+});
+$("bulkAddSeasonEpsBtn")?.addEventListener("click", ()=>{
+  if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
+  if(selectedAdminSeasonIdx < 0 || !pendingSeasons[selectedAdminSeasonIdx]){
+    showToast("اول یک فصل انتخاب کنید"); return;
+  }
+  const n = parseInt(($("bulkSeasonEpCount")?.value || "0"), 10);
+  if(!n || n < 1){ showToast("تعداد معتبر نیست"); return; }
+  const season = pendingSeasons[selectedAdminSeasonIdx];
+  const start = (season.episodes || []).length + 1;
+  for(let i=0;i<n;i++){
+    season.episodes.push({ id: uid(), title: "قسمت " + (start + i), link: "" });
+  }
+  renderAdminSeasonsUI();
+  if($("bulkSeasonEpCount")) $("bulkSeasonEpCount").value = "";
+  showToast(n + " قسمت اضافه شد (از " + start + ")");
+});
+$("clearSeasonEpsBtn")?.addEventListener("click", ()=>{
+  if(selectedAdminSeasonIdx < 0 || !pendingSeasons[selectedAdminSeasonIdx]) return;
+  const season = pendingSeasons[selectedAdminSeasonIdx];
+  if(!(season.episodes || []).length) return;
+  if(!confirm("همه قسمت‌های این فصل حذف شوند؟")) return;
+  season.episodes = [];
+  renderAdminSeasonsUI();
+  showToast("قسمت‌های فصل حذف شدند");
+});
 
 $("addSeasonBtn")?.addEventListener("click", ()=>{
   if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
@@ -3665,7 +4116,7 @@ $("publishBtn")?.addEventListener("click", async ()=>{
   const type = $("adminType").value === "movie" ? "movie" : "serial";
   const title = ($("adminTitle").value || "").trim();
   const Author = ($("adminAuthor").value || "").trim();
-  const genre = $("adminGenre").value;
+  const genre = genresToStorage(adminSelectedGenres);
   const description = ($("adminDescription").value || "").trim();
   const keywords = keywordsToStorage(adminKeywordsList);
   const coverUrl = ($("adminCoverUrl").value || "").trim();
@@ -3734,6 +4185,8 @@ $("publishBtn")?.addEventListener("click", async ()=>{
     adminKeywordsList = [];
     renderKeywordsPicker("adminKeywordsPicker", adminKeywordsList);
     if($("adminKeywordsInput")) $("adminKeywordsInput").value = "";
+    adminSelectedGenres = [];
+    renderSelectedGenres("adminGenrePicker", adminSelectedGenres);
     $("adminTitle").value = "";
     $("adminAuthor").value = "";
     $("adminDescription").value = "";
@@ -3751,7 +4204,8 @@ $("publishBtn")?.addEventListener("click", async ()=>{
   }
 });
 
-$("addGenreBtn")?.addEventListener("click", ()=>{
+$("addGenreBtn")?.addEventListener("click", async ()=>{
+  if(!(await requireAdminAction())) return;
   const name = ($("newGenre").value || "").trim();
   if(!name){ showToast("نام ژانر را وارد کنید"); return; }
   const genres = getGenres();
@@ -3759,12 +4213,11 @@ $("addGenreBtn")?.addEventListener("click", ()=>{
     showToast("این ژانر وجود دارد"); return;
   }
   genres.push(name);
-  saveGenres(genres);
   $("newGenre").value = "";
+  await saveGenres(genres);
   renderGenres();
   fillGenreSelect();
   renderGenreAdmin();
-  showToast("ژانر اضافه شد");
 });
 
 function renderGenreAdmin(){
@@ -3781,15 +4234,17 @@ function renderGenreAdmin(){
     del.type = "button";
     del.className = "delete";
     del.textContent = "حذف";
-    del.addEventListener("click", ()=>{
+    del.addEventListener("click", async ()=>{
       if(!confirm("ژانر «" + g + "» حذف شود؟")) return;
+      if(!(await requireAdminAction())) return;
       const list = getGenres();
-      list.splice(i, 1);
-      saveGenres(list);
+      const idx = list.findIndex(x => normalizeText(x) === normalizeText(g));
+      if(idx < 0) return;
+      list.splice(idx, 1);
+      await saveGenres(list);
       renderGenres();
       fillGenreSelect();
       renderGenreAdmin();
-      showToast("ژانر حذف شد");
     });
     item.appendChild(del);
     box.appendChild(item);
@@ -3862,7 +4317,8 @@ function openEditWork(work){
   $("editTitle").value = work.title || "";
   $("editAuthor").value = work.Author || "";
   fillGenreSelect();
-  if(work.genre) $("editGenre").value = work.genre;
+  editSelectedGenres = workGenres(work).slice(0, 3);
+  renderSelectedGenres("editGenrePicker", editSelectedGenres);
   $("editDescription").value = work.description || "";
   editKeywordsList = keywordsFromStorage(work.keywords || "");
   renderKeywordsPicker("editKeywordsPicker", editKeywordsList);
@@ -4003,6 +4459,7 @@ function renderEditSeasonEpisodes(){
   box.innerHTML = "";
   const season = editingSeasons[selectedEditSeasonIdx];
   if(!season) return;
+  if($("editRenameSeasonInput")) $("editRenameSeasonInput").value = season.title || "";
   (season.episodes || []).forEach((ch, i) => {
     const div = document.createElement("div");
     div.className = "pendingChapter";
@@ -4022,6 +4479,26 @@ function renderEditSeasonEpisodes(){
     l.value = ch.link || "";
     l.placeholder = "لینک مستقیم";
     l.addEventListener("input", ()=> { ch.link = l.value; });
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:6px;align-items:center";
+    const moveSel = document.createElement("select");
+    moveSel.style.cssText = "flex:1;font-size:10px;background:#2b1d15;color:#e7d6bf;border:0;border-radius:8px;padding:8px";
+    moveSel.innerHTML = `<option value="">انتقال به فصل...</option>`;
+    editingSeasons.forEach((s, si) => {
+      if(si === selectedEditSeasonIdx) return;
+      const opt = document.createElement("option");
+      opt.value = String(si);
+      opt.textContent = s.title || ("فصل " + (si+1));
+      moveSel.appendChild(opt);
+    });
+    moveSel.addEventListener("change", ()=>{
+      const ti = parseInt(moveSel.value, 10);
+      if(isNaN(ti) || !editingSeasons[ti]) return;
+      const [ep] = season.episodes.splice(i, 1);
+      editingSeasons[ti].episodes.push(ep);
+      renderEditSeasonsUI();
+      showToast("قسمت منتقل شد");
+    });
     const del = document.createElement("button");
     del.type = "button";
     del.className = "delete";
@@ -4030,12 +4507,65 @@ function renderEditSeasonEpisodes(){
       season.episodes.splice(i, 1);
       renderEditSeasonsUI();
     });
+    row.appendChild(moveSel);
+    row.appendChild(del);
     div.appendChild(t);
     div.appendChild(l);
-    div.appendChild(del);
+    div.appendChild(row);
     box.appendChild(div);
   });
 }
+
+$("editRenameSeasonBtn")?.addEventListener("click", ()=>{
+  if(selectedEditSeasonIdx < 0 || !editingSeasons[selectedEditSeasonIdx]) return;
+  const name = ($("editRenameSeasonInput")?.value || "").trim();
+  if(!name){ showToast("نام فصل را وارد کنید"); return; }
+  editingSeasons[selectedEditSeasonIdx].title = name;
+  renderEditSeasonsUI();
+  showToast("نام فصل تغییر کرد");
+});
+$("editBulkAddChaptersBtn")?.addEventListener("click", ()=>{
+  const n = parseInt(($("editBulkChapterCount")?.value || "0"), 10);
+  if(!n || n < 1){ showToast("تعداد معتبر نیست"); return; }
+  const start = editingChapters.length + 1;
+  for(let i=0;i<n;i++){
+    editingChapters.push({ id: uid(), title: "قسمت " + (start + i), link: "" });
+  }
+  renderEditChapters();
+  if($("editBulkChapterCount")) $("editBulkChapterCount").value = "";
+  showToast(n + " قسمت اضافه شد");
+});
+$("editClearAllChaptersBtn")?.addEventListener("click", ()=>{
+  if(!editingChapters.length) return;
+  if(!confirm("همه قسمت‌ها حذف شوند؟")) return;
+  editingChapters = [];
+  renderEditChapters();
+  showToast("حذف شد");
+});
+$("editBulkAddSeasonEpsBtn")?.addEventListener("click", ()=>{
+  if(selectedEditSeasonIdx < 0 || !editingSeasons[selectedEditSeasonIdx]){
+    showToast("اول یک فصل انتخاب کنید"); return;
+  }
+  const n = parseInt(($("editBulkSeasonEpCount")?.value || "0"), 10);
+  if(!n || n < 1){ showToast("تعداد معتبر نیست"); return; }
+  const season = editingSeasons[selectedEditSeasonIdx];
+  const start = (season.episodes || []).length + 1;
+  for(let i=0;i<n;i++){
+    season.episodes.push({ id: uid(), title: "قسمت " + (start + i), link: "" });
+  }
+  renderEditSeasonsUI();
+  if($("editBulkSeasonEpCount")) $("editBulkSeasonEpCount").value = "";
+  showToast(n + " قسمت اضافه شد (از " + start + ")");
+});
+$("editClearSeasonEpsBtn")?.addEventListener("click", ()=>{
+  if(selectedEditSeasonIdx < 0 || !editingSeasons[selectedEditSeasonIdx]) return;
+  const season = editingSeasons[selectedEditSeasonIdx];
+  if(!(season.episodes || []).length) return;
+  if(!confirm("همه قسمت‌های این فصل حذف شوند؟")) return;
+  season.episodes = [];
+  renderEditSeasonsUI();
+  showToast("قسمت‌های فصل حذف شدند");
+});
 
 $("editAddSeasonBtn")?.addEventListener("click", ()=>{
   const title = ($("editNewSeasonTitle")?.value || "").trim() || ("فصل " + (editingSeasons.length + 1));
@@ -4109,7 +4639,7 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     type,
     title,
     Author: ($("editAuthor").value || "").trim(),
-    genre: $("editGenre").value,
+    genre: genresToStorage(editSelectedGenres),
     description: ($("editDescription").value || "").trim(),
     keywords: keywordsToStorage(editKeywordsList),
     coverUrl,
@@ -4203,10 +4733,29 @@ async function init(){
   updateEpisodeLabels();
   adminKeywordsList = [];
   editKeywordsList = [];
+  adminSelectedGenres = [];
+  editSelectedGenres = [];
   renderKeywordsPicker("adminKeywordsPicker", adminKeywordsList);
   renderKeywordsPicker("editKeywordsPicker", editKeywordsList);
+  renderSelectedGenres("adminGenrePicker", adminSelectedGenres);
+  renderSelectedGenres("editGenrePicker", editSelectedGenres);
   bindKeywordsInput("adminKeywordsInput", "adminKeywordsPicker", () => adminKeywordsList);
   bindKeywordsInput("editKeywordsInput", "editKeywordsPicker", () => editKeywordsList);
+
+  $("adminGenreSelect")?.addEventListener("change", ()=>{
+    addGenreToSelected(adminSelectedGenres, $("adminGenreSelect").value, "adminGenrePicker", $("adminGenreSelect"));
+  });
+  $("editGenreSelect")?.addEventListener("change", ()=>{
+    addGenreToSelected(editSelectedGenres, $("editGenreSelect").value, "editGenrePicker", $("editGenreSelect"));
+  });
+
+  $("bulkGrantCoinsBtn")?.addEventListener("click", ()=>{
+    if($("bulkGrantAmount")) $("bulkGrantAmount").value = "50";
+    $("bulkGrantModal")?.classList.add("active");
+  });
+  $("closeBulkGrantModal")?.addEventListener("click", ()=> $("bulkGrantModal")?.classList.remove("active"));
+  $("confirmBulkGrantBtn")?.addEventListener("click", confirmBulkGrantCoins);
+
   try{ history.replaceState({ page: "homePage" }, ""); }catch(e){}
 
   /* بنر هشدار مهم */
@@ -4214,9 +4763,12 @@ async function init(){
 
   const ok = await initAppwrite();
   if(ok){
-    /* ژانرها از سرور (سراسری) */
+    /* ژانرها همیشه از سرور (سراسری برای همه کاربران) */
     try{
-      await loadGenresFromServer();
+      const serverGenres = await loadGenresFromServer();
+      if(serverGenres && serverGenres.length){
+        saveGenresLocal(serverGenres);
+      }
       fillGenreSelect();
       renderGenres();
       if(isAdminMode) renderGenreAdmin();
@@ -4226,7 +4778,6 @@ async function init(){
     if(currentUser && currentUser.email){
       await refreshCurrentUserCoins();
       updateProfile();
-      /* بعد از لود کاربر، لیست ذخیره‌ها را تازه کن */
       if($("savedPage")?.classList.contains("active")) renderSaved();
     }else{
       updateCoinUI();
