@@ -350,7 +350,8 @@ button{cursor:pointer}
 }
 .accountItem .accEmail{font-size:12px;color:#ead4b8;word-break:break-all}
 .accountItem .accMeta{font-size:10px;color:#a89078;margin-top:4px;line-height:1.7}
-.accountItem .accActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.accountItem .accActions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
+.accountItem .accActions .infoBtn{background:#3a4a5a;color:#c8d4e0;border:0;border-radius:8px;padding:9px;font-size:10px}
 
 .genreAdminItem{
   display:flex;align-items:center;justify-content:space-between;background:#2a1c14;
@@ -456,6 +457,265 @@ button{cursor:pointer}
   height:calc(100vh - 90px);display:flex;flex-direction:column;align-items:center;justify-content:center;
   color:#796655;font-size:13px;gap:12px;text-align:center;padding:24px
 }
+
+/* ========== دفتر خاطره ========== */
+.notebookScene{
+  min-height:calc(100vh - 120px);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px 12px 40px;position:relative;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(100,70,40,.18),transparent 55%),
+    linear-gradient(180deg,#1a120e 0%,#120c09 100%);
+}
+.notebookLamp{
+  font-size:28px;margin-bottom:8px;filter:drop-shadow(0 0 12px rgba(224,169,78,.45));
+  animation:lampGlow 3s ease-in-out infinite alternate;
+}
+@keyframes lampGlow{from{opacity:.75;filter:drop-shadow(0 0 8px rgba(224,169,78,.3))}to{opacity:1;filter:drop-shadow(0 0 16px rgba(224,169,78,.55))}}
+.notebookBook{
+  width:min(280px,88vw);height:340px;position:relative;
+  border-radius:12px 3px 3px 12px;
+  background:linear-gradient(145deg,#5c3d28,#3d281a);
+  box-shadow:
+    8px 12px 28px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  display:flex;flex-direction:row;overflow:hidden;
+  direction:ltr; /* شیرازه فیزیکی سمت راست بماند (اپ rtl است) */
+}
+.notebookSpine{
+  width:20px;flex-shrink:0;order:2;
+  background:linear-gradient(90deg,#2a1a10,#4a3222 35%,#2a1a10);
+  border-left:1px solid rgba(0,0,0,.35);
+  box-shadow:inset 2px 0 4px rgba(0,0,0,.35);
+}
+.notebookPages{
+  flex:1;order:1;background:
+    repeating-linear-gradient(transparent,transparent 27px,rgba(120,90,60,.12) 27px,rgba(120,90,60,.12) 28px),
+    linear-gradient(180deg,#f2e4ca,#e8d4b0);
+  color:#3a2a1c;padding:28px 18px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;direction:rtl;
+}
+.notebookPages::before{
+  content:"";position:absolute;right:12px;top:0;bottom:0;width:1px;background:rgba(180,60,60,.25);
+}
+.notebookTitleCallig{
+  font-size:22px;font-weight:700;color:#5a3a22;margin-bottom:6px;letter-spacing:1px;
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+}
+.notebookSub{font-size:10px;color:#8a6a4a;margin-bottom:28px}
+.notebookActions{display:flex;flex-direction:column;gap:10px;width:100%;padding:0 8px}
+.notebookMainBtn{
+  border:0;border-radius:10px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;
+  background:#6b4a2a;color:#f5e6c8;box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+.notebookMainBtn.alt{background:#3a2a1c;color:#e0c9a8}
+.notebookDeskHint{margin-top:18px;font-size:10px;color:#7a6550;opacity:.85}
+
+.nbColorRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.nbColorSwatch{
+  width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);padding:0;
+}
+.nbColorSwatch.selected{border-color:#f5e6c8;box-shadow:0 0 0 2px #1a120e,0 0 0 4px #f5e6c8}
+
+.nbManageItem{margin-bottom:10px}
+.nbManageRow{display:flex;align-items:center;gap:8px;background:#2a1c14;border-radius:10px;padding:8px 10px;font-size:12px;color:#e7d6bf}
+.nbManageColor{width:16px;height:16px;border-radius:50%;flex-shrink:0}
+.nbManageName{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nbManageEditBox{background:#241811;border-radius:10px;padding:10px;margin-top:6px}
+
+.nbBookGrid{
+  display:grid;grid-template-columns:1fr 1fr;gap:18px;
+}
+.nbBookCard{
+  position:relative;border-radius:12px 3px 3px 12px;overflow:hidden;cursor:pointer;
+  height:230px;
+  box-shadow:8px 12px 28px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06);
+  display:flex;flex-direction:row;direction:ltr;
+}
+.nbBookCardSpine{
+  width:16px;flex-shrink:0;order:2;
+  border-left:1px solid rgba(0,0,0,.35);
+  box-shadow:inset 2px 0 4px rgba(0,0,0,.35);
+}
+.nbBookCardPages{
+  flex:1;order:1;direction:rtl;position:relative;
+  background:
+    repeating-linear-gradient(transparent,transparent 22px,rgba(120,90,60,.12) 22px,rgba(120,90,60,.12) 23px),
+    linear-gradient(180deg,#f2e4ca,#e8d4b0);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:18px 14px;text-align:center;
+}
+.nbBookCardPages::before{
+  content:"";position:absolute;right:10px;top:0;bottom:0;width:1px;background:rgba(180,60,60,.22);
+}
+.nbBookCardTitle{
+  font-size:15px;font-weight:700;color:#5a3a22;line-height:1.45;letter-spacing:.3px;
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.nbBookCardCount{font-size:10px;color:#8a6a4a;margin-top:10px}
+
+/* مطالعه مثل دفتر واقعی */
+.nbBookViewer{
+  display:flex;flex-direction:column;align-items:center;padding:8px 8px 28px;
+  min-height:calc(100vh - 110px);
+}
+.nbBookFrame{
+  width:min(320px,92vw);height:min(460px,68vh);
+  perspective:1200px;position:relative;
+}
+.nbBookPage{
+  width:100%;height:100%;border-radius:12px 0 0 12px;overflow:hidden;
+  background:linear-gradient(180deg,#f4e8d0,#e6d2b0);
+  box-shadow:
+    6px 10px 28px rgba(0,0,0,.4),
+    inset 0 0 0 1px rgba(90,60,30,.12);
+  position:relative;
+  transform-origin:right center;
+  transition:transform .45s cubic-bezier(.25,.8,.25,1), opacity .35s ease;
+  direction:rtl;
+}
+/* نوار قهوه‌ای شیرازه — فقط سمت راست */
+.nbBookPage::after{
+  content:"";position:absolute;top:0;bottom:0;right:0;width:14px;z-index:5;pointer-events:none;
+  background:linear-gradient(90deg,#6b4428,#3d281a 40%,#2a1a10);
+  box-shadow:inset 2px 0 4px rgba(0,0,0,.35);
+}
+.nbBookPage.turning{
+  transform:rotateY(18deg) scale(.97);
+  opacity:.55;
+}
+.nbPageInner{
+  position:absolute;inset:0;padding:14px 28px 18px 12px;
+  color:#3a2a1c;overflow:hidden;
+  direction:rtl;text-align:right;
+  background:
+    repeating-linear-gradient(transparent,transparent 26px,rgba(120,90,60,.12) 26px,rgba(120,90,60,.12) 27px);
+  line-height:27px;
+}
+.nbPageInner::before{
+  content:"";position:absolute;right:22px;top:0;bottom:0;width:1px;background:rgba(180,60,60,.22);
+}
+.nbPageCover{
+  position:absolute;border-radius:5px;overflow:hidden;
+  background:#5c3d28;box-shadow:0 2px 8px rgba(0,0,0,.22);
+  z-index:2;
+}
+.nbPageCover img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.nbPageCover.sz-s{width:48px;height:66px}
+.nbPageCover.sz-m{width:68px;height:94px}
+.nbPageCover.sz-l{width:92px;height:128px}
+.nbPageText{
+  font-size:13px;line-height:27px;white-space:pre-wrap;position:relative;z-index:1;
+  color:#3f2e1f;
+  direction:rtl;text-align:right;
+  word-break:normal;overflow-wrap:break-word;word-wrap:break-word;
+  hyphens:none;letter-spacing:0.01em;
+  unicode-bidi:plaintext;
+  max-height:calc(100% - 8px);
+}
+.nbPageDate{
+  position:absolute;bottom:4px;left:12px;right:30px;
+  font-size:9px;color:#8a6a4a;text-align:right;z-index:1;direction:rtl;
+}
+.nbCharsHint{font-size:10px;color:#8d7660;margin-top:6px;text-align:right}
+.nbPageNum{
+  position:absolute;bottom:8px;left:16px;font-size:9px;color:#9a7a5a;z-index:3;
+}
+.nbLayoutPage{
+  direction:rtl;
+}
+.nbCoversList{margin-top:8px}
+.nbCoverChip{
+  display:flex;align-items:center;gap:8px;background:#2a1c14;border-radius:10px;
+  padding:8px;margin-bottom:6px;font-size:11px;color:#e7d6bf;
+}
+.nbCoverChip img{width:28px;height:38px;object-fit:cover;border-radius:3px;background:#3a2a1c}
+.nbCoverChip .nbChipTitle{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nbCoverChip .nbChipDel{border:0;background:#5b3028;color:#e3b8a5;border-radius:6px;padding:5px 8px;font-size:10px;cursor:pointer}
+.nbCoverChip.active{outline:1px solid #e0a94e}
+
+.nbTurnBar{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  width:min(320px,92vw);margin-top:16px;
+}
+.nbTurnBtn{
+  border:0;border-radius:12px;padding:11px 14px;font-size:12px;font-weight:600;
+  background:#3a2a1c;color:#e0c9a8;cursor:pointer;min-width:90px;
+}
+.nbTurnBtn:disabled{opacity:.35;cursor:not-allowed}
+.nbPageIndicator{font-size:11px;color:#a89078;white-space:nowrap}
+
+/* تنظیم layout در ویرایش */
+.nbLayoutPreview{
+  background:#1a120e;border-radius:12px;padding:12px;border:1px solid #3a2a1c;
+}
+.nbLayoutPage{
+  width:100%;aspect-ratio:3/4;max-height:280px;margin:0 auto;
+  background:linear-gradient(180deg,#f4e8d0,#e6d2b0);
+  border-radius:10px 3px 3px 10px;position:relative;overflow:hidden;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);
+  touch-action:none;direction:rtl;
+}
+.nbLayoutCover{
+  position:absolute;border-radius:4px;overflow:hidden;background:#5c3d28;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer;z-index:2;
+  width:68px;height:94px;
+}
+.nbLayoutCover img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.nbLayoutCover.sz-s{width:48px;height:66px}
+.nbLayoutCover.sz-m{width:68px;height:94px}
+.nbLayoutCover.sz-l{width:92px;height:128px}
+.nbLayoutTextHint{
+  position:absolute;bottom:16px;left:16px;right:16px;
+  font-size:10px;color:#8a6a4a;text-align:center;pointer-events:none;
+}
+.nbSizeRow,.nbPosRow{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.nbSizeBtn,.nbPosBtn{
+  flex:1;min-width:70px;border:1px solid #3a2a1c;background:#2a1c14;color:#c8ad90;
+  border-radius:10px;padding:9px 6px;font-size:11px;cursor:pointer;
+}
+.nbSizeBtn.active,.nbPosBtn.active{background:#6b4a2a;color:#f5e6c8;border-color:#6b4a2a}
+
+.notebookEditBox{padding-bottom:30px}
+.notebookEditItem{
+  background:#241912;border:1px solid #3a2a1c;border-radius:12px;padding:12px;margin-bottom:10px;
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+}
+.notebookEditItem .neCover{width:40px;height:56px;border-radius:5px;overflow:hidden;background:#3a2a1c;flex-shrink:0}
+.notebookEditItem .neCover img{width:100%;height:100%;object-fit:cover}
+.notebookEditItem .neInfo{flex:1;min-width:0}
+.notebookEditItem .neTitle{font-size:12px;color:#e7d6bf;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notebookEditItem .nePreview{font-size:10px;color:#8d7660;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notebookSelectedAnime{
+  background:#2b1d15;border-radius:12px;padding:12px;margin-bottom:10px;min-height:60px;
+  display:flex;align-items:center;gap:12px;color:#a89078;font-size:12px;
+}
+.notebookSelectedAnime.empty{justify-content:center}
+.notebookSelectedAnime .selCover{width:44px;height:60px;border-radius:6px;overflow:hidden;background:#3a2a1c;flex-shrink:0}
+.notebookSelectedAnime .selCover img{width:100%;height:100%;object-fit:cover}
+.notebookSelectedAnime .selTitle{color:#e7d6bf;font-size:13px}
+.notebookAnimeResults{max-height:220px;overflow:auto;margin-top:8px}
+.notebookAnimeResultItem{
+  display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;cursor:pointer;
+  background:#2a1c14;margin-bottom:6px;
+}
+.notebookAnimeResultItem:active{background:#3a2a1c}
+.notebookAnimeResultItem img{width:36px;height:50px;object-fit:cover;border-radius:4px;background:#3a2a1c}
+.notebookAnimeResultItem span{font-size:12px;color:#e7d6bf}
+
+.userInfoSection{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #302119}
+.userInfoSection:last-child{border-bottom:0}
+.userInfoSection h4{font-size:12px;color:#e0a94e;margin-bottom:8px}
+.userInfoRow{font-size:11px;color:#c8ad90;margin-bottom:4px;line-height:1.8}
+.userInfoRow b{color:#ead4b8}
+.userInfoWorkItem{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:#2a1c14;border-radius:10px;padding:10px;margin-bottom:6px;cursor:pointer;font-size:11px;color:#dfc9ad;
+}
+.userInfoWorkItem:active{background:#33231a}
+.userInfoWorkItem .uiwTitle{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.userInfoWorkItem .uiwCount{color:#c37934;flex-shrink:0;font-size:10px}
 
 /* بنر هشدار مهم */
 .importantBannerOverlay{
@@ -713,9 +973,165 @@ button{cursor:pointer}
     </div>
   </div>
   <div class="profileMenu">
+    <div class="menu" id="notebookBtn"><span>📔 دفتر خاطره</span><span>›</span></div>
     <div class="menu" id="supportBtn"><span>پشتیبانی و درخواست انیمه</span><span>›</span></div>
     <div class="menu adminAccess" id="adminAccessBtn" style="display:none" hidden><span>🔐 پنل مدیریت</span><span>›</span></div>
     <div class="menu" id="referralAccessBtn"><span>🎁 کد معرف</span><span>›</span></div>
+  </div>
+</section>
+
+<!-- ========== NOTEBOOK (دفتر خاطره) ========== -->
+<section id="notebookPage" class="page">
+  <div class="top">
+    <button class="back" id="notebookBack" type="button">←</button>
+    <h2>دفتر خاطره</h2>
+  </div>
+  <div class="notebookScene">
+    <div class="notebookBook">
+      <div class="notebookPages">
+        <div class="notebookCoverInner">
+          <div class="notebookTitleCallig">دفتر خاطره</div>
+          <div class="notebookSub">یادداشت‌های شخصی انیمه</div>
+        </div>
+        <div class="notebookActions">
+          <button type="button" class="notebookMainBtn" id="notebookGoCreateBtn">🖌 ساخت دفتر</button>
+          <button type="button" class="notebookMainBtn alt" id="notebookGoListBtn">📚 دفتر ها</button>
+        </div>
+      </div>
+      <div class="notebookSpine" aria-hidden="true"></div>
+    </div>
+    <div class="notebookDeskHint">فقط روی این دستگاه ذخیره می‌شود</div>
+  </div>
+</section>
+
+<section id="notebookCreatePage" class="page">
+  <div class="top">
+    <button class="back" id="notebookCreateBack" type="button">←</button>
+    <h2>ساخت دفتر</h2>
+  </div>
+  <div class="form notebookEntryForm">
+    <label>نام دفتر</label>
+    <input id="notebookCreateName" type="text" placeholder="مثلاً: خاطرات تابستون">
+    <label style="margin-top:14px">رنگ دفتر</label>
+    <div class="nbColorRow" id="notebookCreateColorRow"></div>
+    <button type="button" class="modalBtn" id="notebookCreateConfirmBtn" style="margin-top:16px">ساخت دفتر</button>
+
+    <label style="display:block;margin-top:28px;font-size:11px;color:#a89078">ویرایش دفترهای موجود</label>
+    <div id="notebookManageList" style="margin-top:8px"></div>
+  </div>
+</section>
+
+<section id="notebookListPage" class="page">
+  <div class="top">
+    <button class="back" id="notebookListBack" type="button">←</button>
+    <h2>دفتر ها</h2>
+  </div>
+  <div class="notebookEditBox">
+    <button type="button" class="outlineBtn" id="notebookPasteCodeBtn" style="width:100%;margin-bottom:14px">🔑 جای‌گذاری کد</button>
+    <div id="notebookPasteBox" style="display:none;margin-bottom:16px">
+      <textarea id="notebookPasteInput" class="modalInput" rows="4" style="resize:vertical;min-height:90px" placeholder="کد دفتر را اینجا بچسبان..."></textarea>
+      <input id="notebookPasteName" class="modalInput" type="text" placeholder="اسم این دفتر">
+      <button type="button" class="modalBtn" id="notebookPasteConfirmBtn">افزودن دفتر</button>
+    </div>
+    <div id="notebookCardsList"></div>
+  </div>
+</section>
+
+<section id="notebookDetailPage" class="page">
+  <div class="top">
+    <button class="back" id="notebookDetailBack" type="button">←</button>
+    <h2 id="notebookDetailTitle">دفتر</h2>
+  </div>
+  <div class="notebookEditBox">
+    <p id="notebookDetailDesc" style="font-size:11px;color:#8d7660;line-height:2;margin-bottom:18px"></p>
+    <div class="notebookActions" style="margin-bottom:20px">
+      <button type="button" class="notebookMainBtn" id="notebookDetailReadBtn">مطالعه</button>
+      <button type="button" class="notebookMainBtn alt" id="notebookDetailEditBtn">ویرایش</button>
+    </div>
+    <label>کد این دفتر</label>
+    <textarea id="notebookDetailCode" class="modalInput" rows="4" readonly style="resize:none;min-height:80px;font-size:10px;direction:ltr;text-align:left"></textarea>
+    <button type="button" class="outlineBtn" id="notebookDetailCopyBtn" style="width:100%;margin-top:8px">📋 کپی کد</button>
+  </div>
+</section>
+
+<section id="notebookReadPage" class="page">
+  <div class="top">
+    <button class="back" id="notebookReadBack" type="button">←</button>
+    <h2>مطالعه دفتر</h2>
+  </div>
+  <div class="nbBookViewer">
+    <div class="nbBookFrame" id="nbBookFrame">
+      <div class="nbBookPage" id="nbBookPage">
+        <div class="nbPageInner" id="nbPageInner"></div>
+        <div class="nbPageNum" id="nbPageNum"></div>
+      </div>
+    </div>
+    <div class="nbTurnBar">
+      <button type="button" class="nbTurnBtn" id="nbPrevPage">› قبلی</button>
+      <span id="nbPageIndicator" class="nbPageIndicator">—</span>
+      <button type="button" class="nbTurnBtn" id="nbNextPage">بعدی ‹</button>
+    </div>
+  </div>
+</section>
+
+<section id="notebookEditPage" class="page">
+  <div class="top">
+    <button class="back" id="notebookEditBack" type="button">←</button>
+    <h2>ویرایش دفتر</h2>
+  </div>
+  <div class="notebookEditBox">
+    <button type="button" class="addBtn" id="notebookAddEntryBtn" style="margin-bottom:14px">+ یادداشت جدید</button>
+    <div id="notebookEditList"></div>
+  </div>
+</section>
+
+<section id="notebookEntryPage" class="page">
+  <div class="top">
+    <button class="back" id="notebookEntryBack" type="button">←</button>
+    <h2 id="notebookEntryTitle">یادداشت</h2>
+  </div>
+  <div class="form notebookEntryForm">
+    <label>جلد انیمه‌ها روی صفحه (حداکثر ۴ تا)</label>
+    <div id="notebookCoversList" class="nbCoversList"></div>
+    <button type="button" class="outlineBtn" id="notebookPickAnimeBtn" style="width:100%;margin-bottom:12px">+ افزودن جلد انیمه</button>
+    <div id="notebookAnimeSearchBox" style="display:none;margin-bottom:12px">
+      <div class="searchBox">
+        <span>🔍</span>
+        <input id="notebookAnimeSearchInput" placeholder="جستجوی انیمه...">
+        <span id="notebookAnimeSearchClear" style="cursor:pointer">×</span>
+      </div>
+      <div id="notebookAnimeSearchResults" class="notebookAnimeResults"></div>
+    </div>
+
+    <div id="notebookLayoutBox" style="display:none;margin-bottom:14px">
+      <label>پیش‌نمایش</label>
+      <div class="nbLayoutPreview" id="nbLayoutPreview">
+        <div class="nbLayoutPage" id="nbLayoutPage">
+          <div class="nbLayoutTextHint">متن یادداشت اینجا می‌آید...</div>
+        </div>
+      </div>
+      <label style="margin-top:10px">اندازه جلد فعال</label>
+      <div class="nbSizeRow">
+        <button type="button" class="nbSizeBtn" data-size="s">کوچک</button>
+        <button type="button" class="nbSizeBtn active" data-size="m">متوسط</button>
+        <button type="button" class="nbSizeBtn" data-size="l">بزرگ</button>
+      </div>
+      <label style="margin-top:10px">محل</label>
+      <div class="nbPosRow" id="nbPosRow">
+        <button type="button" class="nbPosBtn" data-pos="tr">بالا راست</button>
+        <button type="button" class="nbPosBtn" data-pos="tcr" style="display:none">بالا وسط راست</button>
+        <button type="button" class="nbPosBtn" data-pos="tc" style="display:none">بالا وسط</button>
+        <button type="button" class="nbPosBtn" data-pos="tcl" style="display:none">بالا وسط چپ</button>
+        <button type="button" class="nbPosBtn" data-pos="tl">بالا چپ</button>
+      </div>
+      <div class="keywordHint">روی هر جلد در لیست بزن تا فعال شود، بعد اندازه و محل را انتخاب کن</div>
+    </div>
+
+    <label>یادداشت شما</label>
+    <textarea id="notebookEntryText" placeholder="هر چیزی که دوست داری بنویس..." rows="8"></textarea>
+    <div class="nbCharsHint" id="notebookCharsHint"></div>
+    <button type="button" class="modalBtn" id="notebookSaveEntryBtn" style="margin-top:12px">ذخیره در دفتر</button>
+    <button type="button" class="delete" id="notebookDeleteEntryBtn" style="width:100%;margin-top:8px;display:none">حذف این یادداشت</button>
   </div>
 </section>
 
@@ -1138,6 +1554,23 @@ button{cursor:pointer}
   </div>
 </div>
 
+<!-- اطلاعات کاربر (ادمین) -->
+<div id="userInfoModal" class="modal">
+  <div class="modalContent" style="max-height:92vh">
+    <h3 id="userInfoTitle">اطلاعات کاربر</h3>
+    <div id="userInfoBody" style="font-size:12px;line-height:1.9;color:#d6b994"></div>
+    <button class="modalBtn" id="closeUserInfoModal" type="button" style="background:#302119;color:#c8ad90;margin-top:14px">بستن</button>
+  </div>
+</div>
+
+<div id="userDlEpsModal" class="modal">
+  <div class="modalContent" style="max-height:85vh">
+    <h3 id="userDlEpsTitle">قسمت‌های دانلودشده</h3>
+    <div id="userDlEpsList" style="margin-top:10px"></div>
+    <button class="modalBtn" id="closeUserDlEpsModal" type="button" style="background:#302119;color:#c8ad90;margin-top:14px">بستن</button>
+  </div>
+</div>
+
 <div id="vpnDownloadBanner" class="importantBannerOverlay">
   <div class="importantBannerBox">
     <div class="ibEmoji">🔒</div>
@@ -1375,7 +1808,9 @@ function mapUserDoc(doc){
     unlimitedUntil: toInt(doc.unlimitedUntil, 0),
     lastDailyClaim: toInt(doc.lastDailyClaim, 0),
     downloaded,
-    saved
+    saved,
+    referredBy: doc.referredBy ? String(doc.referredBy) : "",
+    createdAt: doc.$createdAt ? new Date(doc.$createdAt).getTime() : 0
   };
 }
 function applyUserToSession(u){
@@ -1804,9 +2239,11 @@ async function renderAdminAccounts(){
         <div class="accMeta" dir="ltr">${escapeHtml(u.email)}</div>
         <div class="accMeta">${escapeHtml(status)}</div>
         <div class="accActions">
+          <button class="infoBtn" type="button">اطلاعات</button>
           <button class="editBtn" type="button">سکه</button>
           <button class="delete" type="button">حذف</button>
         </div>`;
+      item.querySelector(".infoBtn")?.addEventListener("click", ()=> openUserInfoModal(u));
       item.querySelector(".editBtn")?.addEventListener("click", ()=> openGrantModal(u));
       item.querySelector(".delete")?.addEventListener("click", async ()=>{
         if(!confirm("اکانت «" + u.email + "» حذف شود؟ دیگر نمی‌تواند وارد شود.")) return;
@@ -3558,20 +3995,38 @@ $("doRegisterBtn")?.addEventListener("click", async ()=>{
 
     const password = await hashPassword(pass);
     const newUserId = appwriteID.unique();
-    const doc = await databases.createDocument(
-      DATABASE_ID,
-      COLLECTION_USERS,
-      newUserId,
-      {
-        email,
-        name,
-        password,
-        coins: START_COINS,
-        unlimitedMode: "none",
-        unlimitedUntil: 0,
-        lastDailyClaim: 0
+    const basePayload = {
+      email,
+      name,
+      password,
+      coins: START_COINS,
+      unlimitedMode: "none",
+      unlimitedUntil: 0,
+      lastDailyClaim: 0
+    };
+    let doc = null;
+    try{
+      const payload = { ...basePayload };
+      if(referralOwner && referralOwner.id) payload.referredBy = referralOwner.id;
+      doc = await databases.createDocument(
+        DATABASE_ID,
+        COLLECTION_USERS,
+        newUserId,
+        payload
+      );
+    }catch(createErr){
+      const msg = String(createErr && createErr.message || "");
+      if(/referredBy|attribute|unknown/i.test(msg) && referralOwner){
+        doc = await databases.createDocument(
+          DATABASE_ID,
+          COLLECTION_USERS,
+          newUserId,
+          basePayload
+        );
+      }else{
+        throw createErr;
       }
-    );
+    }
     let u = mapUserDoc(doc);
     if(u && toInt(u.coins, 0) === 0 && START_COINS > 0){
       u.coins = START_COINS;
@@ -4724,6 +5179,1113 @@ $("importantBannerRead")?.addEventListener("click", ()=>{
   hideImportantBanner();
   showToast("دیگر نمایش داده نمی‌شود");
 });
+
+/* ========== اطلاعات کاربر (ادمین) ========== */
+let userInfoCurrent = null;
+
+function formatDateFa(ts){
+  if(!ts) return "—";
+  try{
+    const d = new Date(ts);
+    return d.toLocaleDateString("fa-IR", { year:"numeric", month:"long", day:"numeric" });
+  }catch(e){ return "—"; }
+}
+
+function groupUserDownloads(downloadedKeys){
+  const map = new Map();
+  (downloadedKeys || []).forEach(key => {
+    const s = String(key || "");
+    const idx = s.indexOf("::");
+    if(idx < 0) return;
+    const workId = s.slice(0, idx);
+    const epKey = s.slice(idx + 2);
+    if(!map.has(workId)) map.set(workId, []);
+    map.get(workId).push(epKey);
+  });
+  return map;
+}
+
+async function openUserInfoModal(u){
+  if(!u) return;
+  userInfoCurrent = u;
+  const body = $("userInfoBody");
+  const title = $("userInfoTitle");
+  if(!body) return;
+  if(title) title.textContent = "اطلاعات — " + (u.name || u.email || "کاربر");
+  body.innerHTML = `<div class="empty">در حال بارگذاری...</div>`;
+  $("userInfoModal")?.classList.add("active");
+
+  /* تازه از سرور بخوان تا saved و downloaded کامل باشد */
+  if(u.id && appwriteReady){
+    try{
+      const res = await fetchUserById(u.id);
+      if(res && res.user){
+        u = res.user;
+        userInfoCurrent = u;
+      }
+    }catch(e){ console.error(e); }
+  }
+
+  let coinStatus = u.coins + " سکه";
+  if(u.unlimitedMode === "permanent") coinStatus = "نامحدود دائمی";
+  else if(u.unlimitedMode === "timed"){
+    const left = (u.unlimitedUntil || 0) - Date.now();
+    coinStatus = left > 0 ? ("نامحدود زمانی — " + formatRemain(left)) : "منقضی‌شده (" + u.coins + " سکه)";
+  }
+
+  const referralCode = u.id ? makeReferralCode(u.id) : "—";
+  const dlMap = groupUserDownloads(u.downloaded || []);
+  let savedIds = Array.isArray(u.saved) ? u.saved.map(String) : [];
+  if(!savedIds.length && u.id){
+    try{
+      const localSaved = loadJSON(STORAGE_SAVED + "_" + u.id, []);
+      if(Array.isArray(localSaved) && localSaved.length) savedIds = localSaved.map(String);
+    }catch(e){}
+  }
+
+  let html = "";
+  html += `<div class="userInfoSection">
+    <h4>اطلاعات پایه</h4>
+    <div class="userInfoRow">نام: <b>${escapeHtml(u.name || "—")}</b></div>
+    <div class="userInfoRow" dir="ltr">ایمیل: <b>${escapeHtml(u.email || "—")}</b></div>
+    <div class="userInfoRow">تاریخ ثبت‌نام: <b>${escapeHtml(formatDateFa(u.createdAt))}</b></div>
+    <div class="userInfoRow">وضعیت سکه: <b>${escapeHtml(coinStatus)}</b></div>
+  </div>`;
+
+  html += `<div class="userInfoSection">
+    <h4>کد معرف</h4>
+    <div class="userInfoRow" dir="ltr" style="word-break:break-all"><b>${escapeHtml(referralCode)}</b></div>
+  </div>`;
+
+  html += `<div class="userInfoSection">
+    <h4>انیمه‌های دانلودشده (${dlMap.size})</h4>`;
+  if(!dlMap.size){
+    html += `<div class="userInfoRow">دانلودی ثبت نشده.</div>`;
+  }else{
+    const works = [];
+    dlMap.forEach((eps, workId) => {
+      const w = allWorks.find(x => x.id === workId);
+      works.push({ workId, title: w ? w.title : ("شناسه: " + workId), count: eps.length, eps, work: w });
+    });
+    works.sort((a,b)=> b.count - a.count || a.title.localeCompare(b.title, "fa"));
+    works.forEach(item => {
+      html += `<div class="userInfoWorkItem" data-work-id="${escapeHtml(item.workId)}">
+        <span class="uiwTitle">${escapeHtml(item.title)}</span>
+        <span class="uiwCount">${item.count} قسمت ‹</span>
+      </div>`;
+    });
+  }
+  html += `</div>`;
+
+  html += `<div class="userInfoSection">
+    <h4>نشان‌گذاری‌ها (${savedIds.length})</h4>`;
+  if(!savedIds.length){
+    html += `<div class="userInfoRow">نشان‌گذاری‌ای نیست.</div>`;
+  }else{
+    savedIds.forEach(sid => {
+      const w = allWorks.find(x => x.id === sid);
+      const t = w ? w.title : ("شناسه: " + sid);
+      html += `<div class="userInfoRow">• ${escapeHtml(t)}</div>`;
+    });
+  }
+  html += `</div>`;
+
+  body.innerHTML = html;
+
+  body.querySelectorAll(".userInfoWorkItem").forEach(el => {
+    el.addEventListener("click", ()=>{
+      const workId = el.getAttribute("data-work-id");
+      const eps = dlMap.get(workId) || [];
+      const w = allWorks.find(x => x.id === workId);
+      openUserDlEpsModal(w, eps);
+    });
+  });
+}
+
+function openUserDlEpsModal(work, epKeys){
+  const title = $("userDlEpsTitle");
+  const list = $("userDlEpsList");
+  if(title) title.textContent = (work && work.title) ? ("دانلودهای «" + work.title + "»") : "قسمت‌های دانلودشده";
+  if(!list) return;
+  list.innerHTML = "";
+  if(!epKeys || !epKeys.length){
+    list.innerHTML = `<div class="empty">قسمتی نیست.</div>`;
+  }else{
+    const epTitleMap = new Map();
+    if(work){
+      const allEps = work.type === "movie" ? (work.episodes || []) :
+        flattenSeasonsEpisodes(work.seasons || []).concat(work.episodes || []);
+      allEps.forEach(e => {
+        if(e && e.id) epTitleMap.set(String(e.id), e.title || "");
+        if(e && e.title) epTitleMap.set(String(e.title), e.title);
+      });
+    }
+    epKeys.forEach((k, i) => {
+      const label = epTitleMap.get(String(k)) || k || ("قسمت " + (i+1));
+      const row = document.createElement("div");
+      row.className = "userInfoRow";
+      row.style.background = "#2a1c14";
+      row.style.padding = "8px 10px";
+      row.style.borderRadius = "8px";
+      row.style.marginBottom = "6px";
+      row.textContent = "• " + label;
+      list.appendChild(row);
+    });
+  }
+  $("userDlEpsModal")?.classList.add("active");
+}
+
+$("closeUserInfoModal")?.addEventListener("click", ()=> $("userInfoModal")?.classList.remove("active"));
+$("closeUserDlEpsModal")?.addEventListener("click", ()=> $("userDlEpsModal")?.classList.remove("active"));
+
+/* ========== دفتر خاطره (چند دفتری، فقط محلی) ========== */
+const STORAGE_NOTEBOOK = "animearchive_notebook_v2";
+const STORAGE_NOTEBOOKS_META = "animearchive_notebooks_meta_v2";
+const STORAGE_NOTEBOOK_DATA = "animearchive_notebook_data_v2";
+const STORAGE_ACTIVE_NOTEBOOK = "animearchive_notebook_active_v2";
+const NOTEBOOK_COLORS = ["#bd7232","#6b4a2a","#7a4b6b","#3f6b52","#4a5f7a","#7a3f3f","#6b6b3f","#3f5f6b"];
+let notebookEditingId = null;
+let notebookCovers = []; /* [{workId,workTitle,workCover,size,x,y}] */
+let notebookActiveCoverIdx = 0;
+let notebookReadListCache = [];
+let notebookReadIndex = 0;
+let notebookTurning = false;
+let notebookDetailId = null;
+let notebookCreateColor = NOTEBOOK_COLORS[0];
+
+function notebookOwnerKey(){
+  if(currentUser && currentUser.id) return currentUser.id;
+  return "guest";
+}
+function getNotebooksMetaKey(){ return STORAGE_NOTEBOOKS_META + "_" + notebookOwnerKey(); }
+function getActiveNotebookStorageKey(){ return STORAGE_ACTIVE_NOTEBOOK + "_" + notebookOwnerKey(); }
+function getNotebookDataKey(id){ return STORAGE_NOTEBOOK_DATA + "_" + notebookOwnerKey() + "_" + id; }
+function getLegacyNotebookKey(){ return STORAGE_NOTEBOOK + "_" + notebookOwnerKey(); }
+
+function genNotebookId(){
+  return "nb_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+}
+
+/* لیست دفترها — در شروع کاملاً خالی است و فقط با ساخت دفتر پر می‌شود */
+function loadNotebooksMeta(){
+  const raw = loadJSON(getNotebooksMetaKey(), null);
+  if(Array.isArray(raw)) return raw;
+  return [];
+}
+
+function getActiveNotebookId(){
+  const meta = loadNotebooksMeta();
+  let id = loadJSON(getActiveNotebookStorageKey(), null);
+  if(!id || !meta.some(n => n.id === id)){
+    id = meta[0] ? meta[0].id : null;
+    if(id) saveJSON(getActiveNotebookStorageKey(), id);
+  }
+  return id;
+}
+function setActiveNotebookId(id){
+  saveJSON(getActiveNotebookStorageKey(), id);
+}
+
+/* یک دفتر تازه (خالی یا از روی کد وارد‌شده) می‌سازد؛ فعال نمی‌کند */
+function createNotebookRecord(name, color, list){
+  const meta = loadNotebooksMeta();
+  const id = genNotebookId();
+  meta.push({ id, name: name, color: color || NOTEBOOK_COLORS[0], createdAt: Date.now() });
+  saveJSON(getNotebooksMetaKey(), meta);
+  saveJSON(getNotebookDataKey(id), (Array.isArray(list) ? list : []).map(normalizeNotebookNote));
+  return id;
+}
+function renameNotebookRecord(id, name, color){
+  const meta = loadNotebooksMeta();
+  const nb = meta.find(n => n.id === id);
+  if(!nb) return;
+  nb.name = name;
+  if(color) nb.color = color;
+  saveJSON(getNotebooksMetaKey(), meta);
+}
+/* یک دفتر را برای همیشه حذف می‌کند؛ امکان حذف همه دفترها وجود دارد */
+function deleteNotebookById(id){
+  let meta = loadNotebooksMeta();
+  if(!meta.some(n => n.id === id)) return false;
+  meta = meta.filter(n => n.id !== id);
+  saveJSON(getNotebooksMetaKey(), meta);
+  try{ localStorage.removeItem(getNotebookDataKey(id)); }catch(e){}
+  const activeId = loadJSON(getActiveNotebookStorageKey(), null);
+  if(activeId === id || !meta.some(n => n.id === activeId)){
+    setActiveNotebookId(meta.length ? meta[0].id : null);
+  }
+  return true;
+}
+
+function loadNotebook(){
+  const id = getActiveNotebookId();
+  if(!id) return [];
+  const raw = loadJSON(getNotebookDataKey(id), []);
+  return (Array.isArray(raw) ? raw : []).map(normalizeNotebookNote);
+}
+function saveNotebook(list){
+  const id = getActiveNotebookId();
+  if(!id) return;
+  saveJSON(getNotebookDataKey(id), Array.isArray(list) ? list : []);
+}
+function normalizeNotebookNote(note){
+  if(!note || typeof note !== "object") return note;
+  let covers = Array.isArray(note.covers) ? note.covers.slice() : [];
+  if(!covers.length && note.workCover){
+    covers = [{
+      workId: note.workId || null,
+      workTitle: note.workTitle || "",
+      workCover: note.workCover || "",
+      size: note.coverSize || "m",
+      x: Number.isFinite(note.coverX) ? note.coverX : 72,
+      y: Number.isFinite(note.coverY) ? note.coverY : 8
+    }];
+  }
+  covers = covers.map(c => ({
+    workId: c.workId || null,
+    workTitle: c.workTitle || "",
+    workCover: c.workCover || "",
+    size: c.size || "m",
+    x: Number.isFinite(c.x) ? c.x : 72,
+    y: Number.isFinite(c.y) ? c.y : 8
+  }));
+  return { ...note, covers };
+}
+
+/* ---- کد اشتراک‌گذاری دفتر (با فشرده‌سازی، تا با زیادشدن یادداشت‌ها خیلی طولانی نشه) ---- */
+async function encodeNotebookCode(list){
+  const json = JSON.stringify(Array.isArray(list) ? list : []);
+  const bytes = new TextEncoder().encode(json);
+  try{
+    if(window.CompressionStream){
+      const cs = new CompressionStream("gzip");
+      const writer = cs.writable.getWriter();
+      writer.write(bytes);
+      writer.close();
+      const compressed = new Uint8Array(await new Response(cs.readable).arrayBuffer());
+      let binary = "";
+      compressed.forEach(b => binary += String.fromCharCode(b));
+      return "Z1:" + btoa(binary);
+    }
+  }catch(e){ /* اگه فشرده‌سازی جواب نداد، بدون فشرده‌سازی ادامه بده */ }
+  try{
+    let binary = "";
+    bytes.forEach(b => binary += String.fromCharCode(b));
+    return "R1:" + btoa(binary);
+  }catch(e){ return ""; }
+}
+async function decodeNotebookCode(code){
+  try{
+    const raw = String(code || "").trim();
+    let prefix = null, payload = raw;
+    if(raw.startsWith("Z1:") || raw.startsWith("R1:")){
+      prefix = raw.slice(0, 3);
+      payload = raw.slice(3);
+    }
+    const binary = atob(payload);
+    const bytes = new Uint8Array(binary.length);
+    for(let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    let jsonBytes = bytes;
+    if(prefix === "Z1:"){
+      if(!window.DecompressionStream) return null;
+      const ds = new DecompressionStream("gzip");
+      const writer = ds.writable.getWriter();
+      writer.write(bytes);
+      writer.close();
+      jsonBytes = new Uint8Array(await new Response(ds.readable).arrayBuffer());
+    }
+    const json = new TextDecoder().decode(jsonBytes);
+    const list = JSON.parse(json);
+    return Array.isArray(list) ? list : null;
+  }catch(e){ return null; }
+}
+async function copyTextToClipboard(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(err){
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      return true;
+    }catch(e2){
+      return false;
+    }
+  }
+}
+
+/* ---- رنگ‌ها ---- */
+function buildColorRow(container, selected, onPick){
+  if(!container) return;
+  container.innerHTML = "";
+  NOTEBOOK_COLORS.forEach(color => {
+    const sw = document.createElement("button");
+    sw.type = "button";
+    sw.className = "nbColorSwatch" + (color === selected ? " selected" : "");
+    sw.style.background = color;
+    sw.addEventListener("click", ()=>{
+      container.querySelectorAll(".nbColorSwatch").forEach(el => el.classList.remove("selected"));
+      sw.classList.add("selected");
+      onPick(color);
+    });
+    container.appendChild(sw);
+  });
+}
+
+/* ---- صفحه‌ی اصلی (هاب) ---- */
+$("notebookBtn")?.addEventListener("click", ()=> showPage("notebookPage"));
+$("notebookBack")?.addEventListener("click", ()=> showPage("profilePage"));
+
+$("notebookGoCreateBtn")?.addEventListener("click", ()=>{
+  if($("notebookCreateName")) $("notebookCreateName").value = "";
+  notebookCreateColor = NOTEBOOK_COLORS[0];
+  buildColorRow($("notebookCreateColorRow"), notebookCreateColor, c => notebookCreateColor = c);
+  renderNotebookManageList();
+  showPage("notebookCreatePage");
+});
+$("notebookCreateBack")?.addEventListener("click", ()=> showPage("notebookPage"));
+
+$("notebookGoListBtn")?.addEventListener("click", ()=>{
+  if($("notebookPasteBox")) $("notebookPasteBox").style.display = "none";
+  renderNotebookCardsList();
+  showPage("notebookListPage");
+});
+$("notebookListBack")?.addEventListener("click", ()=> showPage("notebookPage"));
+
+/* ---- ساخت دفتر ---- */
+$("notebookCreateConfirmBtn")?.addEventListener("click", ()=>{
+  const name = ($("notebookCreateName")?.value || "").trim();
+  if(!name){ showToast("اسم دفتر را وارد کن"); return; }
+  createNotebookRecord(name, notebookCreateColor, []);
+  showToast("دفتر «" + name + "» ساخته شد");
+  if($("notebookCreateName")) $("notebookCreateName").value = "";
+  notebookCreateColor = NOTEBOOK_COLORS[0];
+  buildColorRow($("notebookCreateColorRow"), notebookCreateColor, c => notebookCreateColor = c);
+  renderNotebookManageList();
+});
+
+function renderNotebookManageList(){
+  const box = $("notebookManageList");
+  if(!box) return;
+  box.innerHTML = "";
+  const meta = loadNotebooksMeta();
+  meta.forEach(nb => {
+    const wrap = document.createElement("div");
+    wrap.className = "nbManageItem";
+
+    const row = document.createElement("div");
+    row.className = "nbManageRow";
+    const colorDot = document.createElement("span");
+    colorDot.className = "nbManageColor";
+    colorDot.style.background = nb.color || NOTEBOOK_COLORS[0];
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "nbManageName";
+    nameSpan.textContent = nb.name;
+    row.appendChild(colorDot);
+    row.appendChild(nameSpan);
+
+    const editBtn = document.createElement("button");
+    editBtn.type = "button"; editBtn.className = "nbChipDel"; editBtn.textContent = "ویرایش";
+    row.appendChild(editBtn);
+
+    const delBtn = document.createElement("button");
+    delBtn.type = "button"; delBtn.className = "nbChipDel"; delBtn.textContent = "حذف";
+    row.appendChild(delBtn);
+
+    const editBox = document.createElement("div");
+    editBox.className = "nbManageEditBox";
+    editBox.style.display = "none";
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.className = "modalInput";
+    nameInput.value = nb.name;
+    const colorRow = document.createElement("div");
+    colorRow.className = "nbColorRow";
+    colorRow.style.marginBottom = "10px";
+    const saveBtn = document.createElement("button");
+    saveBtn.type = "button"; saveBtn.className = "modalBtn"; saveBtn.textContent = "ذخیره";
+    editBox.appendChild(nameInput);
+    editBox.appendChild(colorRow);
+    editBox.appendChild(saveBtn);
+
+    let editColor = nb.color || NOTEBOOK_COLORS[0];
+    editBtn.addEventListener("click", ()=>{
+      const show = editBox.style.display === "none";
+      editBox.style.display = show ? "block" : "none";
+      if(show) buildColorRow(colorRow, editColor, c => editColor = c);
+    });
+    delBtn.addEventListener("click", ()=>{
+      if(!confirm("دفتر «" + nb.name + "» برای همیشه حذف شود؟")) return;
+      const ok = deleteNotebookById(nb.id);
+      if(!ok){ showToast("دفتر پیدا نشد"); return; }
+      showToast("دفتر حذف شد");
+      renderNotebookManageList();
+    });
+    saveBtn.addEventListener("click", ()=>{
+      const newName = (nameInput.value || "").trim();
+      if(!newName){ showToast("اسم نمی‌تواند خالی باشد"); return; }
+      renameNotebookRecord(nb.id, newName, editColor);
+      showToast("ذخیره شد");
+      editBox.style.display = "none";
+      renderNotebookManageList();
+    });
+
+    wrap.appendChild(row);
+    wrap.appendChild(editBox);
+    box.appendChild(wrap);
+  });
+}
+
+/* رنگ را روشن‌تر/تیره‌تر می‌کند تا حالت گرادیانِ جلد چرمی دربیاید */
+function shadeColor(hex, percent){
+  try{
+    hex = String(hex || "").replace("#", "");
+    if(hex.length === 3) hex = hex.split("").map(c => c + c).join("");
+    const num = parseInt(hex, 16);
+    let r = (num >> 16) + Math.round(255 * percent);
+    let g = ((num >> 8) & 0x00FF) + Math.round(255 * percent);
+    let b = (num & 0x0000FF) + Math.round(255 * percent);
+    r = Math.max(Math.min(255, r), 0);
+    g = Math.max(Math.min(255, g), 0);
+    b = Math.max(Math.min(255, b), 0);
+    return "#" + (0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1);
+  }catch(e){ return hex; }
+}
+
+/* ---- لیست دفترها (دوتا-دوتا، هرکدوم مثل یه کتاب کوچیک به رنگ خودش) ---- */
+function renderNotebookCardsList(){
+  const box = $("notebookCardsList");
+  if(!box) return;
+  box.className = "nbBookGrid";
+  box.innerHTML = "";
+  const meta = loadNotebooksMeta();
+  meta.forEach(nb => {
+    const color = nb.color || NOTEBOOK_COLORS[0];
+    const dataRaw = loadJSON(getNotebookDataKey(nb.id), []);
+    const count = Array.isArray(dataRaw) ? dataRaw.length : 0;
+
+    const card = document.createElement("div");
+    card.className = "nbBookCard";
+    card.style.background = "linear-gradient(145deg," + shadeColor(color, -0.05) + "," + shadeColor(color, -0.35) + ")";
+
+    const spine = document.createElement("div");
+    spine.className = "nbBookCardSpine";
+    spine.style.background = "linear-gradient(90deg," + shadeColor(color, -0.4) + "," + shadeColor(color, -0.1) + " 35%," + shadeColor(color, -0.4) + ")";
+
+    const pages = document.createElement("div");
+    pages.className = "nbBookCardPages";
+    const title = document.createElement("div");
+    title.className = "nbBookCardTitle";
+    title.textContent = nb.name;
+    const countEl = document.createElement("div");
+    countEl.className = "nbBookCardCount";
+    countEl.textContent = count + " یادداشت";
+    pages.appendChild(title);
+    pages.appendChild(countEl);
+
+    card.appendChild(pages);
+    card.appendChild(spine);
+    card.addEventListener("click", ()=> openNotebookDetail(nb.id));
+    box.appendChild(card);
+  });
+}
+
+$("notebookPasteCodeBtn")?.addEventListener("click", ()=>{
+  const box = $("notebookPasteBox");
+  if(!box) return;
+  const show = box.style.display === "none";
+  box.style.display = show ? "block" : "none";
+  if(show) $("notebookPasteInput")?.focus();
+});
+
+$("notebookPasteConfirmBtn")?.addEventListener("click", async ()=>{
+  const raw = ($("notebookPasteInput")?.value || "").trim();
+  if(!raw){ showToast("کد را وارد کن"); return; }
+  const list = await decodeNotebookCode(raw);
+  if(!list){ showToast("کد نامعتبر است"); return; }
+  const name = ($("notebookPasteName")?.value || "").trim() || "دفتر واردشده";
+  const color = NOTEBOOK_COLORS[Math.floor(Math.random() * NOTEBOOK_COLORS.length)];
+  createNotebookRecord(name, color, list);
+  showToast("دفتر «" + name + "» اضافه شد ✓");
+  if($("notebookPasteInput")) $("notebookPasteInput").value = "";
+  if($("notebookPasteName")) $("notebookPasteName").value = "";
+  if($("notebookPasteBox")) $("notebookPasteBox").style.display = "none";
+  renderNotebookCardsList();
+});
+
+/* ---- جزئیات یک دفتر ---- */
+async function refreshNotebookDetail(){
+  const meta = loadNotebooksMeta();
+  const nb = meta.find(n => n.id === notebookDetailId);
+  if(!nb) return;
+  const targetId = nb.id;
+  if($("notebookDetailTitle")) $("notebookDetailTitle").textContent = nb.name;
+  if($("notebookDetailDesc")){
+    $("notebookDetailDesc").textContent =
+      "این دفتر فقط روی همین دستگاه ذخیره می‌شه. کد پایین از روی آخرین اطلاعات همین دفتر ساخته می‌شه — یعنی با هر یادداشت یا جلد تازه‌ای که اضافه یا ویرایش کنی، این کد عوض می‌شه. اگه یادداشت‌هات زیاد بشه کد طبیعتاً طولانی‌تر می‌شه (چون کل اطلاعات توشه)، برای همین قبل از ساختنش خودکار فشرده می‌شه. کدش رو کپی کن تا با «جای‌گذاری کد» توی دستگاه دیگه، همین دفتر رو اونجا هم داشته باشی.";
+  }
+  if($("notebookDetailCode")) $("notebookDetailCode").value = "در حال آماده‌سازی کد...";
+  const list = loadJSON(getNotebookDataKey(nb.id), []);
+  const code = await encodeNotebookCode(Array.isArray(list) ? list : []);
+  if(notebookDetailId === targetId && $("notebookDetailCode")) $("notebookDetailCode").value = code;
+}
+function openNotebookDetail(id){
+  notebookDetailId = id;
+  showPage("notebookDetailPage");
+  refreshNotebookDetail();
+}
+$("notebookDetailBack")?.addEventListener("click", ()=> showPage("notebookListPage"));
+
+$("notebookDetailReadBtn")?.addEventListener("click", ()=>{
+  if(!notebookDetailId) return;
+  setActiveNotebookId(notebookDetailId);
+  openNotebookReader();
+  showPage("notebookReadPage");
+});
+$("notebookDetailEditBtn")?.addEventListener("click", ()=>{
+  if(!notebookDetailId) return;
+  setActiveNotebookId(notebookDetailId);
+  renderNotebookEditList();
+  showPage("notebookEditPage");
+});
+$("notebookDetailCopyBtn")?.addEventListener("click", async ()=>{
+  const code = $("notebookDetailCode")?.value || "";
+  if(!code){ showToast("چیزی برای کپی نیست"); return; }
+  const ok = await copyTextToClipboard(code);
+  showToast(ok ? "کد کپی شد" : "کپی نشد؛ کد را دستی انتخاب کنید");
+});
+
+$("notebookReadBack")?.addEventListener("click", ()=>{
+  if(notebookDetailId) openNotebookDetail(notebookDetailId);
+  else showPage("notebookPage");
+});
+$("notebookEditBack")?.addEventListener("click", ()=>{
+  if(notebookDetailId) openNotebookDetail(notebookDetailId);
+  else showPage("notebookPage");
+});
+$("notebookEntryBack")?.addEventListener("click", ()=> showPage("notebookEditPage"));
+
+
+function coverSizePx(size){
+  if(size === "s") return { w: 48, h: 66 };
+  if(size === "l") return { w: 92, h: 128 };
+  return { w: 68, h: 94 };
+}
+
+function estimatePageCapacity(note, isFirstOfEntry){
+  const lineChars = 26;
+  let lines = 15; /* هر صفحه معمولی دقیقاً ۱۵ خط */
+  const covers = (note && note.covers) || [];
+  if(isFirstOfEntry && covers.length){
+    let extra = 0;
+    covers.forEach(c => {
+      const dims = coverSizePx(c.size || "m");
+      const y = Number.isFinite(c.y) ? c.y : 8;
+      if(y < 55) extra = Math.max(extra, Math.ceil(dims.h / 27) + 1);
+    });
+    lines = Math.max(6, 15 - extra);
+  }
+  return lines * lineChars;
+}
+
+function paginateNoteText(note){
+  const full = String(note.text || "").trim();
+  if(!full){
+    return [{ note, text: "", isFirst: true, date: note.updatedAt || note.createdAt }];
+  }
+  /* فقط روی فاصله/خط‌جدید بشکن؛ کلمه نصف نشود */
+  const tokens = full.split(/(\s+)/);
+  const pages = [];
+  let buf = "";
+  let isFirst = true;
+  function capacity(){ return estimatePageCapacity(note, isFirst); }
+
+  for(let i = 0; i < tokens.length; i++){
+    const piece = tokens[i];
+    /* اگر خود توکن از ظرفیت بزرگ‌تر است، همان را در صفحه جدید بگذار */
+    if(piece.replace(/\s/g,"").length > capacity()){
+      if(buf.replace(/\s/g,"").length){
+        pages.push({ note, text: buf.replace(/\s+$/,""), isFirst, date: note.updatedAt || note.createdAt });
+        buf = "";
+        isFirst = false;
+      }
+      pages.push({ note, text: piece.trim(), isFirst, date: note.updatedAt || note.createdAt });
+      isFirst = false;
+      continue;
+    }
+    const trial = buf + piece;
+    if(trial.length > capacity() && buf.replace(/\s/g,"").length > 0){
+      pages.push({ note, text: buf.replace(/\s+$/,""), isFirst, date: note.updatedAt || note.createdAt });
+      buf = /^\s+$/.test(piece) ? "" : piece.replace(/^\s+/, "");
+      isFirst = false;
+    }else{
+      buf = trial;
+    }
+  }
+  if(buf.replace(/\s/g,"").length || !pages.length){
+    pages.push({ note, text: buf.replace(/\s+$/,""), isFirst, date: note.updatedAt || note.createdAt });
+  }
+  return pages;
+}
+
+function buildAllNotebookPages(){
+  const entries = loadNotebook().slice().sort((a,b)=> (a.createdAt||0) - (b.createdAt||0));
+  const pages = [];
+  entries.forEach(note => {
+    paginateNoteText(note).forEach(p => pages.push(p));
+  });
+  return pages;
+}
+
+function coversAvoidPadding(covers, isFirst){
+  if(!isFirst || !covers || !covers.length) return "";
+  let padTop = 0;
+  covers.forEach(c => {
+    const dims = coverSizePx(c.size || "m");
+    const y = Number.isFinite(c.y) ? c.y : 8;
+    if(y < 48) padTop = Math.max(padTop, Math.round(dims.h + 10));
+  });
+  return padTop ? `padding-top:${padTop}px;` : "";
+}
+
+function buildNotebookPageHTML(pageObj){
+  const note = pageObj.note || {};
+  const isFirst = !!pageObj.isFirst;
+  const covers = note.covers || [];
+  let coverHtml = "";
+  if(isFirst){
+    covers.forEach(c => {
+      if(!c.workCover || !isValidUrl(c.workCover)) return;
+      const size = c.size || "m";
+      const x = Number.isFinite(c.x) ? c.x : 72;
+      const y = Number.isFinite(c.y) ? c.y : 8;
+      coverHtml += `<div class="nbPageCover sz-${size}" style="left:${x}%;top:${y}%;transform:translateX(-50%)">
+        <img src="${escapeHtml(c.workCover)}" alt="">
+      </div>`;
+    });
+  }
+  const text = escapeHtml(pageObj.text || "").replace(/\n/g, "<br>");
+  const date = formatDateFa(pageObj.date || note.updatedAt || note.createdAt);
+  const avoid = coversAvoidPadding(covers, isFirst);
+  return `${coverHtml}
+    <div class="nbPageText" style="${avoid}">${text || ""}</div>
+    <div class="nbPageDate">${date}</div>`;
+}
+
+function openNotebookReader(){
+  notebookReadListCache = buildAllNotebookPages();
+  notebookReadIndex = 0;
+  renderNotebookReaderPage(false);
+}
+
+function renderNotebookReaderPage(animate){
+  const page = $("nbBookPage");
+  const inner = $("nbPageInner");
+  const indicator = $("nbPageIndicator");
+  const prev = $("nbPrevPage");
+  const next = $("nbNextPage");
+  if(!inner || !page) return;
+
+  const list = notebookReadListCache;
+  if(!list.length){
+    inner.innerHTML = `<div style="display:flex;height:100%;align-items:center;justify-content:center;text-align:center;color:#8a6a4a;font-size:13px;line-height:2;padding:20px;direction:rtl">دفتر خالی است.<br>از ویرایش یک صفحه بنویس.</div>`;
+    if(indicator) indicator.textContent = "۰ / ۰";
+    if(prev) prev.disabled = true;
+    if(next) next.disabled = true;
+    return;
+  }
+
+  notebookReadIndex = Math.max(0, Math.min(notebookReadIndex, list.length - 1));
+  const pageObj = list[notebookReadIndex];
+
+  const apply = ()=>{
+    inner.innerHTML = buildNotebookPageHTML(pageObj);
+    if(indicator) indicator.textContent = (notebookReadIndex + 1) + " / " + list.length;
+    if(prev) prev.disabled = notebookReadIndex <= 0;
+    if(next) next.disabled = notebookReadIndex >= list.length - 1;
+    page.classList.remove("turning");
+    notebookTurning = false;
+  };
+
+  if(animate){
+    notebookTurning = true;
+    page.classList.add("turning");
+    setTimeout(apply, 220);
+  }else{
+    apply();
+  }
+}
+
+function notebookTurn(delta){
+  if(notebookTurning) return;
+  const nextIdx = notebookReadIndex + delta;
+  if(nextIdx < 0 || nextIdx >= notebookReadListCache.length) return;
+  notebookReadIndex = nextIdx;
+  renderNotebookReaderPage(true);
+}
+
+$("nbPrevPage")?.addEventListener("click", ()=> notebookTurn(-1));
+$("nbNextPage")?.addEventListener("click", ()=> notebookTurn(1));
+
+/* سوایپ RTL: کشیدن به چپ = صفحه بعد، به راست = قبلی */
+(function bindNotebookSwipe(){
+  const frame = $("nbBookFrame");
+  if(!frame || frame.dataset.swipeBound === "2") return;
+  frame.dataset.swipeBound = "2";
+  let sx = null, sy = null;
+  frame.addEventListener("touchstart", e=>{
+    if(e.touches?.length !== 1) return;
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+  }, {passive:true});
+  frame.addEventListener("touchend", e=>{
+    if(sx == null) return;
+    const x = e.changedTouches?.[0]?.clientX ?? sx;
+    const y = e.changedTouches?.[0]?.clientY ?? sy;
+    const dx = x - sx;
+    const dy = y - sy;
+    sx = null; sy = null;
+    if(Math.abs(dx) < 36 || Math.abs(dx) < Math.abs(dy) * 1.1) return;
+    /* از چپ به راست = صفحه بعد */
+    notebookTurn(dx > 0 ? 1 : -1);
+  }, {passive:true});
+  let mx = null;
+  frame.addEventListener("mousedown", e=>{ mx = e.clientX; });
+  window.addEventListener("mouseup", e=>{
+    if(mx == null) return;
+    const dx = e.clientX - mx;
+    mx = null;
+    if(Math.abs(dx) < 40) return;
+    notebookTurn(dx > 0 ? 1 : -1);
+  });
+  frame.addEventListener("wheel", e=>{
+    if(Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 10){
+      e.preventDefault();
+      notebookTurn(e.deltaX < 0 ? 1 : -1);
+    }else if(Math.abs(e.deltaY) > 30){
+      e.preventDefault();
+      notebookTurn(e.deltaY > 0 ? 1 : -1);
+    }
+  }, {passive:false});
+})();
+
+function renderNotebookEditList(){
+  const box = $("notebookEditList");
+  if(!box) return;
+  const list = loadNotebook().slice().sort((a,b)=> (b.updatedAt||0) - (a.updatedAt||0));
+  box.innerHTML = "";
+  if(!list.length){
+    box.innerHTML = `<div class="empty">یادداشتی نیست. دکمه «یادداشت جدید» را بزنید.</div>`;
+    return;
+  }
+  list.forEach(note => {
+    const item = document.createElement("div");
+    item.className = "notebookEditItem";
+    const firstCover = (note.covers || [])[0];
+    let cover = `<div class="neCover"></div>`;
+    if(firstCover && firstCover.workCover && isValidUrl(firstCover.workCover)){
+      cover = `<div class="neCover"><img src="${escapeHtml(firstCover.workCover)}" alt=""></div>`;
+    }
+    const title = firstCover?.workTitle || (note.covers?.length ? (note.covers.length + " جلد") : "یادداشت");
+    item.innerHTML = `${cover}<div class="neInfo"><div class="neTitle">${escapeHtml(title)}</div><div class="nePreview">${escapeHtml((note.text||"").slice(0,60) || "بدون متن")}</div></div><span style="color:#8d7660">‹</span>`;
+    item.addEventListener("click", ()=> openNotebookEntry(note.id));
+    box.appendChild(item);
+  });
+}
+
+$("notebookAddEntryBtn")?.addEventListener("click", ()=> openNotebookEntry(null));
+
+function openNotebookEntry(id){
+  notebookEditingId = id;
+  notebookCovers = [];
+  notebookActiveCoverIdx = 0;
+  const list = loadNotebook();
+  const note = id ? list.find(n => n.id === id) : null;
+  if($("notebookEntryTitle")) $("notebookEntryTitle").textContent = note ? "ویرایش یادداشت" : "یادداشت جدید";
+  if($("notebookEntryText")) $("notebookEntryText").value = note ? (note.text || "") : "";
+  const delBtn = $("notebookDeleteEntryBtn");
+  if(delBtn) delBtn.style.display = note ? "block" : "none";
+
+  if(note && Array.isArray(note.covers)){
+    notebookCovers = note.covers.map(c => ({...c}));
+  }
+  renderNotebookCoversList();
+  updateNotebookLayoutUI();
+  updateNotebookCapacityHint();
+  if($("notebookAnimeSearchBox")) $("notebookAnimeSearchBox").style.display = "none";
+  if($("notebookAnimeSearchInput")) $("notebookAnimeSearchInput").value = "";
+  if($("notebookAnimeSearchResults")) $("notebookAnimeSearchResults").innerHTML = "";
+  showPage("notebookEntryPage");
+}
+
+function renderNotebookCoversList(){
+  const box = $("notebookCoversList");
+  if(!box) return;
+  box.innerHTML = "";
+  if(!notebookCovers.length){
+    box.innerHTML = `<div class="keywordHint">هنوز جلدی اضافه نشده</div>`;
+    return;
+  }
+  notebookCovers.forEach((c, i) => {
+    const row = document.createElement("div");
+    row.className = "nbCoverChip" + (i === notebookActiveCoverIdx ? " active" : "");
+    const img = (c.workCover && isValidUrl(c.workCover))
+      ? `<img src="${escapeHtml(c.workCover)}" alt="">`
+      : `<div style="width:28px;height:38px;background:#3a2a1c;border-radius:3px"></div>`;
+    row.innerHTML = `${img}<span class="nbChipTitle">${escapeHtml(c.workTitle || "جلد")}</span>
+      <button type="button" class="nbChipDel">حذف</button>`;
+    row.addEventListener("click", (e)=>{
+      if(e.target.closest(".nbChipDel")) return;
+      notebookActiveCoverIdx = i;
+      renderNotebookCoversList();
+      updateNotebookLayoutUI();
+    });
+    row.querySelector(".nbChipDel")?.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      notebookCovers.splice(i, 1);
+      if(notebookActiveCoverIdx >= notebookCovers.length) notebookActiveCoverIdx = Math.max(0, notebookCovers.length - 1);
+      renderNotebookCoversList();
+      updateNotebookLayoutUI();
+      updateNotebookCapacityHint();
+    });
+    box.appendChild(row);
+  });
+}
+
+function updateNotebookLayoutUI(){
+  const layoutBox = $("notebookLayoutBox");
+  const page = $("nbLayoutPage");
+  if(!layoutBox || !page) return;
+  if(!notebookCovers.length){
+    layoutBox.style.display = "none";
+    return;
+  }
+  layoutBox.style.display = "block";
+  /* پاک کردن جلدهای قبلی پیش‌نمایش */
+  page.querySelectorAll(".nbLayoutCover").forEach(el => el.remove());
+
+  notebookCovers.forEach((c, i) => {
+    const el = document.createElement("div");
+    el.className = "nbLayoutCover sz-" + (c.size || "m");
+    el.dataset.idx = String(i);
+    el.style.left = (Number.isFinite(c.x) ? c.x : 72) + "%";
+    el.style.top = (Number.isFinite(c.y) ? c.y : 8) + "%";
+    el.style.transform = "translateX(-50%)";
+    if(i === notebookActiveCoverIdx) el.style.outline = "2px solid #e0a94e";
+    if(c.workCover && isValidUrl(c.workCover)){
+      el.innerHTML = `<img src="${escapeHtml(c.workCover)}" alt="">`;
+    }
+    page.appendChild(el);
+  });
+
+  const active = notebookCovers[notebookActiveCoverIdx];
+  const size = active ? (active.size || "m") : "m";
+  document.querySelectorAll(".nbSizeBtn").forEach(btn=>{
+    btn.classList.toggle("active", btn.getAttribute("data-size") === size);
+  });
+
+  /* محل‌های مجاز بر اساس سایز: بزرگ=راست/چپ، متوسط=راست/وسط/چپ، کوچک=راست/وسط‌راست/وسط‌چپ/چپ */
+  const posValues = { tr: 78, tcr: 59, tc: 50, tcl: 41, tl: 22 };
+  const allowedPos = size === "l" ? ["tr", "tl"]
+    : size === "m" ? ["tr", "tc", "tl"]
+    : ["tr", "tcr", "tcl", "tl"];
+
+  document.querySelectorAll(".nbPosBtn").forEach(btn=>{
+    const p = btn.getAttribute("data-pos");
+    btn.style.display = allowedPos.includes(p) ? "" : "none";
+  });
+
+  if(active){
+    const allowedX = allowedPos.map(p => posValues[p]);
+    if(!allowedX.includes(Math.round(active.x))){
+      active.x = 78;
+      active.y = 6;
+    }
+  }
+
+  const ax = active ? Math.round(Number.isFinite(active.x) ? active.x : 78) : null;
+  document.querySelectorAll(".nbPosBtn").forEach(btn=>{
+    const p = btn.getAttribute("data-pos");
+    btn.classList.toggle("active", ax !== null && ax === posValues[p]);
+  });
+}
+
+document.querySelectorAll(".nbSizeBtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const c = notebookCovers[notebookActiveCoverIdx];
+    if(!c) return;
+    c.size = btn.getAttribute("data-size") || "m";
+    updateNotebookLayoutUI();
+    try{ updateNotebookCapacityHint(); }catch(e){}
+  });
+});
+
+document.querySelectorAll(".nbPosBtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const c = notebookCovers[notebookActiveCoverIdx];
+    if(!c) return;
+    const p = btn.getAttribute("data-pos");
+    /* جابه‌جایی دستی حذف شده — فقط این محل‌های ثابت مجاز است */
+    if(p === "tr"){ c.x = 78; c.y = 6; }
+    if(p === "tcr"){ c.x = 59; c.y = 6; }
+    if(p === "tc"){ c.x = 50; c.y = 6; }
+    if(p === "tcl"){ c.x = 41; c.y = 6; }
+    if(p === "tl"){ c.x = 22; c.y = 6; }
+    updateNotebookLayoutUI();
+    try{ updateNotebookCapacityHint(); }catch(e){}
+  });
+});
+
+(function bindCoverSelect(){
+  /* بدون درگ: فقط با کلیک روی جلد در پیش‌نمایش، آن را فعال کن */
+  const page = $("nbLayoutPage");
+  if(!page || page.dataset.dragBound === "3") return;
+  page.dataset.dragBound = "3";
+
+  page.addEventListener("click", e=>{
+    const cover = e.target.closest(".nbLayoutCover");
+    if(!cover) return;
+    notebookActiveCoverIdx = parseInt(cover.dataset.idx, 10) || 0;
+    updateNotebookLayoutUI();
+  });
+})();
+
+$("notebookPickAnimeBtn")?.addEventListener("click", ()=>{
+  const box = $("notebookAnimeSearchBox");
+  if(!box) return;
+  const show = box.style.display === "none";
+  box.style.display = show ? "block" : "none";
+  if(show) $("notebookAnimeSearchInput")?.focus();
+});
+
+function renderNotebookAnimeSearch(){
+  const q = normalizeText($("notebookAnimeSearchInput")?.value || "");
+  const box = $("notebookAnimeSearchResults");
+  if(!box) return;
+  box.innerHTML = "";
+  let list = allWorks.slice();
+  if(q){
+    list = list.filter(w =>
+      normalizeText(w.title).includes(q) ||
+      normalizeText(w.Author).includes(q) ||
+      normalizeText(w.keywords).includes(q)
+    ).slice(0, 30);
+  }else{
+    list = list.slice(0, 20);
+  }
+  if(!list.length){
+    box.innerHTML = `<div class="empty" style="padding:16px">نتیجه‌ای نیست.</div>`;
+    return;
+  }
+  list.forEach(w => {
+    const row = document.createElement("div");
+    row.className = "notebookAnimeResultItem";
+    const img = (w.coverUrl && isValidUrl(w.coverUrl))
+      ? `<img src="${escapeHtml(w.coverUrl)}" alt="">`
+      : `<div style="width:36px;height:50px;background:#3a2a1c;border-radius:4px"></div>`;
+    row.innerHTML = `${img}<span>${escapeHtml(w.title || "بدون عنوان")}</span>`;
+    row.addEventListener("click", ()=>{
+      if(notebookCovers.length >= 4){
+        showToast("حداکثر ۴ جلد روی یک صفحه");
+        return;
+      }
+      notebookCovers.push({
+        workId: w.id,
+        workTitle: w.title || "",
+        workCover: w.coverUrl || "",
+        size: "m",
+        x: 78,
+        y: 6
+      });
+      notebookActiveCoverIdx = notebookCovers.length - 1;
+      renderNotebookCoversList();
+      updateNotebookLayoutUI();
+      updateNotebookCapacityHint();
+      if($("notebookAnimeSearchBox")) $("notebookAnimeSearchBox").style.display = "none";
+      showToast("جلد اضافه شد — جایش را تنظیم کن");
+    });
+    box.appendChild(row);
+  });
+}
+$("notebookAnimeSearchInput")?.addEventListener("input", renderNotebookAnimeSearch);
+$("notebookAnimeSearchClear")?.addEventListener("click", ()=>{
+  if($("notebookAnimeSearchInput")) $("notebookAnimeSearchInput").value = "";
+  renderNotebookAnimeSearch();
+});
+
+function updateNotebookCapacityHint(){
+  const hint = $("notebookCharsHint");
+  const text = ($("notebookEntryText")?.value || "");
+  if(!hint) return;
+  const fakeNote = { text, covers: notebookCovers.slice() };
+  const pages = paginateNoteText(fakeNote);
+  const n = pages.length;
+  const firstCap = estimatePageCapacity(fakeNote, true);
+  const used = text.trim().length;
+  if(!used){
+    hint.textContent = "صفحه خالی — حدود " + firstCap + " کاراکتر در صفحه اول";
+    hint.style.color = "#8d7660";
+    return;
+  }
+  if(n <= 1){
+    const left = Math.max(0, firstCap - used);
+    hint.textContent = "۱ صفحه — حدود " + left + " کاراکتر تا پر شدن";
+    hint.style.color = left < 30 ? "#c37934" : "#8d7660";
+  }else{
+    hint.textContent = "متن در " + n + " صفحه جا می‌گیرد (موقع مطالعه ورق بزن)";
+    hint.style.color = "#e0a94e";
+  }
+}
+$("notebookEntryText")?.addEventListener("input", updateNotebookCapacityHint);
+
+$("notebookSaveEntryBtn")?.addEventListener("click", ()=>{
+  const text = ($("notebookEntryText")?.value || "").trim();
+  if(!text && !notebookCovers.length){
+    showToast("حداقل متن یا یک جلد وارد کنید");
+    return;
+  }
+  const list = loadNotebook();
+  const now = Date.now();
+  const payload = {
+    text,
+    covers: notebookCovers.map(c => ({
+      workId: c.workId,
+      workTitle: c.workTitle || "",
+      workCover: c.workCover || "",
+      size: c.size || "m",
+      x: Number.isFinite(c.x) ? c.x : 72,
+      y: Number.isFinite(c.y) ? c.y : 8
+    })),
+    updatedAt: now
+  };
+
+  if(notebookEditingId){
+    const idx = list.findIndex(n => n.id === notebookEditingId);
+    if(idx >= 0) Object.assign(list[idx], payload);
+  }else{
+    list.unshift({ id: uid(), createdAt: now, ...payload });
+  }
+  saveNotebook(list);
+  showToast("در دفتر ذخیره شد");
+  renderNotebookEditList();
+  showPage("notebookEditPage");
+});
+
+$("notebookDeleteEntryBtn")?.addEventListener("click", ()=>{
+  if(!notebookEditingId) return;
+  if(!confirm("این یادداشت حذف شود؟")) return;
+  const list = loadNotebook().filter(n => n.id !== notebookEditingId);
+  saveNotebook(list);
+  showToast("حذف شد");
+  renderNotebookEditList();
+  showPage("notebookEditPage");
+});
+
+
 
 async function init(){
   fillGenreSelect();
