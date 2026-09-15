@@ -1677,10 +1677,10 @@ let lastAuthError = "";
 function showToast(text){
   const t = $("toast");
   if(!t) return;
-  t.textContent = text;
+  t.textContent = String(text || "");
   t.classList.add("show");
   clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(()=> t.classList.remove("show"), 2800);
+  window.__toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2800);
 }
 
 function formatAppwriteError(e){
@@ -1737,9 +1737,12 @@ $("copyAuthErrorBtn")?.addEventListener("click", async ()=>{
 });
 
 function escapeHtml(v){
-  return String(v ?? "")
-    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  return String(v == null ? "" : v)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
 function normalizeText(s){
@@ -1753,10 +1756,11 @@ function uid(){
 }
 
 function isValidUrl(v){
+  if(!v || typeof v !== "string") return false;
   try{
-    const u = new URL(v);
+    const u = new URL(v.trim());
     return u.protocol === "http:" || u.protocol === "https:";
-  }catch{ return false; }
+  }catch(e){ return false; }
 }
 
 function typeLabel(type){
@@ -1766,12 +1770,20 @@ function typeLabel(type){
 function loadJSON(key, fallback){
   try{
     const raw = localStorage.getItem(key);
-    if(raw == null) return fallback;
-    return JSON.parse(raw);
-  }catch{ return fallback; }
+    if(raw == null || raw === "") return fallback;
+    const parsed = JSON.parse(raw);
+    return parsed == null ? fallback : parsed;
+  }catch(e){
+    return fallback;
+  }
 }
 function saveJSON(key, value){
-  localStorage.setItem(key, JSON.stringify(value));
+  try{
+    localStorage.setItem(key, JSON.stringify(value));
+  }catch(e){
+    /* quota exceeded یا private mode */
+    try{ console.warn("localStorage write failed:", key, e); }catch(_){}
+  }
 }
 
 /* ========== Users & Coins (Appwrite app_users) ========== */
@@ -1916,10 +1928,16 @@ async function fetchUserById(id){
 async function updateUserDoc(id, data){
   if(!appwriteReady || !databases || !id) throw new Error("no db");
   /* Appwrite Integer باید عدد واقعی باشد */
-  const payload = { ...data };
-  if("coins" in payload) payload.coins = toInt(payload.coins, 0);
+  const payload = Object.assign({}, data || {});
+  if("coins" in payload) payload.coins = Math.max(0, toInt(payload.coins, 0));
   if("unlimitedUntil" in payload) payload.unlimitedUntil = toInt(payload.unlimitedUntil, 0);
   if("lastDailyClaim" in payload) payload.lastDailyClaim = toInt(payload.lastDailyClaim, 0);
+  if("downloaded" in payload && Array.isArray(payload.downloaded)){
+    payload.downloaded = payload.downloaded.map(String);
+  }
+  if("saved" in payload && Array.isArray(payload.saved)){
+    payload.saved = payload.saved.map(String);
+  }
   const doc = await databases.updateDocument(DATABASE_ID, COLLECTION_USERS, id, payload);
   return mapUserDoc(doc);
 }
@@ -2064,8 +2082,8 @@ function trySpendCoinsForDownload(work){
     ? ("برای دانلود این انیمه سینمایی " + cost + " سکه از شما کم می‌شود. تأیید می‌کنید؟")
     : ("برای دانلود این قسمت " + cost + " سکه از شما کم می‌شود. تأیید می‌کنید؟");
   if(!confirm(msg)) return false;
-  /* سکه را محلی کم کن؛ ذخیره سرور در پس‌زمینه */
-  const left = have - cost;
+  /* سکه را محلی کم کن؛ ذخیره سرور در پس‌زمینه (optimistic) */
+  const left = Math.max(0, have - cost);
   currentUser.coins = left;
   updateCoinUI();
   if(currentUser.id && appwriteReady){
@@ -2074,6 +2092,7 @@ function trySpendCoinsForDownload(work){
       updateCoinUI();
     }).catch(e => {
       console.error(e);
+      /* در صورت خطای شبکه، موجودی محلی را نگه می‌داریم تا تجربهٔ دانلود قطع نشود */
       showToast("دانلود شد؛ ذخیره سکه روی سرور مشکل داشت");
     });
   }
@@ -2435,12 +2454,27 @@ async function loadWorks(){
     return;
   }
   try{
-    const res = await databases.listDocuments(
-      DATABASE_ID,
-      COLLECTION_WORKS,
-      [ appwriteQuery.orderDesc("$createdAt"), appwriteQuery.limit(100) ]
-    );
-    allWorks = (res.documents || []).map(mapWorkDoc);
+    /* دریافت کامل آثار با صفحه‌بندی داخلی (قبلاً فقط ۱۰۰ اثر اول لود می‌شد) */
+    const PAGE_SIZE = 100;
+    let docs = [];
+    let cursor = null;
+    let pages = 0;
+    const MAX_PAGES = 50;
+    while(pages < MAX_PAGES){
+      const queries = [
+        appwriteQuery.orderDesc("$createdAt"),
+        appwriteQuery.limit(PAGE_SIZE)
+      ];
+      if(cursor) queries.push(appwriteQuery.cursorAfter(cursor));
+      const res = await databases.listDocuments(DATABASE_ID, COLLECTION_WORKS, queries);
+      const batch = res.documents || [];
+      if(!batch.length) break;
+      docs = docs.concat(batch);
+      if(batch.length < PAGE_SIZE) break;
+      cursor = batch[batch.length - 1].$id;
+      pages++;
+    }
+    allWorks = docs.map(mapWorkDoc);
     renderHome();
     renderSearch();
     if(isAdminMode) renderPublishedWorks();
@@ -3432,7 +3466,7 @@ function renderSearch(){
   }
   scored.forEach(x => box.appendChild(createBookCard(x.w)));
 }
-$("searchInput")?.addEventListener("input", renderSearch);
+$("searchInput")?.addEventListener("input", debounce(renderSearch, 180));
 $("clearSearch")?.addEventListener("click", ()=>{
   if($("searchInput")) $("searchInput").value = "";
   renderSearch();
@@ -3492,24 +3526,28 @@ $("savedHistoryTab")?.addEventListener("click", ()=>{
 function openDetail(work){
   if(!work) return;
   currentWork = work;
-  pushHistory(work.id);
+  try{ pushHistory(work.id); }catch(e){}
 
-  $("detailTitle").textContent = work.title || "";
-  $("detailAuthorName").textContent = work.Author || "استودیو نامشخص";
-  $("detailGenreLine").textContent = work.genre ? work.genre : "";
-  $("detailDescription").textContent = work.description || "توضیحاتی ثبت نشده است.";
+  const titleEl = $("detailTitle");
+  if(titleEl) titleEl.textContent = work.title || "";
+  const authorEl = $("detailAuthorName");
+  if(authorEl) authorEl.textContent = work.Author || "استودیو نامشخص";
+  const genreEl = $("detailGenreLine");
+  if(genreEl) genreEl.textContent = work.genre ? work.genre : "";
+  const descEl = $("detailDescription");
+  if(descEl) descEl.textContent = work.description || "توضیحاتی ثبت نشده است.";
 
   const cover = $("detailCover");
-  cover.className = "detailCover " + (work.type === "movie" ? "movieCover" : "serialCover");
+  if(cover) cover.className = "detailCover " + (work.type === "movie" ? "movieCover" : "serialCover");
 
   const img = $("detailImage");
   const typeEl = $("detailCoverType");
-  if(work.coverUrl && isValidUrl(work.coverUrl)){
+  if(work.coverUrl && isValidUrl(work.coverUrl) && img){
     img.src = work.coverUrl;
     img.style.display = "block";
     if(typeEl) typeEl.style.display = "none";
   }else{
-    img.style.display = "none";
+    if(img) img.style.display = "none";
     if(typeEl){ typeEl.style.display = "block"; typeEl.textContent = "Anime Archive"; }
   }
 
@@ -3793,15 +3831,16 @@ function renderEpisodes(episodes){
   renderEpisodesList(episodes || []);
 }
 
-$("episodeSearchInput")?.addEventListener("input", ()=>{
-  const q = normalizeText($("episodeSearchInput").value);
+$("episodeSearchInput")?.addEventListener("input", debounce(function(){
+  if(!currentWork) return;
+  const q = normalizeText($("episodeSearchInput")?.value || "");
   const all = getActiveDetailEpisodes(currentWork);
   if(!q){ renderEpisodesList(all); return; }
   renderEpisodesList(all.filter(e => normalizeText(e.title).includes(q)));
-});
+}, 150));
 $("clearEpisodeSearch")?.addEventListener("click", ()=>{
   if($("episodeSearchInput")) $("episodeSearchInput").value = "";
-  renderEpisodesList(getActiveDetailEpisodes(currentWork));
+  if(currentWork) renderEpisodesList(getActiveDetailEpisodes(currentWork));
 });
 
 function renderSimilar(work){
@@ -3851,31 +3890,53 @@ async function forceDownload(url, filename){
     const a = document.createElement("a");
     a.href = url;
     a.download = safeName;
-    a.rel = "noopener";
+    a.rel = "noopener noreferrer";
+    a.target = "_blank";
     a.style.display = "none";
     document.body.appendChild(a);
     a.click();
-    a.remove();
+    setTimeout(() => { try{ a.remove(); }catch(_){} }, 1500);
     showToast("دانلود شروع شد");
     return;
   }catch(e){
     console.warn("Direct download failed:", e);
   }
 
-  /* fallback: باز کردن مستقیم لینک در همین صفحه */
+  /* fallback: باز کردن مستقیم لینک */
   try{
-    window.location.href = url;
+    window.open(url, "_blank", "noopener,noreferrer");
     showToast("در حال باز کردن لینک دانلود...");
   }catch(fallbackError){
-    console.error("Download fallback failed:", fallbackError);
-    showToast("دانلود در این WebView پشتیبانی نمی‌شود");
+    try{
+      window.location.href = url;
+      showToast("در حال باز کردن لینک دانلود...");
+    }catch(e2){
+      console.error("Download fallback failed:", e2);
+      showToast("دانلود در این WebView پشتیبانی نمی‌شود");
+    }
   }
 }
 
 function sanitizeFilename(name){
   return String(name || "file")
-    .replace(/[\\/:*?"<>|]/g, "_")
-    .trim();
+    .replace(/[\\/:*?"<>|\x00-\x1f]/g, "_")
+    .replace(/\.+/g, ".")
+    .replace(/^\.+|\.+$/g, "")
+    .trim()
+    .slice(0, 180) || "file";
+}
+
+/** debounce ساده برای ورودی جستجو — بدون تغییر حس کاربری */
+function debounce(fn, wait){
+  let timer = null;
+  return function debounced(){
+    const ctx = this, args = arguments;
+    if(timer) clearTimeout(timer);
+    timer = setTimeout(function(){
+      timer = null;
+      fn.apply(ctx, args);
+    }, wait);
+  };
 }
 
 /* Profile */
@@ -4759,7 +4820,7 @@ function renderPublishedWorks(){
     box.appendChild(item);
   });
 }
-$("publishedSearchInput")?.addEventListener("input", renderPublishedWorks);
+$("publishedSearchInput")?.addEventListener("input", debounce(renderPublishedWorks, 180));
 $("clearPublishedSearch")?.addEventListener("click", ()=>{
   if($("publishedSearchInput")) $("publishedSearchInput").value = "";
   renderPublishedWorks();
@@ -5153,7 +5214,7 @@ $("closeGrantCoinsModal")?.addEventListener("click", ()=>{
   $("grantCoinsModal")?.classList.remove("active");
   grantTargetUser = null;
 });
-$("accountsSearchInput")?.addEventListener("input", renderAdminAccounts);
+$("accountsSearchInput")?.addEventListener("input", debounce(renderAdminAccounts, 180));
 $("clearAccountsSearch")?.addEventListener("click", ()=>{
   if($("accountsSearchInput")) $("accountsSearchInput").value = "";
   renderAdminAccounts();
@@ -6323,34 +6384,45 @@ async function init(){
   /* بنر هشدار مهم */
   setTimeout(showImportantBanner, 400);
 
-  const ok = await initAppwrite();
-  if(ok){
-    /* ژانرها همیشه از سرور (سراسری برای همه کاربران) */
-    try{
-      const serverGenres = await loadGenresFromServer();
-      if(serverGenres && serverGenres.length){
-        saveGenresLocal(serverGenres);
-      }
-      fillGenreSelect();
-      renderGenres();
-      if(isAdminMode) renderGenreAdmin();
-    }catch(e){ console.error(e); }
+  try{
+    const ok = await initAppwrite();
+    if(ok){
+      /* ژانرها همیشه از سرور (سراسری برای همه کاربران) */
+      try{
+        const serverGenres = await loadGenresFromServer();
+        if(serverGenres && serverGenres.length){
+          saveGenresLocal(serverGenres);
+        }
+        fillGenreSelect();
+        renderGenres();
+        if(isAdminMode) renderGenreAdmin();
+      }catch(e){ console.error(e); }
 
-    await loadWorks();
-    if(currentUser && currentUser.email){
-      await refreshCurrentUserCoins();
-      updateProfile();
-      if($("savedPage")?.classList.contains("active")) renderSaved();
+      await loadWorks();
+      if(currentUser && currentUser.email){
+        try{ await refreshCurrentUserCoins(); }catch(e){ console.error(e); }
+        updateProfile();
+        if($("savedPage")?.classList.contains("active")) renderSaved();
+      }else{
+        updateCoinUI();
+      }
     }else{
-      updateCoinUI();
+      allWorks = [];
+      renderHome();
+      renderSearch();
     }
-  }else{
+  }catch(e){
+    console.error("init failed", e);
     allWorks = [];
-    renderHome();
-    renderSearch();
+    try{ renderHome(); renderSearch(); updateProfile(); }catch(_){}
   }
 }
-init();
+try{ init(); }catch(e){ console.error(e); }
+
+/* جلوگیری از کرش خاموش در promiseهای پس‌زمینه */
+window.addEventListener("unhandledrejection", function(ev){
+  try{ console.error("unhandledrejection", ev && ev.reason); }catch(_){}
+});
 </script>
 </body>
 </html>
