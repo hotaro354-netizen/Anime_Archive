@@ -300,10 +300,10 @@ button{cursor:pointer}
 
 .adminBox{background:#211710;border-radius:18px;padding:15px}
 .adminTabs{
-  display:grid;grid-template-columns:repeat(4,1fr);background:#2b1d14;padding:4px;
+  display:grid;grid-template-columns:repeat(5,1fr);background:#2b1d14;padding:4px;
   border-radius:13px;margin-bottom:18px;gap:3px
 }
-.adminTabs button{border:0;background:none;color:#8f775f;padding:10px 2px;border-radius:10px;font-size:9.5px}
+.adminTabs button{border:0;background:none;color:#8f775f;padding:10px 2px;border-radius:10px;font-size:9px;line-height:1.3;white-space:normal}
 .adminTabs button.active{background:#a96631;color:white}
 .adminSection{display:none}
 .adminSection.active{display:block}
@@ -855,6 +855,38 @@ button{cursor:pointer}
 @media(min-width:700px){
   .app{box-shadow:0 0 50px rgba(0,0,0,.4)}
 }
+
+/* استودیوها — دایره‌ای جمع‌وجور */
+.studioCircle{
+  width:58px;flex:0 0 58px;text-align:center;cursor:pointer
+}
+.studioCircle .studioLogo{
+  width:48px;height:48px;border-radius:50%;margin:0 auto 5px;overflow:hidden;
+  background:linear-gradient(145deg,#6b4a2a,#3d281a);border:1px solid #5a3a22;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:700;color:#f2e4ca;letter-spacing:0;
+  text-transform:uppercase;user-select:none
+}
+.studioCircle .studioLogo img{width:100%;height:100%;object-fit:cover}
+.studioCircle .studioName{
+  font-size:9px;color:#dfc9ad;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;line-height:1.3
+}
+.studiosGrid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px
+}
+.studiosGrid .studioCircle{width:auto;flex:none}
+.studiosGrid .studioCircle .studioLogo{width:52px;height:52px;font-size:19px}
+#searchStudiosBox{
+  margin:6px 0 8px !important;padding:0;
+}
+#searchStudiosBox .sectionHead{
+  margin:4px 0 6px !important
+}
+#searchStudiosBox .sectionHead h3{font-size:12px}
+#searchStudiosResults{
+  padding:0 0 4px !important;margin:0 !important
+}
+#homeStudios.booksStrip{padding:2px 1px 6px}
 </style>
 </head>
 <body>
@@ -886,6 +918,14 @@ button{cursor:pointer}
   </div>
   <div id="newBooks" class="books"></div>
 
+  <div class="sectionHead" id="studiosSectionHead">
+    <h3>استودیوها</h3>
+    <button class="arrow" id="studiosArrow" type="button">›</button>
+  </div>
+  <div id="homeStudios" class="booksStrip">
+    <div class="booksStripTrack" id="homeStudiosTrack"></div>
+  </div>
+
   <div class="sectionHead">
     <h3>برای شما</h3>
     <button class="arrow" id="forYouArrow" type="button">›</button>
@@ -911,6 +951,10 @@ button{cursor:pointer}
     <span>🔍</span>
     <input id="searchInput" placeholder="نام انیمه، استودیو یا کلیدواژه..." autocomplete="off">
     <span id="clearSearch" style="cursor:pointer">×</span>
+  </div>
+  <div id="searchStudiosBox" style="display:none;margin:4px 0 6px">
+    <div class="sectionHead" style="margin:2px 0 4px"><h3 style="font-size:12px">استودیوها</h3></div>
+    <div id="searchStudiosResults" class="booksStrip" style="padding-bottom:2px"><div class="booksStripTrack" id="searchStudiosTrack"></div></div>
   </div>
   <div class="sectionHead"><h3>نتایج</h3></div>
   <div id="searchResults" class="books"></div>
@@ -1151,6 +1195,31 @@ button{cursor:pointer}
   </div>
 </section>
 
+<!-- ========== STUDIOS LIST ========== -->
+<section id="studiosListPage" class="page">
+  <div class="top">
+    <button class="back" id="studiosListBack" type="button">←</button>
+    <h2>استودیوها</h2>
+  </div>
+  <div id="studiosListGrid" class="books" style="grid-template-columns:repeat(3,1fr)"></div>
+</section>
+
+<!-- ========== STUDIO DETAIL ========== -->
+<section id="studioDetailPage" class="page">
+  <div class="top">
+    <button class="back" id="studioDetailBack" type="button">←</button>
+    <h2>استودیو</h2>
+  </div>
+  <div style="text-align:center;padding:10px 0 18px">
+    <div id="studioDetailLogo" style="width:96px;height:96px;border-radius:50%;margin:0 auto 12px;overflow:hidden;background:#2b2018;border:1px solid #453022;display:flex;align-items:center;justify-content:center;font-size:28px;color:#8e6c4d">🎬</div>
+    <h1 id="studioDetailNameFa" style="font-size:18px;margin-bottom:4px"></h1>
+    <div id="studioDetailNameEn" style="font-size:12px;color:#8d7660;direction:ltr;margin-bottom:12px"></div>
+    <div id="studioDetailDesc" class="description" style="text-align:right"></div>
+  </div>
+  <div class="sectionHead"><h3>انیمه‌های این استودیو</h3></div>
+  <div id="studioDetailWorks" class="books"></div>
+</section>
+
 <!-- ========== DETAIL ========== -->
 <section id="detailPage" class="page">
   <div class="top">
@@ -1184,6 +1253,7 @@ button{cursor:pointer}
     <div class="detailInfoTabs">
       <button id="detailTabDetails" class="active" type="button">جزئیات</button>
       <button id="detailTabEpisodes" type="button">قسمت‌ها</button>
+      <button id="detailTabManga" type="button" style="display:none">چپترها</button>
       <button id="detailTabSimilar" type="button">مشابه</button>
     </div>
     <div id="detailPanelDetails" class="detailPanel active">
@@ -1197,6 +1267,14 @@ button{cursor:pointer}
         <span id="clearEpisodeSearch" style="cursor:pointer">×</span>
       </div>
       <div id="chaptersList"></div>
+    </div>
+    <div id="detailPanelManga" class="detailPanel">
+      <div class="searchBox" style="margin-bottom:12px">
+        <span>🔍</span>
+        <input id="mangaSearchInput" type="text" placeholder="جستجوی چپتر/جلد...">
+        <span id="clearMangaSearch" style="cursor:pointer">×</span>
+      </div>
+      <div id="mangaItemsList"></div>
     </div>
     <div id="detailPanelSimilar" class="detailPanel">
       <div id="similarBooks" class="books similarBooks"></div>
@@ -1224,6 +1302,7 @@ button{cursor:pointer}
       <button class="active" data-admin-tab="add" type="button">افزودن</button>
       <button data-admin-tab="genres" type="button">ژانرها</button>
       <button data-admin-tab="published" type="button">منتشرشده</button>
+      <button data-admin-tab="studios" type="button">استودیوها</button>
       <button data-admin-tab="accounts" type="button">اکانت‌ها</button>
     </div>
 
@@ -1264,6 +1343,35 @@ button{cursor:pointer}
           <span>انتشار نشده (بدون نیاز به افزودن قسمت)</span>
         </label>
         <div class="keywordHint" style="margin-top:2px">اگر این تیک فعال باشد، می‌توانید بدون افزودن قسمت/فصل منتشر کنید. در صفحهٔ جزئیات نوشته می‌شود «این انیمه هنوز منتشر نشده».</div>
+
+        <label style="margin-top:14px">نوع محتوا</label>
+        <div class="segment" id="adminContentKindSeg" style="margin-bottom:12px">
+          <button type="button" class="active" data-content-kind="anime" id="adminKindAnime">انیمه</button>
+          <button type="button" data-content-kind="manga" id="adminKindManga">مانگا</button>
+        </div>
+        <input type="hidden" id="adminContentKind" value="anime">
+
+        <!-- بخش مانگا -->
+        <div id="adminMangaBlock" style="display:none">
+          <label>شماره‌گذاری</label>
+          <div class="segment" id="adminMangaNumSeg" style="margin-bottom:12px">
+            <button type="button" class="active" data-manga-num="chapter" id="adminNumChapter">چپتر</button>
+            <button type="button" data-manga-num="volume" id="adminNumVolume">جلد</button>
+          </div>
+          <input type="hidden" id="adminMangaNumbering" value="chapter">
+          <label id="mangaItemSectionLabel">چپترها</label>
+          <input id="mangaItemTitle" placeholder="عنوان (مثلاً چپتر ۱)">
+          <input id="mangaItemLink" type="url" placeholder="لینک مستقیم دانلود">
+          <button class="addBtn" id="addMangaItemBtn" type="button">+ افزودن</button>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+            <input id="mangaStartFrom" type="number" min="0" placeholder="شروع از" style="width:90px;margin:0" title="شماره شروع (خالی = ادامه)">
+            <input id="mangaBulkCount" type="number" min="1" max="500" placeholder="تعداد" style="width:90px;margin:0">
+            <button class="addBtn" id="bulkAddMangaBtn" type="button" style="width:auto;height:42px;padding:0 12px;margin:0">+ ساخت خودکار</button>
+            <button class="delete" id="clearAllMangaBtn" type="button" style="width:auto;height:42px;padding:0 12px;margin:0">حذف همه</button>
+          </div>
+          <div class="keywordHint">شماره‌گذاری از ادامهٔ آخرین مورد شروع می‌شود؛ یا با «شروع از» مشخص کنید</div>
+          <div id="pendingMangaItems" style="margin-top:10px"></div>
+        </div>
 
         <!-- بخش قسمت‌ها / فصل‌ها -->
         <div id="adminEpisodesFlatBlock">
@@ -1343,6 +1451,36 @@ button{cursor:pointer}
       </div>
       <button class="addBtn" id="bulkGrantCoinsBtn" type="button" style="margin-bottom:12px">🪙 سکه به همه کاربران</button>
       <div id="adminAccountsList"></div>
+    </div>
+
+    <div id="adminStudios" class="adminSection">
+      <div class="form">
+        <label>نام فارسی استودیو</label>
+        <input id="studioNameFa" placeholder="مثلاً استودیو جیبلی">
+        <label>نام انگلیسی استودیو</label>
+        <input id="studioNameEn" placeholder="مثلاً Ghibli Studio" dir="ltr" style="text-align:left">
+        <label>لینک لوگوی استودیو</label>
+        <input id="studioLogoUrl" type="url" placeholder="https://...">
+        <label>توضیحات</label>
+        <textarea id="studioDescription" placeholder="درباره استودیو..."></textarea>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:8px">
+          <input id="studioPublished" type="checkbox" checked style="width:18px;height:18px;accent-color:#c47a35">
+          <span>منتشر شود</span>
+        </label>
+        <button class="addBtn" id="publishStudioBtn" type="button" style="margin-top:12px">🚀 ثبت استودیو</button>
+        <div id="studioErrorBox" class="errorBox">
+          <div class="errTitle">متن خطا (برای کپی و ارسال)</div>
+          <div class="errText" id="studioErrorText"></div>
+          <button class="errCopy" id="copyStudioErrorBtn" type="button">📋 کپی خطا</button>
+        </div>
+      </div>
+      <div class="sectionHead" style="margin-top:18px"><h3>استودیوهای ثبت‌شده</h3></div>
+      <div class="searchBox" style="margin-bottom:12px">
+        <span>🔍</span>
+        <input id="adminStudiosSearch" placeholder="جستجوی استودیو...">
+        <span id="clearAdminStudiosSearch" style="cursor:pointer">×</span>
+      </div>
+      <div id="adminStudiosList"></div>
     </div>
 
     <button class="modalBtn adminLogoutBtn" id="adminLogoutBtn" type="button">🚪 خروج از پنل</button>
@@ -1450,6 +1588,31 @@ button{cursor:pointer}
       </label>
       <div class="keywordHint">اگر فعال باشد، در صفحهٔ جزئیات نوشته می‌شود «این انیمه هنوز منتشر نشده».</div>
 
+      <label style="margin-top:14px">نوع محتوا</label>
+      <div class="segment" id="editContentKindSeg" style="margin-bottom:12px">
+        <button type="button" class="active" data-content-kind="anime" id="editKindAnime">انیمه</button>
+        <button type="button" data-content-kind="manga" id="editKindManga">مانگا</button>
+      </div>
+      <input type="hidden" id="editContentKind" value="anime">
+
+      <div id="editMangaBlock" style="display:none">
+        <label>شماره‌گذاری</label>
+        <div class="segment" id="editMangaNumSeg" style="margin-bottom:12px">
+          <button type="button" class="active" data-manga-num="chapter" id="editNumChapter">چپتر</button>
+          <button type="button" data-manga-num="volume" id="editNumVolume">جلد</button>
+        </div>
+        <input type="hidden" id="editMangaNumbering" value="chapter">
+        <label id="editMangaItemSectionLabel">چپترها / جلدها</label>
+        <div id="editMangaItemsList"></div>
+        <button class="addBtn" id="addEditMangaItemBtn" type="button">+ افزودن</button>
+        <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+          <input id="editMangaStartFrom" type="number" min="0" placeholder="شروع از" style="width:90px;margin:0">
+          <input id="editMangaBulkCount" type="number" min="1" max="500" placeholder="تعداد" style="width:90px;margin:0">
+          <button class="addBtn" id="editBulkAddMangaBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">+ ساخت خودکار</button>
+          <button class="delete" id="editClearAllMangaBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">حذف همه</button>
+        </div>
+      </div>
+
       <!-- ویرایش قسمت‌های تخت (سینمایی) -->
       <div id="editFlatEpisodesBlock">
         <label>قسمت‌ها / بخش‌ها</label>
@@ -1493,6 +1656,28 @@ button{cursor:pointer}
   </div>
 </div>
 
+
+<div id="editStudioModal" class="modal">
+  <div class="modalContent">
+    <h3>ویرایش استودیو</h3>
+    <div class="form">
+      <label>نام فارسی</label>
+      <input id="editStudioNameFa" placeholder="نام فارسی">
+      <label>نام انگلیسی</label>
+      <input id="editStudioNameEn" placeholder="English name" dir="ltr" style="text-align:left">
+      <label>لینک لوگو</label>
+      <input id="editStudioLogoUrl" type="url" placeholder="https://...">
+      <label>توضیحات</label>
+      <textarea id="editStudioDescription"></textarea>
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:8px">
+        <input id="editStudioPublished" type="checkbox" style="width:18px;height:18px;accent-color:#c47a35">
+        <span>منتشر شود</span>
+      </label>
+    </div>
+    <button class="modalBtn" id="saveEditStudioBtn" type="button">ذخیره</button>
+    <button class="modalBtn" id="closeEditStudioModal" type="button" style="background:#302119;color:#c8ad90">انصراف</button>
+  </div>
+</div>
 
 <div id="buyCoinsModal" class="modal">
   <div class="modalContent">
@@ -1617,6 +1802,13 @@ const DAILY_FREE_COINS = 5;
 const START_COINS = 30;
 const COST_SERIAL_EP = 2;
 const COST_MOVIE = 4;
+const COST_MANGA_CHAPTER = 2;
+const COST_MANGA_VOLUME = 8;
+const COST_NOTEBOOK = 10;
+const NOTEBOOK_UNLIMITED_FREE_COUNT = 2;
+const NOTEBOOK_UNLIMITED_INTERVAL_MS = 2 * 24 * 60 * 60 * 1000;
+const COLLECTION_STUDIOS = "6aaee7ea00028875a0d9";
+const STORAGE_NOTEBOOK_FREE = "animearchive_notebook_free_v1";
 const SUPPORT_HANDLE = "@rraararar";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const COIN_CLAIM_INTERVAL_MS = 8 * 60 * 60 * 1000;
@@ -1653,6 +1845,15 @@ let isAdminMode = false;
 let pendingChapters = [];
 let pendingSeasons = []; /* [{id, title, episodes:[{id,title,link}]}] */
 let selectedAdminSeasonIdx = -1;
+let pendingMangaItems = [];
+let adminContentKind = "anime";
+let adminMangaNumbering = "chapter";
+let editingMangaItems = [];
+let editContentKind = "anime";
+let editMangaNumbering = "chapter";
+let allStudios = [];
+let currentStudio = null;
+let editingStudio = null;
 let editingWork = null;
 let editingChapters = [];
 let editingSeasons = [];
@@ -1661,6 +1862,8 @@ let selectedDetailSeasonIdx = -1; /* -1 = لیست فصل‌ها، >=0 = داخ�
 let homeCategory = "all"; /* all | serial | movie */
 let appPageStack = ["homePage"];
 let recentRandomIds = [];
+let __authInFlight = false;
+let __publishInFlight = false;
 
 /* وضعیت بنر: همیشه از بین ۱۵ انیمهٔ جدیدتر، جدیدترین اثر مرکز است. */
 const HERO_MAX_ITEMS = 15;
@@ -1757,8 +1960,10 @@ function uid(){
 
 function isValidUrl(v){
   if(!v || typeof v !== "string") return false;
+  const s = v.trim();
+  if(s.length < 8 || s.length > 2048) return false;
   try{
-    const u = new URL(v.trim());
+    const u = new URL(s);
     return u.protocol === "http:" || u.protocol === "https:";
   }catch(e){ return false; }
 }
@@ -1895,6 +2100,38 @@ function hasActiveUnlimited(user){
 
 function downloadCostForWork(work){
   return (work && work.type === "movie") ? COST_MOVIE : COST_SERIAL_EP;
+}
+function downloadCostForMangaItem(work){
+  const num = (work && work.mangaNumbering) === "volume" ? "volume" : "chapter";
+  return num === "volume" ? COST_MANGA_VOLUME : COST_MANGA_CHAPTER;
+}
+function trySpendCoinsForMangaDownload(work){
+  if(!currentUser || !currentUser.email) return false;
+  if(hasActiveUnlimited(currentUser)) return true;
+  const cost = downloadCostForMangaItem(work);
+  const have = toInt(currentUser.coins, 0);
+  if(have < cost){
+    showToast("سکه کافی نیست (موجودی: " + have + " — نیاز: " + cost + ")");
+    return false;
+  }
+  const isVol = (work && work.mangaNumbering) === "volume";
+  const msg = isVol
+    ? ("دانلود این جلد " + cost + " سکه هزینه دارد. تأیید می‌کنید؟")
+    : ("دانلود این چپتر " + cost + " سکه هزینه دارد. تأیید می‌کنید؟");
+  if(!confirm(msg)) return false;
+  const left = Math.max(0, have - cost);
+  currentUser.coins = left;
+  updateCoinUI();
+  if(currentUser.id && appwriteReady){
+    updateUserDoc(currentUser.id, { coins: left }).then(updated => {
+      if(updated) applyUserToSession(updated);
+      updateCoinUI();
+    }).catch(e => {
+      console.error(e);
+      showToast("دانلود شد؛ ذخیره سکه روی سرور مشکل داشت");
+    });
+  }
+  return true;
 }
 
 async function fetchUserByEmail(email){
@@ -2234,7 +2471,9 @@ async function renderAdminAccounts(){
       COLLECTION_USERS,
       [ appwriteQuery.orderDesc("$createdAt"), appwriteQuery.limit(100) ]
     );
-    let list = (res.documents || []).map(mapUserDoc);
+    let list = (res.documents || []).map(mapUserDoc).filter(Boolean);
+    /* پسورد در لیست ادمین نیاز نیست — حذف از حافظه */
+    list.forEach(u => { try{ delete u.password; }catch(_){ } });
     const q = normalizeText($("accountsSearchInput")?.value || "");
     if(q){
       list = list.filter(u =>
@@ -2363,10 +2602,46 @@ function genreOverlapScore(a, b){
   return score;
 }
 
+function parseMangaItemsField(raw){
+  let list = [];
+  try{
+    if(typeof raw === "string" && raw.trim()){
+      const p = JSON.parse(raw);
+      if(Array.isArray(p)) list = p;
+    }else if(Array.isArray(raw)){
+      list = raw;
+    }
+  }catch(e){ list = []; }
+  return (list || []).map(e => ({
+    id: e.id || uid(),
+    title: e.title || "",
+    link: e.link || ""
+  })).filter(e => e.title || e.link);
+}
+
 function mapWorkDoc(doc){
   const type = doc.type === "movie" ? "movie" : "serial";
+  /* قسمت‌های انیمه همیشه از episodes خوانده می‌شوند — مانگا جدا است */
   const norm = normalizeWorkSeasons(doc.episodes, type);
   const genres = parseGenresList(doc.genre);
+  let mangaItems = parseMangaItemsField(doc.mangaItems);
+  let mangaNumbering = (doc.mangaNumbering === "volume") ? "volume" : "chapter";
+  /* سازگاری با دادهٔ قدیمی که مانگا داخل episodes بود */
+  const legacyManga = (doc.contentKind === "manga");
+  if(legacyManga && !mangaItems.length){
+    const flat = norm.flatEpisodes.length ? norm.flatEpisodes : flattenSeasonsEpisodes(norm.seasons);
+    mangaItems = flat.map(e => ({ id: e.id || uid(), title: e.title || "", link: e.link || "" }));
+  }
+  const hasAnime = !legacyManga && (
+    (type === "movie" && (norm.flatEpisodes || []).length > 0) ||
+    (type !== "movie" && ((norm.seasons || []).length > 0 || flattenSeasonsEpisodes(norm.seasons).length > 0))
+  );
+  const hasManga = mangaItems.length > 0;
+  let contentKind = "anime";
+  if(hasManga && hasAnime) contentKind = "both";
+  else if(hasManga) contentKind = "manga";
+  else if(doc.contentKind === "manga") contentKind = "manga";
+
   return {
     id: doc.$id,
     title: doc.title || "",
@@ -2378,8 +2653,14 @@ function mapWorkDoc(doc){
     type,
     coverUrl: doc.coverUrl || "",
     unpublished: !!(doc.unpublished === true || doc.unpublished === 1 || doc.unpublished === "true"),
-    seasons: norm.seasons,
-    episodes: type === "movie" ? norm.flatEpisodes : flattenSeasonsEpisodes(norm.seasons),
+    contentKind,
+    mangaNumbering,
+    mangaItems,
+    /* اگر فقط مانگای قدیمی در episodes بود، قسمت انیمه خالی بماند */
+    seasons: legacyManga && !hasAnime ? [] : norm.seasons,
+    episodes: legacyManga && !hasAnime
+      ? []
+      : (type === "movie" ? (norm.flatEpisodes.length ? norm.flatEpisodes : flattenSeasonsEpisodes(norm.seasons)) : flattenSeasonsEpisodes(norm.seasons)),
     createdAt: doc.$createdAt ? new Date(doc.$createdAt).getTime() : Date.now(),
     rating: Number(doc.rating ?? doc.score ?? doc.imdb ?? 0) || 0,
     views: Number(doc.views ?? doc.viewCount ?? 0) || 0,
@@ -2446,6 +2727,7 @@ async function initAppwrite(){
   }
 }
 
+let __loadWorksSeq = 0;
 async function loadWorks(){
   if(!appwriteReady || !databases){
     allWorks = [];
@@ -2453,6 +2735,7 @@ async function loadWorks(){
     renderSearch();
     return;
   }
+  const seq = ++__loadWorksSeq;
   try{
     /* دریافت کامل آثار با صفحه‌بندی داخلی (قبلاً فقط ۱۰۰ اثر اول لود می‌شد) */
     const PAGE_SIZE = 100;
@@ -2474,11 +2757,13 @@ async function loadWorks(){
       cursor = batch[batch.length - 1].$id;
       pages++;
     }
+    if(seq !== __loadWorksSeq) return; /* پاسخ قدیمی نادیده گرفته شود */
     allWorks = docs.map(mapWorkDoc);
     renderHome();
     renderSearch();
     if(isAdminMode) renderPublishedWorks();
   }catch(error){
+    if(seq !== __loadWorksSeq) return;
     console.error("loadWorks", error);
     showToast("خطا در دریافت انیمه‌ها");
     allWorks = [];
@@ -2502,7 +2787,8 @@ function getGenres(){
   if(Array.isArray(genresCache) && genresCache.length){
     return genresCache.slice();
   }
-  if(Array.isArray(genresCache) && genresLoadedFromServer){
+  /* اگر از سرور لود شده و خالی است، همان را برگردان (عمدی خالی شده) */
+  if(genresLoadedFromServer && Array.isArray(genresCache)){
     return genresCache.slice();
   }
   let g = loadJSON(STORAGE_GENRES, null);
@@ -2510,8 +2796,8 @@ function getGenres(){
     genresCache = g.map(x => String(x || "").trim()).filter(Boolean);
     return genresCache.slice();
   }
-  /* فقط اگر هنوز هیچ داده‌ای نیست، پیش‌فرض را نشان بده — ولی آن را «سرور» حساب نکن */
-  genresCache = [...DEFAULT_GENRES];
+  /* فقط اگر هنوز هیچ داده‌ای نیست، پیش‌فرض را نشان بده */
+  genresCache = DEFAULT_GENRES.slice();
   return genresCache.slice();
 }
 
@@ -2569,9 +2855,19 @@ async function loadGenresFromServer(){
   try{
     const doc = await databases.getDocument(DATABASE_ID, COLLECTION_SETTINGS, SETTINGS_GENRES_DOC_ID);
     const list = parseGenresFromDoc(doc);
-    if(list !== null){
+    if(list !== null && list.length){
       setGenresCache(list, true);
       return list.slice();
+    }
+    /* سند هست ولی خالی/نامعتبر — لوکال یا پیش‌فرض را حفظ کن */
+    if(list !== null && !list.length){
+      const local = loadJSON(STORAGE_GENRES, null);
+      if(Array.isArray(local) && local.length){
+        setGenresCache(local, false);
+        return local.slice();
+      }
+      setGenresCache(DEFAULT_GENRES.slice(), false);
+      return DEFAULT_GENRES.slice();
     }
   }catch(e){
     const code = e && e.code;
@@ -2768,10 +3064,14 @@ function showPage(id, fromPop){
   }
   if(id === "homePage"){
     /* با برگشت به خانه، هر سه ردیف همیشه از ابتدای لیست شروع شوند. */
-    ["latestBooks","newBooks","forYou"].forEach(id => {
-      const el = $(id);
+    ["latestBooks","newBooks","forYou"].forEach(boxId => {
+      const el = $(boxId);
       if(el) el.scrollLeft = 0;
     });
+  } else if(heroAnimationTimer){
+    clearTimeout(heroAnimationTimer);
+    heroAnimationTimer = null;
+    heroAnimating = false;
   }
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   const page = $(id);
@@ -2861,6 +3161,7 @@ function filteredByCategory(list){
 function createBookCard(work){
   const el = document.createElement("div");
   el.className = "book";
+  if(!work) return el;
   el.addEventListener("click", ()=> openDetail(work));
 
   const cover = document.createElement("div");
@@ -2871,7 +3172,9 @@ function createBookCard(work){
     img.src = work.coverUrl;
     img.alt = work.title || "";
     img.loading = "lazy";
-    img.onerror = ()=>{ img.remove(); };
+    img.decoding = "async";
+    img.referrerPolicy = "no-referrer";
+    img.onerror = ()=>{ try{ img.remove(); }catch(_){ } };
     cover.appendChild(img);
   }else{
     const t = document.createElement("div");
@@ -2915,6 +3218,7 @@ function createBookCard(work){
 }
 
 function showEmpty(box, text){
+  if(!box) return;
   box.innerHTML = `<div class="empty"><div class="emptyIcon">◇</div>${escapeHtml(text)}</div>`;
 }
 
@@ -2922,11 +3226,13 @@ function fillBooksBox(boxId, list, emptyText){
   const box = $(boxId);
   if(!box) return;
   box.innerHTML = "";
-  if(!list.length){
+  if(!Array.isArray(list) || !list.length){
     showEmpty(box, emptyText || "موردی نیست.");
     return;
   }
-  list.forEach(w => box.appendChild(createBookCard(w)));
+  const frag = document.createDocumentFragment();
+  list.forEach(w => { if(w) frag.appendChild(createBookCard(w)); });
+  box.appendChild(frag);
 }
 
 function fillBooksStrip(boxId, list, emptyText){
@@ -2934,21 +3240,21 @@ function fillBooksStrip(boxId, list, emptyText){
   if(!box) return;
   box.innerHTML = "";
   box.className = "booksStrip";
-  if(!list.length){
+  if(!Array.isArray(list) || !list.length){
     box.className = "books";
     showEmpty(box, emptyText || "موردی نیست.");
     return;
   }
   const track = document.createElement("div");
   track.className = "booksStripTrack";
-  list.forEach(w => track.appendChild(createBookCard(w)));
+  list.forEach(w => { if(w) track.appendChild(createBookCard(w)); });
   box.appendChild(track);
 
   box.scrollLeft = 0;
 }
 
 function shuffleArray(arr){
-  const a = arr.slice();
+  const a = (arr || []).slice();
   for(let i = a.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
     const t = a[i]; a[i] = a[j]; a[j] = t;
@@ -3053,11 +3359,15 @@ function getBestList(base){
   const list = (base || []).slice();
   const hasQualityData = list.some(w => Number(w.rating||0)>0 || Number(w.views||0)>0 || Number(w.likes||0)>0 || Number(w.downloads||0)>0);
   if(!hasQualityData) return shuffleArray(list);
-  return list.sort((a,b)=>{
+  list.sort((a,b)=>{
     const scoreA = Number(a.rating||0)*1000 + Number(a.likes||0)*4 + Number(a.downloads||0)*2 + Number(a.views||0);
     const scoreB = Number(b.rating||0)*1000 + Number(b.likes||0)*4 + Number(b.downloads||0)*2 + Number(b.views||0);
     return scoreB-scoreA || (b.createdAt||0)-(a.createdAt||0);
   });
+  /* فقط بین ۱۲ اثر برتر شافل کن — سبک و سریع */
+  const topN = Math.min(list.length, 12);
+  const top = shuffleArray(list.slice(0, topN));
+  return top.concat(list.slice(topN));
 }
 
 function getHeroWorks(){
@@ -3082,13 +3392,26 @@ function heroWrapIndex(i, n){
 // این ترتیب یک چرخهٔ واقعی است؛ پس هنگام حرکت، کارت بعدی همیشه
 // دقیقاً همسایهٔ منطقی مرکز فعلی می‌شود و چرخه هیچ‌وقت تمام نمی‌شود.
 function getHeroCycleOrder(list){
+  /* ترتیب: وسط → راست → چپ → راست → چپ ...
+     جدیدترین در مرکز؛ دوم راست؛ سوم چپ؛ و همین الگو */
   const n = list.length;
   if(n <= 1) return [0];
-  if(n === 15){
-    return [0,1,2,3,7,8,9,10,14,13,12,11,6,5,4];
+  const order = new Array(n);
+  order[0] = 0;
+  let rightSlot = 1, leftSlot = n - 1;
+  let item = 1;
+  let putRight = true;
+  while(item < n){
+    if(putRight){
+      if(rightSlot <= leftSlot) order[rightSlot++] = item++;
+      else break;
+    }else{
+      if(leftSlot >= rightSlot) order[leftSlot--] = item++;
+      else break;
+    }
+    putRight = !putRight;
   }
-  // اگر موقتاً تعداد آیتم‌ها کمتر از ۱۵ شد، چرخهٔ عادی حفظ می‌شود.
-  return Array.from({length:n}, (_,i)=>i);
+  return order;
 }
 
 function buildHeroCard(work, role){
@@ -3313,6 +3636,7 @@ function renderHome(){
 
   const titleEl = $("latestSectionTitle");
   if(titleEl) titleEl.textContent = isAll ? "بهترین ها" : "تازه انتشار شده";
+  try{ renderHomeStudios(); }catch(e){}
 }
 
 function setHomeTab(cat){
@@ -3443,8 +3767,13 @@ function renderSearch(){
   const q = normalizeText($("searchInput")?.value);
   box.innerHTML = "";
 
-  /* بدون جستجو: همه انیمه‌های منتشرشده، از جدید به قدیم */
+  const studiosBox = $("searchStudiosBox");
+  const studiosTrack = $("searchStudiosTrack");
+
+  /* بدون جستجو: استودیو نشان نده؛ همه انیمه‌ها از جدید به قدیم */
   if(!q){
+    if(studiosBox) studiosBox.style.display = "none";
+    if(studiosTrack) studiosTrack.innerHTML = "";
     const all = allWorks.slice().sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
     if(!all.length){
       showEmpty(box, "هنوز انیمه‌ای منتشر نشده است.");
@@ -3454,14 +3783,26 @@ function renderSearch(){
     return;
   }
 
-  /* با جستجو: فقط عنوان + استودیو + کلیدواژه، مرتب بر اساس نزدیکی */
+  /* نتایج استودیو: همه استودیوها، مرتب‌شده بر اساس نزدیکی به جستجو (حذف نمی‌شوند) */
+  const studioHits = searchStudiosRanked(q);
+  if(studiosBox && studiosTrack){
+    studiosTrack.innerHTML = "";
+    if(studioHits.length){
+      studiosBox.style.display = "";
+      studioHits.forEach(s => studiosTrack.appendChild(buildStudioCircle(s)));
+    }else{
+      studiosBox.style.display = "none";
+    }
+  }
+
+  /* نتایج انیمه — همزمان با استودیو */
   const scored = allWorks
     .map(w => ({ w, s: searchScore(w, q) }))
     .filter(x => x.s > 0)
     .sort((a,b)=> b.s - a.s || normalizeText(a.w.title).localeCompare(normalizeText(b.w.title), "fa"));
 
   if(!scored.length){
-    showEmpty(box, "نتیجه‌ای پیدا نشد.");
+    if(!studioHits.length) showEmpty(box, "نتیجه‌ای پیدا نشد.");
     return;
   }
   scored.forEach(x => box.appendChild(createBookCard(x.w)));
@@ -3553,12 +3894,86 @@ function openDetail(work){
 
   updateDetailSaveBtn();
   setDetailTab("details");
-  selectedDetailSeasonIdx = -1; /* اول لیست فصل‌ها */
+  selectedDetailSeasonIdx = -1;
   if($("episodeSearchInput")) $("episodeSearchInput").value = "";
-  renderDetailEpisodesUI(work);
+  if($("mangaSearchInput")) $("mangaSearchInput").value = "";
+
+  const hasManga = (work.mangaItems && work.mangaItems.length) || work.contentKind === "manga" || work.contentKind === "both";
+  const hasAnimeEps = work.contentKind !== "manga" || (work.episodes && work.episodes.length) || (work.seasons && work.seasons.length);
+  const mangaTab = $("detailTabManga");
+  const epTab = $("detailTabEpisodes");
+  if(mangaTab){
+    mangaTab.style.display = hasManga ? "" : "none";
+    mangaTab.textContent = work.mangaNumbering === "volume" ? "جلدها" : "چپترها";
+  }
+  if(epTab){
+    /* فقط وقتی اثر صرفاً مانگا است و قسمت انیمه ندارد، تب قسمت‌ها مخفی شود */
+    const onlyManga = work.contentKind === "manga" && !(work.episodes && work.episodes.length) && !(work.seasons && work.seasons.length);
+    epTab.style.display = onlyManga ? "none" : "";
+  }
+
+  if(hasManga){
+    renderMangaItemsList(work.mangaItems && work.mangaItems.length ? work.mangaItems : (work.episodes || []));
+  }
+  if(!(work.contentKind === "manga" && !(work.episodes && work.episodes.length) && !(work.seasons && work.seasons.length))){
+    renderDetailEpisodesUI(work);
+  }
   renderSimilar(work);
   showPage("detailPage");
 }
+
+function renderMangaItemsList(items){
+  const box = $("mangaItemsList");
+  if(!box) return;
+  box.innerHTML = "";
+  window.currentMangaItems = items || [];
+  if(!items || !items.length){
+    showEmpty(box, "موردی ثبت نشده است.");
+    return;
+  }
+  if(currentWork && currentWork.unpublished){
+    showEmpty(box, "این انیمه هنوز منتشر نشده");
+    return;
+  }
+  items.forEach((ep, idx) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "chapterItem";
+    const locked = !(currentUser && currentUser.email);
+    const downloaded = isEpisodeDownloaded(currentWork, ep, idx);
+    btn.innerHTML = `<span>${escapeHtml(ep.title || ("مورد " + (idx+1)))}</span><span>${locked ? "🔒 ورود" : (downloaded ? "✓ دانلود شده" : "دانلود")}</span>`;
+    if(downloaded) btn.classList.add("downloaded");
+    btn.addEventListener("click", ()=>{
+      if(!requireLoginForDownload()) return;
+      if(isEpisodeDownloaded(currentWork, ep, idx)){
+        showVpnDownloadBannerThen(()=>{
+          forceDownload(ep.link, ep.title || "manga");
+        });
+        return;
+      }
+      if(!trySpendCoinsForMangaDownload(currentWork)) return;
+      showVpnDownloadBannerThen(()=>{
+        forceDownload(ep.link, ep.title || "manga");
+        markEpisodeDownloaded(currentWork, ep, idx);
+        btn.classList.add("downloaded");
+        const action = btn.querySelector("span:last-child");
+        if(action) action.textContent = "✓ دانلود شده";
+      });
+    });
+    box.appendChild(btn);
+  });
+}
+$("mangaSearchInput")?.addEventListener("input", ()=>{
+  const q = normalizeText($("mangaSearchInput")?.value || "");
+  const all = window.currentMangaItems || (currentWork && currentWork.episodes) || [];
+  if(!q){ renderMangaItemsList(all); return; }
+  renderMangaItemsList(all.filter(e => normalizeText(e.title).includes(q)));
+});
+$("clearMangaSearch")?.addEventListener("click", ()=>{
+  if($("mangaSearchInput")) $("mangaSearchInput").value = "";
+  const all = window.currentMangaItems || (currentWork && currentWork.episodes) || [];
+  renderMangaItemsList(all);
+});
 
 function updateDetailSaveBtn(){
   const on = currentWork && isSaved(currentWork.id);
@@ -3570,6 +3985,7 @@ function setDetailTab(name){
   const map = {
     details: ["detailTabDetails","detailPanelDetails"],
     episodes: ["detailTabEpisodes","detailPanelEpisodes"],
+    manga: ["detailTabManga","detailPanelManga"],
     similar: ["detailTabSimilar","detailPanelSimilar"]
   };
   Object.keys(map).forEach(k => {
@@ -3579,6 +3995,7 @@ function setDetailTab(name){
 }
 $("detailTabDetails")?.addEventListener("click", ()=> setDetailTab("details"));
 $("detailTabEpisodes")?.addEventListener("click", ()=> setDetailTab("episodes"));
+$("detailTabManga")?.addEventListener("click", ()=> setDetailTab("manga"));
 $("detailTabSimilar")?.addEventListener("click", ()=> setDetailTab("similar"));
 $("detailBack")?.addEventListener("click", ()=>{
   /* اگر داخل فصل هستیم، با history.back تا هم UI و هم دکمه Back گوشی هم‌خوان بمانند */
@@ -4014,6 +4431,7 @@ $("registerTabBtn")?.addEventListener("click", ()=>{
 });
 
 $("doRegisterBtn")?.addEventListener("click", async ()=>{
+  if(__authInFlight) return;
   const name = ($("registerName").value || "").trim();
   const email = normalizeEmail($("registerEmail").value);
   const pass = $("registerPassword").value || "";
@@ -4027,6 +4445,7 @@ $("doRegisterBtn")?.addEventListener("click", async ()=>{
   }
   const btn = $("doRegisterBtn");
   const old = btn ? btn.textContent : "";
+  __authInFlight = true;
   if(btn){ btn.disabled = true; btn.textContent = "در حال ثبت..."; }
   clearAuthError();
   try{
@@ -4119,17 +4538,20 @@ $("doRegisterBtn")?.addEventListener("click", async ()=>{
   }catch(e){
     showAuthError(e);
   }finally{
+    __authInFlight = false;
     if(btn){ btn.disabled = false; btn.textContent = old || "ایجاد حساب"; }
   }
 });
 
 $("doLoginBtn")?.addEventListener("click", async ()=>{
+  if(__authInFlight) return;
   const email = normalizeEmail($("loginEmail").value);
   const pass = $("loginPassword").value || "";
   if(!email || !pass){ showToast("ایمیل و رمز را وارد کنید"); return; }
   if(!appwriteReady){ showToast("اتصال برقرار نیست"); return; }
   const btn = $("doLoginBtn");
   const old = btn ? btn.textContent : "";
+  __authInFlight = true;
   if(btn){ btn.disabled = true; btn.textContent = "در حال ورود..."; }
   clearAuthError();
   try{
@@ -4164,6 +4586,7 @@ $("doLoginBtn")?.addEventListener("click", async ()=>{
   }catch(e){
     showAuthError(e);
   }finally{
+    __authInFlight = false;
     if(btn){ btn.disabled = false; btn.textContent = old || "ورود"; }
   }
 });
@@ -4328,6 +4751,7 @@ document.querySelectorAll("[data-admin-tab]").forEach(btn => {
       loadGenresFromServer().then(()=>{ fillGenreSelect(); renderGenreAdmin(); renderGenres(); }).catch(()=> renderGenreAdmin());
     }
     if(tab === "published"){ $("adminPublished").classList.add("active"); renderPublishedWorks(); }
+    if(tab === "studios"){ $("adminStudios").classList.add("active"); renderAdminStudios(); }
     if(tab === "accounts"){ $("adminAccounts").classList.add("active"); renderAdminAccounts(); }
   });
 });
@@ -4386,7 +4810,41 @@ function addGenreToSelected(list, value, boxId, selectEl){
 
 function nextEpisodeDefaultTitle(){
   const n = pendingChapters.length + 1;
+  /* سینمایی: فرد = زیرنویس فارسی ۷۲۰p ، زوج = دوبله فارسی ۷۲۰p */
+  if(($("adminType")?.value || "") === "movie"){
+    return (n % 2 === 1) ? "زیرنویس فارسی، ۷۲۰p" : "دوبله فارسی، ۷۲۰p";
+  }
   return "قسمت " + n;
+}
+function nextEditEpisodeDefaultTitle(){
+  const n = editingChapters.length + 1;
+  if(($("editType")?.value || "") === "movie"){
+    return (n % 2 === 1) ? "زیرنویس فارسی، ۷۲۰p" : "دوبله فارسی، ۷۲۰p";
+  }
+  return "قسمت " + n;
+}
+function mangaLabelPrefix(numbering){
+  return numbering === "volume" ? "جلد" : "چپتر";
+}
+function nextMangaDefaultTitle(items, numbering, startFrom){
+  const prefix = mangaLabelPrefix(numbering);
+  if(startFrom != null && startFrom !== "" && !isNaN(Number(startFrom))){
+    return prefix + " " + (Number(startFrom) + 1);
+  }
+  let maxN = 0;
+  (items || []).forEach(it => {
+    const m = String(it.title || "").match(/(\d+)\s*$/);
+    if(m) maxN = Math.max(maxN, parseInt(m[1], 10));
+  });
+  return prefix + " " + (maxN + 1);
+}
+function extractMangaMaxNumber(items){
+  let maxN = 0;
+  (items || []).forEach(it => {
+    const m = String(it.title || "").match(/(\d+)\s*$/);
+    if(m) maxN = Math.max(maxN, parseInt(m[1], 10));
+  });
+  return maxN;
 }
 
 function nextSeasonEpisodeDefaultTitle(season){
@@ -4402,18 +4860,112 @@ function setDefaultEpisodeTitleInput(){
 function updateEpisodeLabels(){
   const type = $("adminType")?.value;
   const isMovie = type === "movie";
+  const isManga = adminContentKind === "manga";
   const flatBlock = $("adminEpisodesFlatBlock");
   const seasonsBlock = $("adminSeasonsBlock");
-  if(flatBlock) flatBlock.style.display = isMovie ? "" : "none";
-  if(seasonsBlock) seasonsBlock.style.display = isMovie ? "none" : "";
+  const mangaBlock = $("adminMangaBlock");
+  if(mangaBlock) mangaBlock.style.display = isManga ? "" : "none";
+  if(flatBlock) flatBlock.style.display = (!isManga && isMovie) ? "" : "none";
+  if(seasonsBlock) seasonsBlock.style.display = (!isManga && !isMovie) ? "" : "none";
   if($("episodeSectionLabel"))
     $("episodeSectionLabel").textContent = isMovie ? "لینک فیلم / بخش‌ها" : "قسمت‌ها";
   if($("addChapterBtn"))
     $("addChapterBtn").textContent = isMovie ? "+ افزودن بخش" : "+ افزودن قسمت";
   setDefaultEpisodeTitleInput();
-  if(!isMovie) renderAdminSeasonsUI();
+  if(!isMovie && !isManga) renderAdminSeasonsUI();
+  updateMangaLabels();
+}
+function updateMangaLabels(){
+  const prefix = mangaLabelPrefix(adminMangaNumbering);
+  if($("mangaItemSectionLabel")) $("mangaItemSectionLabel").textContent = prefix + "ها";
+  if($("mangaItemTitle")) $("mangaItemTitle").value = nextMangaDefaultTitle(pendingMangaItems, adminMangaNumbering, null);
+  if($("mangaItemLink")) $("mangaItemLink").value = "";
+  const tabLabel = adminMangaNumbering === "volume" ? "جلدها" : "چپترها";
+  if($("detailTabManga")) $("detailTabManga").textContent = tabLabel;
+}
+function setAdminContentKind(kind){
+  adminContentKind = kind === "manga" ? "manga" : "anime";
+  if($("adminContentKind")) $("adminContentKind").value = adminContentKind;
+  document.querySelectorAll("#adminContentKindSeg button").forEach(b=>{
+    b.classList.toggle("active", b.getAttribute("data-content-kind") === adminContentKind);
+  });
+  updateEpisodeLabels();
+}
+function setAdminMangaNumbering(num){
+  adminMangaNumbering = num === "volume" ? "volume" : "chapter";
+  if($("adminMangaNumbering")) $("adminMangaNumbering").value = adminMangaNumbering;
+  document.querySelectorAll("#adminMangaNumSeg button").forEach(b=>{
+    b.classList.toggle("active", b.getAttribute("data-manga-num") === adminMangaNumbering);
+  });
+  updateMangaLabels();
+}
+function renderPendingMangaItems(){
+  const box = $("pendingMangaItems");
+  if(!box) return;
+  box.innerHTML = "";
+  pendingMangaItems.forEach((ch, i) => {
+    const div = document.createElement("div");
+    div.className = "pendingChapter";
+    div.innerHTML = `<span>${escapeHtml(ch.title)}</span>`;
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "delete";
+    del.textContent = "حذف";
+    del.addEventListener("click", ()=>{
+      pendingMangaItems.splice(i, 1);
+      renderPendingMangaItems();
+      updateMangaLabels();
+    });
+    div.appendChild(del);
+    box.appendChild(div);
+  });
 }
 $("adminType")?.addEventListener("change", updateEpisodeLabels);
+document.querySelectorAll("#adminContentKindSeg button").forEach(btn=>{
+  btn.addEventListener("click", ()=> setAdminContentKind(btn.getAttribute("data-content-kind")));
+});
+document.querySelectorAll("#adminMangaNumSeg button").forEach(btn=>{
+  btn.addEventListener("click", ()=> setAdminMangaNumbering(btn.getAttribute("data-manga-num")));
+});
+$("addMangaItemBtn")?.addEventListener("click", ()=>{
+  if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
+  const title = ($("mangaItemTitle").value || "").trim() || nextMangaDefaultTitle(pendingMangaItems, adminMangaNumbering, null);
+  const link = ($("mangaItemLink").value || "").trim();
+  if(!link){ showToast("لینک را وارد کنید"); return; }
+  if(!isValidUrl(link)){ showToast("لینک معتبر نیست"); return; }
+  pendingMangaItems.push({ id: uid(), title, link });
+  renderPendingMangaItems();
+  updateMangaLabels();
+});
+$("bulkAddMangaBtn")?.addEventListener("click", ()=>{
+  if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
+  const n = parseInt(($("mangaBulkCount")?.value || "0"), 10);
+  if(!n || n < 1){ showToast("تعداد معتبر نیست"); return; }
+  const startRaw = ($("mangaStartFrom")?.value || "").trim();
+  let startNum;
+  if(startRaw !== "" && !isNaN(Number(startRaw))){
+    startNum = Number(startRaw) + 1;
+  }else{
+    startNum = extractMangaMaxNumber(pendingMangaItems) + 1;
+  }
+  const prefix = mangaLabelPrefix(adminMangaNumbering);
+  for(let i=0;i<n;i++){
+    pendingMangaItems.push({ id: uid(), title: prefix + " " + (startNum + i), link: "" });
+  }
+  renderPendingMangaItems();
+  updateMangaLabels();
+  if($("mangaBulkCount")) $("mangaBulkCount").value = "";
+  if($("mangaStartFrom")) $("mangaStartFrom").value = "";
+  showToast(n + " مورد اضافه شد (از " + startNum + ")");
+});
+$("clearAllMangaBtn")?.addEventListener("click", ()=>{
+  if(!pendingMangaItems.length) return;
+  if(!confirm("همه موارد حذف شوند؟")) return;
+  pendingMangaItems = [];
+  renderPendingMangaItems();
+  updateMangaLabels();
+  showToast("حذف شد");
+});
 
 $("addChapterBtn")?.addEventListener("click", ()=>{
   if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
@@ -4431,8 +4983,13 @@ $("bulkAddChaptersBtn")?.addEventListener("click", ()=>{
   const n = parseInt(($("bulkChapterCount")?.value || "0"), 10);
   if(!n || n < 1){ showToast("تعداد معتبر نیست"); return; }
   const start = pendingChapters.length + 1;
+  const isMovie = ($("adminType")?.value || "") === "movie";
   for(let i=0;i<n;i++){
-    pendingChapters.push({ id: uid(), title: "قسمت " + (start + i), link: "" });
+    const num = start + i;
+    const title = isMovie
+      ? ((num % 2 === 1) ? "زیرنویس فارسی، ۷۲۰p" : "دوبله فارسی، ۷۲۰p")
+      : ("قسمت " + num);
+    pendingChapters.push({ id: uid(), title, link: "" });
   }
   renderPendingChapters();
   setDefaultEpisodeTitleInput();
@@ -4624,6 +5181,7 @@ $("addSeasonEpisodeBtn")?.addEventListener("click", ()=>{
 });
 
 $("publishBtn")?.addEventListener("click", async ()=>{
+  if(__publishInFlight) return;
   if(!(await requireAdminAction())) return;
   if(!appwriteReady || !databases || !appwriteID){
     showToast("اتصال به سرور برقرار نیست");
@@ -4641,26 +5199,23 @@ $("publishBtn")?.addEventListener("click", async ()=>{
   if(!title){ showToast("عنوان را وارد کنید"); return; }
   if(coverUrl && !isValidUrl(coverUrl)){ showToast("لینک جلد نامعتبر است"); return; }
 
+  const mangaNumbering = adminMangaNumbering === "volume" ? "volume" : "chapter";
+  /* مانگا و انیمه جدا ذخیره می‌شوند تا قسمت‌های انیمه پاک نشوند */
+  const mangaPayload = pendingMangaItems.map(c => ({
+    id: c.id || uid(),
+    title: c.title,
+    link: c.link
+  }));
   let episodesPayload = [];
   if(isUnpublished){
-    /* بدون نیاز به قسمت */
     episodesPayload = [];
   }else if(type === "movie"){
-    if(!pendingChapters.length){
-      showToast("حداقل یک لینک فیلم اضافه کنید (یا تیک انتشار نشده را بزنید)");
-      return;
-    }
     episodesPayload = pendingChapters.map(c => ({
       id: c.id || uid(),
       title: c.title,
       link: c.link
     }));
   }else{
-    const totalEps = pendingSeasons.reduce((n, s) => n + (s.episodes || []).length, 0);
-    if(!pendingSeasons.length || totalEps === 0){
-      showToast("حداقل یک فصل با یک قسمت اضافه کنید (یا تیک انتشار نشده را بزنید)");
-      return;
-    }
     episodesPayload = pendingSeasons.map(s => ({
       id: s.id || uid(),
       title: s.title,
@@ -4671,33 +5226,77 @@ $("publishBtn")?.addEventListener("click", async ()=>{
       }))
     }));
   }
+  const hasAnime = type === "movie"
+    ? episodesPayload.length > 0
+    : episodesPayload.some(s => (s.episodes || []).length > 0);
+  const hasManga = mangaPayload.length > 0;
+  if(!isUnpublished && !hasAnime && !hasManga){
+    showToast("حداقل یک قسمت انیمه یا چپتر/جلد مانگا اضافه کنید (یا تیک انتشار نشده را بزنید)");
+    return;
+  }
+  let contentKind = "anime";
+  if(hasManga && hasAnime) contentKind = "both";
+  else if(hasManga) contentKind = "manga";
+  else if(adminContentKind === "manga") contentKind = "manga";
 
   const button = $("publishBtn");
   const oldText = button ? button.textContent : "";
+  __publishInFlight = true;
   if(button){ button.disabled = true; button.textContent = "در حال انتشار..."; }
 
   try{
-    const createdWorkDoc = await databases.createDocument(
-      DATABASE_ID,
-      COLLECTION_WORKS,
-      appwriteID.unique(),
-      {
-        title,
-        Author,
-        genre,
-        description,
-        keywords,
-        type,
-        coverUrl,
-        unpublished: isUnpublished,
-        episodes: JSON.stringify(episodesPayload)
+    let createPayload = {
+      title,
+      Author,
+      genre,
+      description,
+      keywords,
+      type,
+      coverUrl,
+      unpublished: isUnpublished,
+      contentKind,
+      mangaNumbering,
+      mangaItems: JSON.stringify(mangaPayload),
+      episodes: JSON.stringify(episodesPayload)
+    };
+    let createdWorkDoc;
+    try{
+      createdWorkDoc = await databases.createDocument(
+        DATABASE_ID,
+        COLLECTION_WORKS,
+        appwriteID.unique(),
+        createPayload
+      );
+    }catch(createErr){
+      const msg = String(createErr && createErr.message || "");
+      if(/contentKind|mangaNumbering|mangaItems|attribute|unknown/i.test(msg)){
+        delete createPayload.contentKind;
+        delete createPayload.mangaNumbering;
+        delete createPayload.mangaItems;
+        /* اگر mangaItems attribute نبود، مانگا را موقتاً فقط وقتی اثر صرفاً مانگا است در episodes بگذار */
+        if(contentKind === "manga" && mangaPayload.length && !hasAnime){
+          createPayload.episodes = JSON.stringify(mangaPayload);
+          createPayload.contentKind = "manga";
+        }
+        createdWorkDoc = await databases.createDocument(
+          DATABASE_ID,
+          COLLECTION_WORKS,
+          appwriteID.unique(),
+          createPayload
+        );
+      }else{
+        throw createErr;
       }
-    );
+    }
     pendingChapters = [];
     pendingSeasons = [];
+    pendingMangaItems = [];
     selectedAdminSeasonIdx = -1;
     renderPendingChapters();
+    renderPendingMangaItems();
     renderAdminSeasonsUI();
+    setAdminContentKind("anime");
+    setAdminMangaNumbering("chapter");
     adminKeywordsList = [];
     renderKeywordsPicker("adminKeywordsPicker", adminKeywordsList);
     if($("adminKeywordsInput")) $("adminKeywordsInput").value = "";
@@ -4716,6 +5315,7 @@ $("publishBtn")?.addEventListener("click", async ()=>{
     console.error(error);
     showToast("خطا در انتشار: " + (error?.message || "نامشخص"));
   }finally{
+    __publishInFlight = false;
     if(button){ button.disabled = false; button.textContent = oldText || "🚀 انتشار انیمه"; }
   }
 });
@@ -4842,7 +5442,23 @@ function openEditWork(work){
   $("editCoverUrl").value = work.coverUrl || "";
   if($("editUnpublished")) $("editUnpublished").checked = !!work.unpublished;
 
-  if(isMovie){
+  /* مانگا همیشه جدا لود می‌شود تا قسمت‌های انیمه پاک نشوند */
+  editingMangaItems = (work.mangaItems && work.mangaItems.length)
+    ? work.mangaItems.map(e => ({...e}))
+    : (work.contentKind === "manga" ? (work.episodes || []).map(e => ({...e})) : []);
+  editMangaNumbering = work.mangaNumbering === "volume" ? "volume" : "chapter";
+  const preferMangaUI = work.contentKind === "manga" || (editingMangaItems.length && !(work.episodes && work.episodes.length));
+  editContentKind = preferMangaUI ? "manga" : "anime";
+  setEditContentKind(editContentKind);
+  setEditMangaNumbering(editMangaNumbering);
+
+  /* قسمت‌های انیمه — حتی اگر مانگا هم داشته باشد */
+  if(work.contentKind === "manga" && !(work.mangaItems && work.mangaItems.length)){
+    /* داده قدیمی فقط مانگا در episodes — انیمه خالی */
+    editingChapters = [];
+    editingSeasons = [];
+    selectedEditSeasonIdx = -1;
+  }else if(isMovie){
     editingChapters = (work.episodes || []).map(e => ({...e}));
     editingSeasons = [];
     selectedEditSeasonIdx = -1;
@@ -4866,16 +5482,115 @@ function openEditWork(work){
   $("editWorkModal").classList.add("active");
 }
 
+function setEditContentKind(kind){
+  editContentKind = kind === "manga" ? "manga" : "anime";
+  if($("editContentKind")) $("editContentKind").value = editContentKind;
+  document.querySelectorAll("#editContentKindSeg button").forEach(b=>{
+    b.classList.toggle("active", b.getAttribute("data-content-kind") === editContentKind);
+  });
+  updateEditTypeUI();
+}
+function setEditMangaNumbering(num){
+  editMangaNumbering = num === "volume" ? "volume" : "chapter";
+  if($("editMangaNumbering")) $("editMangaNumbering").value = editMangaNumbering;
+  document.querySelectorAll("#editMangaNumSeg button").forEach(b=>{
+    b.classList.toggle("active", b.getAttribute("data-manga-num") === editMangaNumbering);
+  });
+  if($("editMangaItemSectionLabel"))
+    $("editMangaItemSectionLabel").textContent = mangaLabelPrefix(editMangaNumbering) + "ها";
+}
+function renderEditMangaItems(){
+  const box = $("editMangaItemsList");
+  if(!box) return;
+  box.innerHTML = "";
+  if(!editingMangaItems.length){
+    box.innerHTML = `<div class="empty" style="padding:20px">موردی نیست.</div>`;
+    return;
+  }
+  editingMangaItems.forEach((ch, i) => {
+    const div = document.createElement("div");
+    div.className = "pendingChapter";
+    div.style.flexDirection = "column";
+    div.style.alignItems = "stretch";
+    div.style.gap = "6px";
+    const t = document.createElement("input");
+    t.className = "modalInput";
+    t.style.marginBottom = "0";
+    t.value = ch.title || "";
+    t.placeholder = "عنوان";
+    t.addEventListener("input", ()=> { ch.title = t.value; });
+    const l = document.createElement("input");
+    l.className = "modalInput";
+    l.style.marginBottom = "0";
+    l.type = "url";
+    l.value = ch.link || "";
+    l.placeholder = "لینک مستقیم";
+    l.addEventListener("input", ()=> { ch.link = l.value; });
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "delete";
+    del.textContent = "حذف";
+    del.addEventListener("click", ()=>{
+      editingMangaItems.splice(i, 1);
+      renderEditMangaItems();
+    });
+    div.appendChild(t);
+    div.appendChild(l);
+    div.appendChild(del);
+    box.appendChild(div);
+  });
+}
+
 function updateEditTypeUI(){
   const isMovie = $("editType")?.value === "movie";
+  const isManga = editContentKind === "manga";
   const flat = $("editFlatEpisodesBlock");
   const seasons = $("editSeasonsBlock");
-  if(flat) flat.style.display = isMovie ? "" : "none";
-  if(seasons) seasons.style.display = isMovie ? "none" : "";
-  if(isMovie) renderEditChapters();
+  const manga = $("editMangaBlock");
+  if(manga) manga.style.display = isManga ? "" : "none";
+  if(flat) flat.style.display = (!isManga && isMovie) ? "" : "none";
+  if(seasons) seasons.style.display = (!isManga && !isMovie) ? "" : "none";
+  if(isManga) renderEditMangaItems();
+  else if(isMovie) renderEditChapters();
   else renderEditSeasonsUI();
 }
 $("editType")?.addEventListener("change", updateEditTypeUI);
+document.querySelectorAll("#editContentKindSeg button").forEach(btn=>{
+  btn.addEventListener("click", ()=> setEditContentKind(btn.getAttribute("data-content-kind")));
+});
+document.querySelectorAll("#editMangaNumSeg button").forEach(btn=>{
+  btn.addEventListener("click", ()=> setEditMangaNumbering(btn.getAttribute("data-manga-num")));
+});
+$("addEditMangaItemBtn")?.addEventListener("click", ()=>{
+  const title = nextMangaDefaultTitle(editingMangaItems, editMangaNumbering, null);
+  editingMangaItems.push({ id: uid(), title, link: "" });
+  renderEditMangaItems();
+});
+$("editBulkAddMangaBtn")?.addEventListener("click", ()=>{
+  const n = parseInt(($("editMangaBulkCount")?.value || "0"), 10);
+  if(!n || n < 1){ showToast("تعداد معتبر نیست"); return; }
+  const startRaw = ($("editMangaStartFrom")?.value || "").trim();
+  let startNum;
+  if(startRaw !== "" && !isNaN(Number(startRaw))){
+    startNum = Number(startRaw) + 1;
+  }else{
+    startNum = extractMangaMaxNumber(editingMangaItems) + 1;
+  }
+  const prefix = mangaLabelPrefix(editMangaNumbering);
+  for(let i=0;i<n;i++){
+    editingMangaItems.push({ id: uid(), title: prefix + " " + (startNum + i), link: "" });
+  }
+  renderEditMangaItems();
+  if($("editMangaBulkCount")) $("editMangaBulkCount").value = "";
+  if($("editMangaStartFrom")) $("editMangaStartFrom").value = "";
+  showToast(n + " مورد اضافه شد");
+});
+$("editClearAllMangaBtn")?.addEventListener("click", ()=>{
+  if(!editingMangaItems.length) return;
+  if(!confirm("همه موارد حذف شوند؟")) return;
+  editingMangaItems = [];
+  renderEditMangaItems();
+});
 
 function renderEditChapters(){
   const box = $("editChaptersList");
@@ -4920,7 +5635,7 @@ function renderEditChapters(){
 }
 
 $("addEditChapterBtn")?.addEventListener("click", ()=>{
-  editingChapters.push({ id: uid(), title: "قسمت جدید", link: "" });
+  editingChapters.push({ id: uid(), title: nextEditEpisodeDefaultTitle(), link: "" });
   renderEditChapters();
 });
 
@@ -5044,8 +5759,13 @@ $("editBulkAddChaptersBtn")?.addEventListener("click", ()=>{
   const n = parseInt(($("editBulkChapterCount")?.value || "0"), 10);
   if(!n || n < 1){ showToast("تعداد معتبر نیست"); return; }
   const start = editingChapters.length + 1;
+  const isMovie = ($("editType")?.value || "") === "movie";
   for(let i=0;i<n;i++){
-    editingChapters.push({ id: uid(), title: "قسمت " + (start + i), link: "" });
+    const num = start + i;
+    const title = isMovie
+      ? ((num % 2 === 1) ? "زیرنویس فارسی، ۷۲۰p" : "دوبله فارسی، ۷۲۰p")
+      : ("قسمت " + num);
+    editingChapters.push({ id: uid(), title, link: "" });
   }
   renderEditChapters();
   if($("editBulkChapterCount")) $("editBulkChapterCount").value = "";
@@ -5113,8 +5833,20 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
 
   const type = $("editType").value === "movie" ? "movie" : "serial";
   const isUnpublished = !!($("editUnpublished")?.checked);
-  let episodesPayload = [];
+  const mangaNumbering = editMangaNumbering === "volume" ? "volume" : "chapter";
 
+  /* اعتبارسنجی مانگا (جدا) */
+  for(const ch of editingMangaItems){
+    if(!(ch.title||"").trim()){ showToast("عنوان یکی از چپتر/جلدها خالی است"); return; }
+    if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از چپتر/جلدها نامعتبر است"); return; }
+  }
+  const mangaPayload = editingMangaItems.map(c => ({
+    id: c.id || uid(),
+    title: (c.title||"").trim(),
+    link: (c.link||"").trim()
+  }));
+
+  let episodesPayload = [];
   if(isUnpublished){
     episodesPayload = [];
   }else if(type === "movie"){
@@ -5122,7 +5854,6 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
       if(!(ch.title||"").trim()){ showToast("عنوان یکی از قسمت‌ها خالی است"); return; }
       if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از قسمت‌ها نامعتبر است"); return; }
     }
-    if(!editingChapters.length){ showToast("حداقل یک لینک اضافه کنید (یا تیک انتشار نشده را بزنید)"); return; }
     episodesPayload = editingChapters.map(c => ({
       id: c.id || uid(),
       title: (c.title||"").trim(),
@@ -5135,11 +5866,6 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
         if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از قسمت‌ها نامعتبر است"); return; }
       }
     }
-    const total = editingSeasons.reduce((n, s) => n + (s.episodes || []).length, 0);
-    if(!editingSeasons.length || total === 0){
-      showToast("حداقل یک فصل با یک قسمت لازم است (یا تیک انتشار نشده را بزنید)");
-      return;
-    }
     episodesPayload = editingSeasons.map(s => ({
       id: s.id || uid(),
       title: s.title,
@@ -5150,6 +5876,17 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
       }))
     }));
   }
+  const hasAnime = type === "movie"
+    ? episodesPayload.length > 0
+    : episodesPayload.some(s => (s.episodes || []).length > 0);
+  const hasManga = mangaPayload.length > 0;
+  if(!isUnpublished && !hasAnime && !hasManga){
+    showToast("حداقل یک قسمت انیمه یا چپتر/جلد مانگا لازم است (یا تیک انتشار نشده را بزنید)");
+    return;
+  }
+  let contentKind = "anime";
+  if(hasManga && hasAnime) contentKind = "both";
+  else if(hasManga) contentKind = "manga";
 
   const payload = {
     type,
@@ -5160,6 +5897,9 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     keywords: keywordsToStorage(editKeywordsList),
     coverUrl,
     unpublished: isUnpublished,
+    contentKind,
+    mangaNumbering,
+    mangaItems: JSON.stringify(mangaPayload),
     episodes: JSON.stringify(episodesPayload)
   };
 
@@ -5168,12 +5908,29 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   if(button){ button.disabled = true; button.textContent = "در حال ذخیره..."; }
 
   try{
-    await databases.updateDocument(
-      DATABASE_ID,
-      COLLECTION_WORKS,
-      editingWork.id,
-      payload
-    );
+    try{
+      await databases.updateDocument(
+        DATABASE_ID,
+        COLLECTION_WORKS,
+        editingWork.id,
+        payload
+      );
+    }catch(upErr){
+      const msg = String(upErr && upErr.message || "");
+      if(/contentKind|mangaNumbering|mangaItems|attribute|unknown/i.test(msg)){
+        const p2 = Object.assign({}, payload);
+        delete p2.contentKind;
+        delete p2.mangaNumbering;
+        delete p2.mangaItems;
+        if(contentKind === "manga" && mangaPayload.length && !hasAnime){
+          p2.episodes = JSON.stringify(mangaPayload);
+          p2.contentKind = "manga";
+        }
+        await databases.updateDocument(DATABASE_ID, COLLECTION_WORKS, editingWork.id, p2);
+      }else{
+        throw upErr;
+      }
+    }
     $("editWorkModal").classList.remove("active");
     const keepId = editingWork.id;
     editingWork = null;
@@ -5618,11 +6375,98 @@ $("notebookGoListBtn")?.addEventListener("click", ()=>{
 $("notebookListBack")?.addEventListener("click", ()=> showPage("notebookPage"));
 
 /* ---- ساخت دفتر ---- */
-$("notebookCreateConfirmBtn")?.addEventListener("click", ()=>{
+function getNotebookFreeStorageKey(){
+  return STORAGE_NOTEBOOK_FREE + "_" + notebookOwnerKey();
+}
+function loadNotebookFreeState(){
+  return loadJSON(getNotebookFreeStorageKey(), { windowStart: 0, used: 0 });
+}
+function saveNotebookFreeState(st){
+  saveJSON(getNotebookFreeStorageKey(), st || { windowStart: 0, used: 0 });
+}
+function canCreateNotebookFreeUnlimited(){
+  if(!currentUser || !hasActiveUnlimited(currentUser)) return false;
+  const st = loadNotebookFreeState();
+  const now = Date.now();
+  if(!st.windowStart || (now - st.windowStart) >= NOTEBOOK_UNLIMITED_INTERVAL_MS){
+    return true; /* پنجره جدید */
+  }
+  return toInt(st.used, 0) < NOTEBOOK_UNLIMITED_FREE_COUNT;
+}
+function consumeNotebookFreeSlot(){
+  const st = loadNotebookFreeState();
+  const now = Date.now();
+  if(!st.windowStart || (now - st.windowStart) >= NOTEBOOK_UNLIMITED_INTERVAL_MS){
+    saveNotebookFreeState({ windowStart: now, used: 1 });
+  }else{
+    st.used = toInt(st.used, 0) + 1;
+    saveNotebookFreeState(st);
+  }
+}
+
+$("notebookCreateConfirmBtn")?.addEventListener("click", async ()=>{
   const name = ($("notebookCreateName")?.value || "").trim();
   if(!name){ showToast("اسم دفتر را وارد کن"); return; }
-  createNotebookRecord(name, notebookCreateColor, []);
-  showToast("دفتر «" + name + "» ساخته شد");
+
+  /* اشتراک نامحدود: هر ۲ روز ۲ دفتر رایگان */
+  if(canCreateNotebookFreeUnlimited()){
+    if(!confirm("ساخت دفتر رایگان (از سهمیه اشتراک نامحدود). تأیید می‌کنید؟")) return;
+    createNotebookRecord(name, notebookCreateColor, []);
+    consumeNotebookFreeSlot();
+    showToast("دفتر «" + name + "» ساخته شد (رایگان)");
+  }else{
+    /* ۱۰ سکه */
+    if(!currentUser || !currentUser.email){
+      showToast("برای ساخت دفتر باید وارد شوید");
+      openLoginModal();
+      return;
+    }
+    if(hasActiveUnlimited(currentUser)){
+      /* سهمیه رایگان تمام شده — باید سکه بپردازد */
+      showToast("سهمیه رایگان ۲ دفتر / ۲ روز تمام شده؛ نیاز به " + COST_NOTEBOOK + " سکه");
+    }
+    if(!hasActiveUnlimited(currentUser)){
+      const have = toInt(currentUser.coins, 0);
+      if(have < COST_NOTEBOOK){
+        showToast("سکه کافی نیست (نیاز: " + COST_NOTEBOOK + " — موجودی: " + have + ")");
+        return;
+      }
+      if(!confirm("ساخت دفتر " + COST_NOTEBOOK + " سکه هزینه دارد. تأیید می‌کنید؟")) return;
+      const left = Math.max(0, have - COST_NOTEBOOK);
+      currentUser.coins = left;
+      updateCoinUI();
+      if(currentUser.id && appwriteReady){
+        try{
+          const updated = await updateUserDoc(currentUser.id, { coins: left });
+          if(updated) applyUserToSession(updated);
+          updateCoinUI();
+        }catch(e){
+          console.error(e);
+          showToast("دفتر ساخته شد؛ ذخیره سکه روی سرور مشکل داشت");
+        }
+      }
+    }else{
+      /* unlimited but free quota exhausted — still allow with coins if they have any, else block */
+      const have = toInt(currentUser.coins, 0);
+      if(have < COST_NOTEBOOK){
+        showToast("سهمیه رایگان تمام و سکه کافی نیست");
+        return;
+      }
+      if(!confirm("ساخت دفتر " + COST_NOTEBOOK + " سکه هزینه دارد. تأیید می‌کنید؟")) return;
+      const left = Math.max(0, have - COST_NOTEBOOK);
+      currentUser.coins = left;
+      updateCoinUI();
+      if(currentUser.id && appwriteReady){
+        try{
+          const updated = await updateUserDoc(currentUser.id, { coins: left });
+          if(updated) applyUserToSession(updated);
+          updateCoinUI();
+        }catch(e){ console.error(e); }
+      }
+    }
+    createNotebookRecord(name, notebookCreateColor, []);
+    showToast("دفتر «" + name + "» ساخته شد (−" + COST_NOTEBOOK + " سکه)");
+  }
   if($("notebookCreateName")) $("notebookCreateName").value = "";
   notebookCreateColor = NOTEBOOK_COLORS[0];
   buildColorRow($("notebookCreateColorRow"), notebookCreateColor, c => notebookCreateColor = c);
@@ -6348,6 +7192,393 @@ $("notebookDeleteEntryBtn")?.addEventListener("click", ()=>{
 
 
 
+
+/* ========== استودیوها ========== */
+function mapStudioDoc(doc){
+  if(!doc) return null;
+  return {
+    id: doc.$id,
+    nameFa: doc.nameFa || "",
+    nameEn: doc.nameEn || "",
+    logoUrl: doc.logoUrl || "",
+    description: doc.description || "",
+    published: doc.published !== false && doc.published !== 0 && doc.published !== "false",
+    createdAt: doc.$createdAt ? new Date(doc.$createdAt).getTime() : Date.now()
+  };
+}
+
+async function loadStudios(){
+  if(!appwriteReady || !databases){ allStudios = []; return; }
+  try{
+    const queries = [appwriteQuery.limit(100)];
+    const res = await databases.listDocuments(DATABASE_ID, COLLECTION_STUDIOS, queries);
+    allStudios = (res.documents || []).map(mapStudioDoc).filter(Boolean);
+  }catch(e){
+    console.error("loadStudios", e);
+    allStudios = [];
+  }
+}
+
+function getPublishedStudios(){
+  return (allStudios || []).filter(s => s.published);
+}
+
+function studioSimilarityScore(studio, q){
+  if(!q) return 0;
+  const fa = normalizeText(studio.nameFa);
+  const en = normalizeText(studio.nameEn);
+  if(fa === q || en === q) return 1000;
+  if(fa.startsWith(q) || en.startsWith(q)) return 800;
+  if(fa.includes(q) || en.includes(q)) return 500;
+  /* شباهت نرم: اشتراک حروف + حرف اول — هیچ استودیویی حذف نمی‌شود، فقط رتبه پایین‌تر می‌گیرد */
+  let score = 0;
+  if(q.length >= 1){
+    const c = q[0];
+    if((fa && fa[0] === c) || (en && en[0] === c)) score += 80;
+  }
+  const pool = (fa + " " + en);
+  let hits = 0;
+  for(let i = 0; i < q.length; i++){
+    if(pool.includes(q[i])) hits++;
+  }
+  if(q.length) score += Math.round((hits / q.length) * 60);
+  return score;
+}
+
+function searchStudiosRanked(q){
+  const nq = normalizeText(q);
+  const all = getPublishedStudios();
+  if(!nq) return all.slice();
+  /* همه استودیوها می‌مانند؛ نزدیک‌ترین به عبارت جستجو اول می‌آید */
+  return all
+    .map(s => ({ s, score: studioSimilarityScore(s, nq) }))
+    .sort((a,b)=> b.score - a.score || (a.s.nameFa||"").localeCompare(b.s.nameFa||"", "fa"))
+    .map(x => x.s);
+}
+
+function studioInitialLetter(studio){
+  const en = String(studio && studio.nameEn || "").trim();
+  if(en){
+    const m = en.match(/[A-Za-z0-9]/);
+    if(m) return m[0].toUpperCase();
+  }
+  const fa = String(studio && studio.nameFa || "").trim();
+  if(fa) return fa[0];
+  return "S";
+}
+function studioLogoHue(studio){
+  const s = String((studio && (studio.nameEn || studio.nameFa)) || "studio");
+  let h = 0;
+  for(let i=0;i<s.length;i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h % 360;
+}
+function applyStudioLetterLogo(logoEl, studio){
+  if(!logoEl) return;
+  const letter = studioInitialLetter(studio);
+  const hue = studioLogoHue(studio);
+  logoEl.textContent = letter;
+  logoEl.style.background = "linear-gradient(145deg,hsl(" + hue + " 42% 38%),hsl(" + ((hue+24)%360) + " 36% 22%))";
+  logoEl.style.color = "#f5e6c8";
+  logoEl.style.fontWeight = "700";
+}
+function buildStudioCircle(studio){
+  const el = document.createElement("div");
+  el.className = "studioCircle";
+  el.setAttribute("role", "button");
+  const logo = document.createElement("div");
+  logo.className = "studioLogo";
+  if(studio.logoUrl && isValidUrl(studio.logoUrl)){
+    const img = document.createElement("img");
+    img.src = studio.logoUrl;
+    img.alt = studio.nameFa || studio.nameEn || "";
+    img.onerror = ()=>{ img.remove(); applyStudioLetterLogo(logo, studio); };
+    logo.appendChild(img);
+  }else{
+    applyStudioLetterLogo(logo, studio);
+  }
+  const name = document.createElement("div");
+  name.className = "studioName";
+  name.textContent = studio.nameFa || studio.nameEn || "استودیو";
+  el.appendChild(logo);
+  el.appendChild(name);
+  el.addEventListener("click", ()=> openStudioDetail(studio));
+  return el;
+}
+
+function renderHomeStudios(){
+  const track = $("homeStudiosTrack");
+  const head = $("studiosSectionHead");
+  if(!track) return;
+  track.innerHTML = "";
+  const list = getPublishedStudios().slice(0, 12);
+  if(!list.length){
+    if(head) head.style.display = "none";
+    const strip = $("homeStudios");
+    if(strip) strip.style.display = "none";
+    return;
+  }
+  if(head) head.style.display = "";
+  const strip = $("homeStudios");
+  if(strip) strip.style.display = "";
+  list.forEach(s => track.appendChild(buildStudioCircle(s)));
+}
+
+function openStudiosListPage(){
+  const box = $("studiosListGrid");
+  if(box){
+    box.className = "studiosGrid";
+    box.innerHTML = "";
+    const list = getPublishedStudios();
+    if(!list.length){
+      showEmpty(box, "استودیویی ثبت نشده.");
+    }else{
+      list.forEach(s => box.appendChild(buildStudioCircle(s)));
+    }
+  }
+  showPage("studiosListPage");
+}
+$("studiosArrow")?.addEventListener("click", openStudiosListPage);
+$("studiosListBack")?.addEventListener("click", ()=> showPage("homePage"));
+
+function worksForStudio(studio){
+  if(!studio) return [];
+  const en = normalizeText(studio.nameEn);
+  const fa = normalizeText(studio.nameFa);
+  return allWorks.filter(w => {
+    const a = normalizeText(w.Author);
+    if(!a) return false;
+    if(en && (a === en || a.includes(en) || en.includes(a))) return true;
+    if(fa && (a === fa || a.includes(fa) || fa.includes(a))) return true;
+    return false;
+  });
+}
+
+function openStudioDetail(studio){
+  if(!studio) return;
+  currentStudio = studio;
+  const logo = $("studioDetailLogo");
+  if(logo){
+    logo.innerHTML = "";
+    logo.style.fontSize = "36px";
+    logo.style.fontWeight = "700";
+    if(studio.logoUrl && isValidUrl(studio.logoUrl)){
+      const img = document.createElement("img");
+      img.src = studio.logoUrl;
+      img.alt = studio.nameFa || studio.nameEn || "";
+      img.style.cssText = "width:100%;height:100%;object-fit:cover";
+      img.onerror = ()=>{ img.remove(); applyStudioLetterLogo(logo, studio); logo.style.fontSize = "36px"; };
+      logo.appendChild(img);
+    }else{
+      applyStudioLetterLogo(logo, studio);
+      logo.style.fontSize = "36px";
+    }
+  }
+  if($("studioDetailNameFa")) $("studioDetailNameFa").textContent = studio.nameFa || "—";
+  if($("studioDetailNameEn")) $("studioDetailNameEn").textContent = studio.nameEn || "";
+  if($("studioDetailDesc")) $("studioDetailDesc").textContent = studio.description || "توضیحاتی ثبت نشده.";
+  fillBooksBox("studioDetailWorks", worksForStudio(studio), "انیمه‌ای برای این استودیو پیدا نشد.");
+  showPage("studioDetailPage");
+}
+$("studioDetailBack")?.addEventListener("click", ()=>{
+  if(appPageStack.length > 1){ appPageStack.pop(); showPage(appPageStack[appPageStack.length-1], true); }
+  else showPage("homePage");
+});
+
+async function publishStudio(){
+  if(!(await requireAdminAction())) return;
+  if(!appwriteReady || !databases || !appwriteID){ showToast("اتصال برقرار نیست"); return; }
+  const nameFa = ($("studioNameFa")?.value || "").trim();
+  const nameEn = ($("studioNameEn")?.value || "").trim();
+  const logoUrl = ($("studioLogoUrl")?.value || "").trim();
+  const description = ($("studioDescription")?.value || "").trim();
+  const published = !!($("studioPublished")?.checked);
+  if(!nameFa && !nameEn){ showToast("نام استودیو را وارد کنید"); return; }
+  if(logoUrl && !isValidUrl(logoUrl)){ showToast("لینک لوگو نامعتبر است"); return; }
+  const btn = $("publishStudioBtn");
+  const old = btn ? btn.textContent : "";
+  if(btn){ btn.disabled = true; btn.textContent = "در حال ثبت..."; }
+  clearStudioError();
+  try{
+    /* فقط فیلدهای پر را بفرست تا Attribute خالی/اجباری خطا ندهد */
+    const payload = {};
+    if(nameFa) payload.nameFa = nameFa;
+    if(nameEn) payload.nameEn = nameEn;
+    if(logoUrl) payload.logoUrl = logoUrl;
+    if(description) payload.description = description;
+    payload.published = published;
+
+    const perms = publicDocPermissions();
+    const docId = appwriteID.unique();
+    try{
+      if(perms){
+        await databases.createDocument(DATABASE_ID, COLLECTION_STUDIOS, docId, payload, perms);
+      }else{
+        await databases.createDocument(DATABASE_ID, COLLECTION_STUDIOS, docId, payload);
+      }
+    }catch(e1){
+      /* اگر published یا فیلد دیگری مشکل داشت، بدون آن‌ها دوباره امتحان کن */
+      const msg1 = String(e1 && e1.message || "");
+      if(/published|attribute|unknown|invalid/i.test(msg1)){
+        const p2 = Object.assign({}, payload);
+        delete p2.published;
+        if(perms){
+          await databases.createDocument(DATABASE_ID, COLLECTION_STUDIOS, appwriteID.unique(), p2, perms);
+        }else{
+          await databases.createDocument(DATABASE_ID, COLLECTION_STUDIOS, appwriteID.unique(), p2);
+        }
+      }else{
+        throw e1;
+      }
+    }
+    if($("studioNameFa")) $("studioNameFa").value = "";
+    if($("studioNameEn")) $("studioNameEn").value = "";
+    if($("studioLogoUrl")) $("studioLogoUrl").value = "";
+    if($("studioDescription")) $("studioDescription").value = "";
+    if($("studioPublished")) $("studioPublished").checked = true;
+    clearStudioError();
+    await loadStudios();
+    renderAdminStudios();
+    renderHomeStudios();
+    showToast("استودیو ثبت شد");
+  }catch(e){
+    console.error(e);
+    showStudioError(e);
+    const detail = formatAppwriteError(e);
+    showToast("خطا در ثبت استودیو — متن کامل را کپی کنید");
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = old || "🚀 ثبت استودیو"; }
+  }
+}
+
+let lastStudioError = "";
+function showStudioError(eOrText){
+  const raw = typeof eOrText === "string" ? eOrText : formatAppwriteError(eOrText);
+  lastStudioError = raw;
+  const box = $("studioErrorBox");
+  const txt = $("studioErrorText");
+  if(txt) txt.textContent = raw;
+  if(box) box.classList.add("show");
+}
+function clearStudioError(){
+  lastStudioError = "";
+  $("studioErrorBox")?.classList.remove("show");
+  if($("studioErrorText")) $("studioErrorText").textContent = "";
+}
+$("copyStudioErrorBtn")?.addEventListener("click", async ()=>{
+  const text = lastStudioError || ($("studioErrorText")?.textContent || "");
+  if(!text){ showToast("خطایی برای کپی نیست"); return; }
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast("خطا کپی شد");
+  }catch(err){
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      showToast("خطا کپی شد");
+    }catch(e2){
+      showToast("کپی نشد؛ متن را دستی انتخاب کنید");
+    }
+  }
+});
+$("publishStudioBtn")?.addEventListener("click", publishStudio);
+
+function renderAdminStudios(){
+  const box = $("adminStudiosList");
+  if(!box) return;
+  box.innerHTML = "";
+  const q = normalizeText($("adminStudiosSearch")?.value);
+  let list = allStudios.slice().sort((a,b)=> (b.createdAt||0)-(a.createdAt||0));
+  if(q){
+    list = list.filter(s =>
+      normalizeText(s.nameFa).includes(q) ||
+      normalizeText(s.nameEn).includes(q)
+    );
+  }
+  if(!list.length){
+    showEmpty(box, q ? "موردی پیدا نشد." : "استودیویی ثبت نشده.");
+    return;
+  }
+  list.forEach(st => {
+    const item = document.createElement("div");
+    item.className = "adminItem";
+    item.innerHTML = `
+      <div class="adminItemInfo">
+        <b>${escapeHtml(st.nameFa || st.nameEn || "بدون نام")}</b>
+        <small dir="ltr">${escapeHtml(st.nameEn || "—")} · ${st.published ? "منتشر" : "پیش‌نویس"}</small>
+      </div>
+      <div class="adminActions">
+        <button class="editBtn" type="button">✏️ ویرایش</button>
+        <button class="delete" type="button">🗑 حذف</button>
+      </div>
+    `;
+    item.querySelector(".editBtn")?.addEventListener("click", ()=> openEditStudio(st));
+    item.querySelector(".delete")?.addEventListener("click", async ()=>{
+      if(!confirm("استودیو «" + (st.nameFa||st.nameEn) + "» حذف شود؟")) return;
+      if(!(await requireAdminAction())) return;
+      try{
+        await databases.deleteDocument(DATABASE_ID, COLLECTION_STUDIOS, st.id);
+        await loadStudios();
+        renderAdminStudios();
+        renderHomeStudios();
+        showToast("حذف شد");
+      }catch(e){
+        console.error(e);
+        showToast("خطا در حذف");
+      }
+    });
+    box.appendChild(item);
+  });
+}
+$("adminStudiosSearch")?.addEventListener("input", debounce(renderAdminStudios, 180));
+$("clearAdminStudiosSearch")?.addEventListener("click", ()=>{
+  if($("adminStudiosSearch")) $("adminStudiosSearch").value = "";
+  renderAdminStudios();
+});
+
+function openEditStudio(st){
+  editingStudio = st;
+  if($("editStudioNameFa")) $("editStudioNameFa").value = st.nameFa || "";
+  if($("editStudioNameEn")) $("editStudioNameEn").value = st.nameEn || "";
+  if($("editStudioLogoUrl")) $("editStudioLogoUrl").value = st.logoUrl || "";
+  if($("editStudioDescription")) $("editStudioDescription").value = st.description || "";
+  if($("editStudioPublished")) $("editStudioPublished").checked = !!st.published;
+  $("editStudioModal")?.classList.add("active");
+}
+$("closeEditStudioModal")?.addEventListener("click", ()=>{
+  $("editStudioModal")?.classList.remove("active");
+  editingStudio = null;
+});
+$("saveEditStudioBtn")?.addEventListener("click", async ()=>{
+  if(!editingStudio) return;
+  if(!(await requireAdminAction())) return;
+  const nameFa = ($("editStudioNameFa")?.value || "").trim();
+  const nameEn = ($("editStudioNameEn")?.value || "").trim();
+  const logoUrl = ($("editStudioLogoUrl")?.value || "").trim();
+  const description = ($("editStudioDescription")?.value || "").trim();
+  const published = !!($("editStudioPublished")?.checked);
+  if(!nameFa && !nameEn){ showToast("نام لازم است"); return; }
+  if(logoUrl && !isValidUrl(logoUrl)){ showToast("لینک لوگو نامعتبر"); return; }
+  try{
+    await databases.updateDocument(DATABASE_ID, COLLECTION_STUDIOS, editingStudio.id, {
+      nameFa, nameEn, logoUrl, description, published
+    });
+    $("editStudioModal")?.classList.remove("active");
+    editingStudio = null;
+    await loadStudios();
+    renderAdminStudios();
+    renderHomeStudios();
+    showToast("ذخیره شد");
+  }catch(e){
+    console.error(e);
+    showToast("خطا در ذخیره");
+  }
+});
+
+
 async function init(){
   fillGenreSelect();
   renderGenres();
@@ -6393,12 +7624,14 @@ async function init(){
         if(serverGenres && serverGenres.length){
           saveGenresLocal(serverGenres);
         }
+        /* همیشه ژانرها را از کش نهایی بکش و UI را تازه کن */
         fillGenreSelect();
         renderGenres();
         if(isAdminMode) renderGenreAdmin();
       }catch(e){ console.error(e); }
 
       await loadWorks();
+      try{ await loadStudios(); renderHomeStudios(); }catch(e){ console.error(e); }
       if(currentUser && currentUser.email){
         try{ await refreshCurrentUserCoins(); }catch(e){ console.error(e); }
         updateProfile();
