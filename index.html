@@ -103,8 +103,8 @@ button{cursor:pointer}
 }
 .booksStrip .book{width:112px;flex:0 0 112px;min-width:112px}
 .booksStrip .cover{height:148px}
-.booksStrip .bookTitle{font-size:10px}
-.booksStrip .bookAuthor{font-size:8px}
+.booksStrip .bookTitle{font-size:10px;-webkit-line-clamp:3}
+.booksStrip .bookAuthor{font-size:8px;-webkit-line-clamp:2}
 
 .cover{
   height:155px;border-radius:11px;position:relative;overflow:hidden;
@@ -137,12 +137,16 @@ button{cursor:pointer}
 .cover .star.on{color:#e0a94e}
 
 .bookTitle{
-  font-size:11px;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  max-width:100%;direction:rtl;text-align:right;unicode-bidi:plaintext
+  font-size:11px;margin-top:8px;overflow:hidden;
+  max-width:100%;direction:rtl;text-align:right;unicode-bidi:plaintext;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;
+  line-height:1.35;word-break:break-word;overflow-wrap:anywhere
 }
 .bookAuthor{
-  font-size:9px;color:var(--muted);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  max-width:100%;direction:rtl;text-align:right;unicode-bidi:plaintext
+  font-size:9px;color:var(--muted);margin-top:5px;overflow:hidden;
+  max-width:100%;direction:rtl;text-align:right;unicode-bidi:plaintext;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  line-height:1.3;word-break:break-word;overflow-wrap:anywhere
 }
 .empty{grid-column:1/-1;text-align:center;padding:50px 15px;color:#796655;font-size:12px;line-height:1.9}
 .emptyIcon{font-size:38px;margin-bottom:12px}
@@ -230,12 +234,16 @@ button{cursor:pointer}
 .detailCircleLabel{font-size:7px;line-height:1.15;color:#a98d70;white-space:nowrap;font-weight:600}
 .detailCenterInfo{min-width:0;flex:1;text-align:center}
 .detailCenterInfo h1{
-  font-size:19px;margin:0 0 7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  max-width:100%;direction:rtl;unicode-bidi:plaintext
+  font-size:19px;margin:0 0 7px;overflow:hidden;
+  max-width:100%;direction:rtl;unicode-bidi:plaintext;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;
+  line-height:1.35;word-break:break-word;overflow-wrap:anywhere;white-space:normal
 }
 .detailAuthorName{
-  color:#8d755d;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  max-width:100%;direction:rtl;unicode-bidi:plaintext
+  color:#8d755d;font-size:11px;overflow:hidden;
+  max-width:100%;direction:rtl;unicode-bidi:plaintext;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  line-height:1.3;word-break:break-word;overflow-wrap:anywhere;white-space:normal
 }
 .detailGenreLine{text-align:center;color:#c37934;font-size:10px;margin-top:12px}
 .description{color:#a9937c;line-height:2;font-size:12px;margin-bottom:22px}
@@ -793,8 +801,10 @@ button{cursor:pointer}
 }
 .heroCard .heroTitle{
   position:absolute;z-index:4;left:8px;right:8px;bottom:9px;
-  color:#f4e5d0;font-size:10px;font-weight:700;line-height:1.45;
-  text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:#f4e5d0;font-size:10px;font-weight:700;line-height:1.35;
+  text-align:center;overflow:hidden;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  word-break:break-word;overflow-wrap:anywhere;
   direction:rtl;text-shadow:0 1px 4px #000;
 }
 .heroCard.center{
@@ -869,7 +879,9 @@ button{cursor:pointer}
 }
 .studioCircle .studioLogo img{width:100%;height:100%;object-fit:cover}
 .studioCircle .studioName{
-  font-size:9px;color:#dfc9ad;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;line-height:1.3
+  font-size:9px;color:#dfc9ad;overflow:hidden;max-width:100%;line-height:1.3;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  word-break:break-word;overflow-wrap:anywhere
 }
 .studiosGrid{
   display:grid;grid-template-columns:repeat(4,1fr);gap:12px
@@ -887,6 +899,85 @@ button{cursor:pointer}
   padding:0 0 4px !important;margin:0 !important
 }
 #homeStudios.booksStrip{padding:2px 1px 6px}
+
+/* FAQ */
+.faqListWrap{padding:0 2px 20px}
+.faqItem{
+  background:#241912;border:1px solid #3a2a1c;border-radius:14px;margin-bottom:10px;
+  overflow:hidden;transition:border-color .2s,background .2s
+}
+.faqItem.open{border-color:#6b4a2a;background:#2a1c14}
+.faqQ{
+  width:100%;border:0;background:transparent;color:#e7d6bf;padding:15px 14px;
+  text-align:right;font-size:12.5px;font-weight:600;line-height:1.55;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;cursor:pointer
+}
+.faqQ:active{opacity:.85}
+.faqQ span:first-child{flex:1;min-width:0}
+.faqQ .faqChevron{
+  flex:0 0 auto;width:22px;height:22px;border-radius:50%;
+  background:rgba(195,121,52,.12);color:#c37934;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .25s ease,background .2s;margin-top:1px
+}
+.faqItem.open .faqQ .faqChevron{
+  transform:rotate(180deg);background:rgba(195,121,52,.28);color:#e0a94e
+}
+.faqA{
+  display:none;padding:0 14px 16px;font-size:11.5px;color:#b89f84;line-height:2;
+  border-top:1px solid transparent
+}
+.faqItem.open .faqA{
+  display:block;border-top-color:#3a2a1c;padding-top:12px;margin-top:-2px
+}
+.faqHint{
+  text-align:center;font-size:10px;color:#7a6550;line-height:1.8;margin:8px 4px 18px
+}
+.detailStudiosRow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:14px 0 6px}
+.detailStudiosLabel{font-size:11px;color:#c37934;text-align:center;margin-top:16px;margin-bottom:4px}
+
+/* بنر کپی آیدی */
+.copyBannerOverlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:5200;display:none;
+  align-items:center;justify-content:center;padding:18px
+}
+.copyBannerOverlay.active{display:flex}
+.copyBannerBox{
+  width:100%;max-width:340px;background:#211710;border:1px solid #4a3222;border-radius:18px;
+  padding:22px 16px 16px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.45)
+}
+.copyBannerBox .cbEmoji{font-size:30px;margin-bottom:8px}
+.copyBannerBox h3{font-size:14px;color:#e0a94e;margin-bottom:10px;line-height:1.6}
+.copyBannerBox .cbHandle{
+  direction:ltr;display:inline-block;background:#2b1d14;border:1px solid #4a3222;
+  border-radius:10px;padding:8px 14px;color:#e0a94e;font-size:13px;font-weight:700;
+  letter-spacing:.5px;margin-bottom:12px;user-select:all
+}
+.copyBannerBox p{font-size:11.5px;color:#d6b994;line-height:1.95;margin-bottom:16px}
+.copyBannerBox .cbOk{
+  width:100%;border:0;border-radius:12px;padding:12px;font-size:12px;font-weight:600;
+  background:#bd7232;color:#fff;cursor:pointer
+}
+
+.reportAnimeBtn{
+  width:100%;margin-top:16px;height:44px;border:1px solid #5b3028;border-radius:12px;
+  background:#2a1c14;color:#e3b8a5;font-size:12px;font-weight:600;cursor:pointer
+}
+.socialLinksRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.socialLinkBtn{
+  border:0;border-radius:12px;padding:12px 8px;font-size:11px;font-weight:600;cursor:pointer;
+  background:#3a2a1c;color:#ead4b8;text-align:center;text-decoration:none;display:block
+}
+.socialLinkBtn.ig{background:#4a2a35;color:#f0d4c8}
+.socialLinkBtn.tg{background:#2a3a4a;color:#c8d4e0}
+.contactFooter{
+  margin-top:14px;padding-top:12px;border-top:1px solid #302119;text-align:center;
+  font-size:11px;color:#a89078;line-height:2
+}
+.contactFooter a{color:#e0a94e;text-decoration:none;font-weight:600}
+.mangaCostInput{width:70px;font-size:10px;padding:6px 8px;margin:0;background:#2b1d15;color:#e7d6bf;border:0;border-radius:8px}
+.mangaPriceBox{background:#1a120e;border:1px solid #302119;border-radius:12px;padding:12px;margin:10px 0}
+
 </style>
 </head>
 <body>
@@ -1019,8 +1110,9 @@ button{cursor:pointer}
   <div class="profileMenu">
     <div class="menu" id="notebookBtn"><span>📔 دفتر خاطره</span><span>›</span></div>
     <div class="menu" id="supportBtn"><span>پشتیبانی و درخواست انیمه</span><span>›</span></div>
-    <div class="menu adminAccess" id="adminAccessBtn" style="display:none" hidden><span>🔐 پنل مدیریت</span><span>›</span></div>
     <div class="menu" id="referralAccessBtn"><span>🎁 کد معرف</span><span>›</span></div>
+    <div class="menu" id="faqBtn"><span>❓ سؤالات متداول</span><span>›</span></div>
+    <div class="menu adminAccess" id="adminAccessBtn" style="display:none" hidden><span>🔐 پنل مدیریت</span><span>›</span></div>
   </div>
 </section>
 
@@ -1179,6 +1271,17 @@ button{cursor:pointer}
   </div>
 </section>
 
+
+<!-- ========== FAQ ========== -->
+<section id="faqPage" class="page">
+  <div class="top">
+    <button class="back" id="faqBack" type="button">←</button>
+    <h2>سؤالات متداول</h2>
+  </div>
+  <p class="faqHint">روی هر سؤال بزن تا پاسخ نمایش داده شود</p>
+  <div id="faqList" class="faqListWrap"></div>
+</section>
+
 <!-- ========== REFERRAL ========== -->
 <section id="referralPage" class="page">
   <div class="top">
@@ -1258,6 +1361,9 @@ button{cursor:pointer}
     </div>
     <div id="detailPanelDetails" class="detailPanel active">
       <div class="description" id="detailDescription"></div>
+      <div class="detailStudiosLabel" id="detailStudiosLabel" style="display:none">استودیو</div>
+      <div id="detailStudiosRow" class="detailStudiosRow" style="display:none"></div>
+      <button type="button" class="reportAnimeBtn" id="reportAnimeBtn">🚩 گزارش انیمه</button>
     </div>
     <div id="detailPanelEpisodes" class="detailPanel">
       <div id="detailSeasonTabs" class="seasonTabs" style="display:none"></div>
@@ -1371,6 +1477,18 @@ button{cursor:pointer}
           </div>
           <div class="keywordHint">شماره‌گذاری از ادامهٔ آخرین مورد شروع می‌شود؛ یا با «شروع از» مشخص کنید</div>
           <div id="pendingMangaItems" style="margin-top:10px"></div>
+          <div class="mangaPriceBox" id="adminMangaPriceBox">
+            <label style="margin-top:0">قیمت‌گذاری دستی (سکه)</label>
+            <input id="adminMangaManualCost" type="number" min="0" placeholder="تعداد سکه (خالی = پیش‌فرض)" style="margin-bottom:8px">
+            <div class="segment" id="adminMangaPriceScopeSeg" style="margin-bottom:8px">
+              <button type="button" class="active" data-price-scope="all">همه</button>
+              <button type="button" data-price-scope="selected">انتخاب‌شده</button>
+              <button type="button" data-price-scope="one">یک مورد</button>
+            </div>
+            <input id="adminMangaPriceIndices" class="modalInput" placeholder="شماره موارد (مثلاً 1,3,5) — برای انتخاب‌شده/یک مورد" style="display:none;margin-bottom:8px">
+            <button class="addBtn" id="adminApplyMangaPriceBtn" type="button" style="margin:0">اعمال قیمت دستی</button>
+            <div class="keywordHint">اگر قیمت دستی تنظیم نشود، هزینه پیش‌فرض چپتر/جلد استفاده می‌شود. برای هر مورد می‌توانید در لیست هم سکه جدا وارد کنید.</div>
+          </div>
         </div>
 
         <!-- بخش قسمت‌ها / فصل‌ها -->
@@ -1611,6 +1729,18 @@ button{cursor:pointer}
           <button class="addBtn" id="editBulkAddMangaBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">+ ساخت خودکار</button>
           <button class="delete" id="editClearAllMangaBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">حذف همه</button>
         </div>
+        <div class="mangaPriceBox" id="editMangaPriceBox">
+          <label style="margin-top:0">قیمت‌گذاری دستی (سکه)</label>
+          <input id="editMangaManualCost" type="number" min="0" placeholder="تعداد سکه (خالی = پیش‌فرض)" style="margin-bottom:8px">
+          <div class="segment" id="editMangaPriceScopeSeg" style="margin-bottom:8px">
+            <button type="button" class="active" data-price-scope="all">همه</button>
+            <button type="button" data-price-scope="selected">انتخاب‌شده</button>
+            <button type="button" data-price-scope="one">یک مورد</button>
+          </div>
+          <input id="editMangaPriceIndices" class="modalInput" placeholder="شماره موارد (مثلاً 1,3,5)" style="display:none;margin-bottom:8px">
+          <button class="addBtn" id="editApplyMangaPriceBtn" type="button" style="margin:0">اعمال قیمت دستی</button>
+          <div class="keywordHint">خالی بگذارید تا هزینه پیش‌فرض چپتر/جلد اعمال شود. در لیست هر مورد هم فیلد سکه دارد.</div>
+        </div>
       </div>
 
       <!-- ویرایش قسمت‌های تخت (سینمایی) -->
@@ -1694,8 +1824,15 @@ button{cursor:pointer}
       <h4>سکه تعدادی</h4>
       <p>می‌توانید هر مقدار سکه که دوست دارید بخرید و به موجودی‌تان اضافه شود.</p>
     </div>
-    <p class="keywordHint" style="margin-top:8px;text-align:center">برای خرید به این آیدی پیام دهید:<br><b dir="ltr">@rraararar</b><br>(تلگرام و روبیکا)</p>
-    <button class="modalBtn" id="closeBuyCoinsModal" type="button" style="background:#302119;color:#c8ad90">بستن</button>
+    <div class="socialLinksRow">
+      <a class="socialLinkBtn ig" id="buyCoinsIgBtn" href="https://www.instagram.com/anime_archive.ir/" target="_blank" rel="noopener noreferrer">اینستاگرام</a>
+      <a class="socialLinkBtn tg" id="buyCoinsTgBtn" href="https://t.me/rraararar" target="_blank" rel="noopener noreferrer">تلگرام</a>
+    </div>
+    <div class="contactFooter">
+      اکانت تلگرام: <a id="buyCoinsTgText" href="https://t.me/rraararar" target="_blank" rel="noopener noreferrer" dir="ltr">@rraararar</a><br>
+      پیج اینستاگرام: <a id="buyCoinsIgText" href="https://www.instagram.com/anime_archive.ir/" target="_blank" rel="noopener noreferrer" dir="ltr">@anime_archive.ir</a>
+    </div>
+    <button class="modalBtn" id="closeBuyCoinsModal" type="button" style="background:#302119;color:#c8ad90;margin-top:10px">بستن</button>
   </div>
 </div>
 
@@ -1766,6 +1903,17 @@ button{cursor:pointer}
     <div class="ibActions" style="grid-template-columns:1fr">
       <button type="button" class="ibBtn ok" id="vpnDownloadOk">تأیید — VPN خاموش است</button>
     </div>
+  </div>
+</div>
+
+
+<div id="copyBanner" class="copyBannerOverlay">
+  <div class="copyBannerBox">
+    <div class="cbEmoji" id="copyBannerEmoji">📋</div>
+    <h3 id="copyBannerTitle">کپی شد</h3>
+    <div class="cbHandle" id="copyBannerHandle" dir="ltr">@rraararar</div>
+    <p id="copyBannerText"></p>
+    <button type="button" class="cbOk" id="copyBannerOk">متوجه شدم</button>
   </div>
 </div>
 
@@ -1864,6 +2012,7 @@ let appPageStack = ["homePage"];
 let recentRandomIds = [];
 let __authInFlight = false;
 let __publishInFlight = false;
+let __downloadInFlight = false;
 
 /* وضعیت بنر: همیشه از بین ۱۵ انیمهٔ جدیدتر، جدیدترین اثر مرکز است. */
 const HERO_MAX_ITEMS = 15;
@@ -1884,6 +2033,96 @@ function showToast(text){
   t.classList.add("show");
   clearTimeout(window.__toastTimer);
   window.__toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2800);
+}
+
+/* باز کردن لینک خارجی — سازگار با موبایل و WebView */
+const TELEGRAM_USER = "rraararar";
+const TELEGRAM_URL = "https://t.me/" + TELEGRAM_USER;
+const INSTAGRAM_USER = "anime_archive.ir";
+const INSTAGRAM_URL = "https://www.instagram.com/" + INSTAGRAM_USER + "/";
+
+async function copyTextSafe(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(e){
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      const ok = document.execCommand("copy");
+      ta.remove();
+      return !!ok;
+    }catch(e2){ return false; }
+  }
+}
+
+function openExternalLink(url){
+  /* عمداً لینک خارجی باز نمی‌شود — فقط کپی + بنر */
+  return false;
+}
+
+function showCopyBanner(opts){
+  const o = opts || {};
+  const box = $("copyBanner");
+  if(!box) return;
+  if($("copyBannerEmoji")) $("copyBannerEmoji").textContent = o.emoji || "📋";
+  if($("copyBannerTitle")) $("copyBannerTitle").textContent = o.title || "کپی شد";
+  if($("copyBannerHandle")) $("copyBannerHandle").textContent = o.handle || "";
+  if($("copyBannerText")) $("copyBannerText").textContent = o.text || "";
+  box.classList.add("active");
+}
+function hideCopyBanner(){
+  $("copyBanner")?.classList.remove("active");
+}
+$("copyBannerOk")?.addEventListener("click", hideCopyBanner);
+$("copyBanner")?.addEventListener("click", function(e){
+  if(e.target === this) hideCopyBanner();
+});
+
+/* context: report | support | coins | default */
+async function openTelegramSupport(context){
+  const handle = "@" + TELEGRAM_USER;
+  const ok = await copyTextSafe(handle);
+  let title = ok ? "اکانت تلگرام کپی شد" : "آیدی تلگرام";
+  let text = "";
+  const ctx = context || "default";
+  if(ctx === "report"){
+    text = "آیدی در حافظه کپی شد. تلگرام را باز کنید، این آیدی را جستجو کنید و مشکل انیمه (لینک خراب، عنوان اشتباه، کیفیت و…) را بنویسید.";
+  }else if(ctx === "support"){
+    text = "آیدی در حافظه کپی شد. تلگرام را باز کنید و این آیدی را جستجو کنید. برای پشتیبانی یا درخواست انیمهٔ جدید پیام بدهید.";
+  }else if(ctx === "coins"){
+    text = "آیدی در حافظه کپی شد. تلگرام را باز کنید و این آیدی را جستجو کنید تا برای خرید سکه یا فعال‌سازی نامحدود پیام بدهید.";
+  }else{
+    text = "آیدی در حافظه کپی شد. تلگرام را باز کنید و @" + TELEGRAM_USER + " را جستجو کنید.";
+  }
+  if(!ok){
+    text = "کپی خودکار انجام نشد. آیدی را دستی از کادر بالا بردارید. " + text;
+  }
+  showCopyBanner({ emoji: "✈️", title: title, handle: handle, text: text });
+  return true;
+}
+
+async function openInstagramPage(context){
+  const handle = "@" + INSTAGRAM_USER;
+  const ok = await copyTextSafe(handle);
+  let title = ok ? "پیج اینستاگرام کپی شد" : "آیدی اینستاگرام";
+  let text = "";
+  const ctx = context || "default";
+  if(ctx === "coins"){
+    text = "آیدی پیج در حافظه کپی شد. اینستاگرام را باز کنید و این آیدی را جستجو کنید. برای خرید سکه می‌توانید از همین پیج یا تلگرام پیام بدهید.";
+  }else{
+    text = "آیدی پیج در حافظه کپی شد. اینستاگرام را باز کنید و @" + INSTAGRAM_USER + " را جستجو کنید.";
+  }
+  if(!ok){
+    text = "کپی خودکار انجام نشد. آیدی را دستی از کادر بالا بردارید. " + text;
+  }
+  showCopyBanner({ emoji: "📷", title: title, handle: handle, text: text });
+  return true;
 }
 
 function formatAppwriteError(e){
@@ -1970,6 +2209,23 @@ function isValidUrl(v){
 
 function typeLabel(type){
   return type === "movie" ? "سینمایی" : "سریالی";
+}
+function workTypeBadgeText(work){
+  if(!work) return "سریالی";
+  const kind = work.contentKind || "anime";
+  const onlyManga = kind === "manga";
+  const hasManga = onlyManga || kind === "both" || (work.mangaItems && work.mangaItems.length);
+  const animeLabel = typeLabel(work.type);
+  if(onlyManga && !((work.episodes && work.episodes.length) || (work.seasons && work.seasons.length))){
+    return "مانگا";
+  }
+  if(hasManga && kind === "both"){
+    return animeLabel + " | مانگا";
+  }
+  if(hasManga && onlyManga){
+    return "مانگا";
+  }
+  return animeLabel;
 }
 
 function loadJSON(key, fallback){
@@ -2101,24 +2357,39 @@ function hasActiveUnlimited(user){
 function downloadCostForWork(work){
   return (work && work.type === "movie") ? COST_MOVIE : COST_SERIAL_EP;
 }
-function downloadCostForMangaItem(work){
+function downloadCostForMangaItem(work, item){
+  if(item && item.cost != null && item.cost !== "" && !isNaN(Number(item.cost)) && Number(item.cost) >= 0){
+    return Math.max(0, Math.floor(Number(item.cost)));
+  }
   const num = (work && work.mangaNumbering) === "volume" ? "volume" : "chapter";
   return num === "volume" ? COST_MANGA_VOLUME : COST_MANGA_CHAPTER;
 }
-function trySpendCoinsForMangaDownload(work){
+function confirmMangaDownloadCost(work, item){
   if(!currentUser || !currentUser.email) return false;
   if(hasActiveUnlimited(currentUser)) return true;
-  const cost = downloadCostForMangaItem(work);
+  const cost = downloadCostForMangaItem(work, item);
   const have = toInt(currentUser.coins, 0);
   if(have < cost){
     showToast("سکه کافی نیست (موجودی: " + have + " — نیاز: " + cost + ")");
     return false;
   }
+  if(cost <= 0) return true;
   const isVol = (work && work.mangaNumbering) === "volume";
   const msg = isVol
     ? ("دانلود این جلد " + cost + " سکه هزینه دارد. تأیید می‌کنید؟")
     : ("دانلود این چپتر " + cost + " سکه هزینه دارد. تأیید می‌کنید؟");
-  if(!confirm(msg)) return false;
+  return confirm(msg);
+}
+function applyMangaDownloadCost(work, item){
+  if(!currentUser || !currentUser.email) return false;
+  if(hasActiveUnlimited(currentUser)) return true;
+  const cost = downloadCostForMangaItem(work, item);
+  if(cost <= 0) return true;
+  const have = toInt(currentUser.coins, 0);
+  if(have < cost){
+    showToast("سکه کافی نیست (موجودی: " + have + " — نیاز: " + cost + ")");
+    return false;
+  }
   const left = Math.max(0, have - cost);
   currentUser.coins = left;
   updateCoinUI();
@@ -2132,6 +2403,11 @@ function trySpendCoinsForMangaDownload(work){
     });
   }
   return true;
+}
+/** سازگاری با فراخوانی‌های قدیمی — تأیید + کسر فوری */
+function trySpendCoinsForMangaDownload(work, item){
+  if(!confirmMangaDownloadCost(work, item)) return false;
+  return applyMangaDownloadCost(work, item);
 }
 
 async function fetchUserByEmail(email){
@@ -2305,8 +2581,7 @@ async function claimDailyCoins(){
 
 let pendingDownloadAction = null;
 
-function trySpendCoinsForDownload(work){
-  /* بدون await تا لینک همان لحظه باز شود و پاپ‌آپ بلاک نشود */
+function confirmAnimeDownloadCost(work){
   if(!currentUser || !currentUser.email) return false;
   if(hasActiveUnlimited(currentUser)) return true;
   const cost = downloadCostForWork(work);
@@ -2315,11 +2590,23 @@ function trySpendCoinsForDownload(work){
     showToast("سکه کافی نیست (موجودی: " + have + " — نیاز: " + cost + ")");
     return false;
   }
+  if(cost <= 0) return true;
   const msg = work && work.type === "movie"
     ? ("برای دانلود این انیمه سینمایی " + cost + " سکه از شما کم می‌شود. تأیید می‌کنید؟")
     : ("برای دانلود این قسمت " + cost + " سکه از شما کم می‌شود. تأیید می‌کنید؟");
-  if(!confirm(msg)) return false;
-  /* سکه را محلی کم کن؛ ذخیره سرور در پس‌زمینه (optimistic) */
+  return confirm(msg);
+}
+function applyAnimeDownloadCost(work){
+  /* بدون await تا لینک همان لحظه باز شود و پاپ‌آپ بلاک نشود */
+  if(!currentUser || !currentUser.email) return false;
+  if(hasActiveUnlimited(currentUser)) return true;
+  const cost = downloadCostForWork(work);
+  if(cost <= 0) return true;
+  const have = toInt(currentUser.coins, 0);
+  if(have < cost){
+    showToast("سکه کافی نیست (موجودی: " + have + " — نیاز: " + cost + ")");
+    return false;
+  }
   const left = Math.max(0, have - cost);
   currentUser.coins = left;
   updateCoinUI();
@@ -2335,8 +2622,13 @@ function trySpendCoinsForDownload(work){
   }
   return true;
 }
+function trySpendCoinsForDownload(work){
+  if(!confirmAnimeDownloadCost(work)) return false;
+  return applyAnimeDownloadCost(work);
+}
 
 function showVpnDownloadBannerThen(action){
+  if(typeof action !== "function") return;
   pendingDownloadAction = action;
   $("vpnDownloadBanner")?.classList.add("active");
 }
@@ -2344,7 +2636,9 @@ $("vpnDownloadOk")?.addEventListener("click", ()=>{
   $("vpnDownloadBanner")?.classList.remove("active");
   const act = pendingDownloadAction;
   pendingDownloadAction = null;
-  if(typeof act === "function") act();
+  if(typeof act === "function"){
+    try{ act(); }catch(e){ console.error(e); showToast("خطا در شروع دانلود"); }
+  }
 });
 
 let grantTargetUser = null;
@@ -2612,11 +2906,17 @@ function parseMangaItemsField(raw){
       list = raw;
     }
   }catch(e){ list = []; }
-  return (list || []).map(e => ({
-    id: e.id || uid(),
-    title: e.title || "",
-    link: e.link || ""
-  })).filter(e => e.title || e.link);
+  return (list || []).map(e => {
+    const o = {
+      id: e.id || uid(),
+      title: e.title || "",
+      link: e.link || ""
+    };
+    if(e.cost != null && e.cost !== "" && !isNaN(Number(e.cost))){
+      o.cost = Math.max(0, Math.floor(Number(e.cost)));
+    }
+    return o;
+  }).filter(e => e.title || e.link);
 }
 
 function mapWorkDoc(doc){
@@ -3058,6 +3358,10 @@ function pushHistory(id){
 
 function showPage(id, fromPop){
   const previousPage = appPageStack[appPageStack.length - 1] || "homePage";
+  if(previousPage === "searchPage" && id !== "searchPage"){
+    if($("searchInput")) $("searchInput").value = "";
+    try{ renderSearch(); }catch(e){}
+  }
   if(id === "homePage" && !fromPop && previousPage !== "homePage" && previousPage !== "adminPage"){
     /* هر بار از جستجو/ژانر/ذخیره‌ها/پروفایل به خانه برگردیم، بنر به حالت خودکار برگردد. */
     resetHeroToAutomatic();
@@ -3185,13 +3489,14 @@ function createBookCard(work){
 
   const badge = document.createElement("span");
   badge.className = "workTypeBadge";
-  badge.textContent = typeLabel(work.type);
+  badge.textContent = workTypeBadgeText(work);
   cover.appendChild(badge);
 
   const star = document.createElement("button");
   star.type = "button";
-  star.className = "star" + (isSaved(work.id) ? " on" : "");
-  star.textContent = isSaved(work.id) ? "★" : "☆";
+  const savedOn = isSaved(work.id);
+  star.className = "star" + (savedOn ? " on" : "");
+  star.textContent = savedOn ? "★" : "☆";
   star.addEventListener("click", (e)=>{
     e.stopPropagation();
     const on = toggleSave(work.id);
@@ -3436,7 +3741,7 @@ function buildHeroCard(work, role){
   }
   const type = document.createElement("span");
   type.className = "heroType";
-  type.textContent = typeLabel(work.type);
+  type.textContent = workTypeBadgeText(work);
   card.appendChild(type);
   const title = document.createElement("div");
   title.className = "heroTitle";
@@ -3864,6 +4169,52 @@ $("savedHistoryTab")?.addEventListener("click", ()=>{
   renderHistory();
 });
 
+
+function studiosMatchingWork(work){
+  if(!work) return [];
+  const authorRaw = String(work.Author || "").trim();
+  if(!authorRaw) return [];
+  const parts = authorRaw.split(/[,،\/|]+/).map(s => s.trim()).filter(Boolean);
+  const published = getPublishedStudios();
+  const found = [];
+  const used = new Set();
+  function tryMatch(name){
+    const n = normalizeText(name);
+    if(!n) return;
+    published.forEach(s => {
+      if(used.has(s.id)) return;
+      const fa = normalizeText(s.nameFa);
+      const en = normalizeText(s.nameEn);
+      if((fa && (fa === n || fa.includes(n) || n.includes(fa))) ||
+         (en && (en === n || en.includes(n) || n.includes(en)))){
+        found.push(s);
+        used.add(s.id);
+      }
+    });
+  }
+  parts.forEach(tryMatch);
+  if(!found.length) tryMatch(authorRaw);
+  return found;
+}
+function renderDetailStudios(work){
+  const row = $("detailStudiosRow");
+  const label = $("detailStudiosLabel");
+  if(!row) return;
+  row.innerHTML = "";
+  const list = studiosMatchingWork(work);
+  if(!list.length){
+    row.style.display = "none";
+    if(label) label.style.display = "none";
+    return;
+  }
+  if(label){
+    label.style.display = "";
+    label.textContent = list.length > 1 ? "استودیوها" : "استودیو";
+  }
+  row.style.display = "flex";
+  list.forEach(s => row.appendChild(buildStudioCircle(s)));
+}
+
 function openDetail(work){
   if(!work) return;
   currentWork = work;
@@ -3877,6 +4228,7 @@ function openDetail(work){
   if(genreEl) genreEl.textContent = work.genre ? work.genre : "";
   const descEl = $("detailDescription");
   if(descEl) descEl.textContent = work.description || "توضیحاتی ثبت نشده است.";
+  renderDetailStudios(work);
 
   const cover = $("detailCover");
   if(cover) cover.className = "detailCover " + (work.type === "movie" ? "movieCover" : "serialCover");
@@ -3941,9 +4293,12 @@ function renderMangaItemsList(items){
     btn.className = "chapterItem";
     const locked = !(currentUser && currentUser.email);
     const downloaded = isEpisodeDownloaded(currentWork, ep, idx);
-    btn.innerHTML = `<span>${escapeHtml(ep.title || ("مورد " + (idx+1)))}</span><span>${locked ? "🔒 ورود" : (downloaded ? "✓ دانلود شده" : "دانلود")}</span>`;
+    const costVal = downloadCostForMangaItem(currentWork, ep);
+    const costHint = (!locked && !downloaded) ? (" · " + costVal + " سکه") : "";
+    btn.innerHTML = `<span>${escapeHtml(ep.title || ("مورد " + (idx+1)))}</span><span>${locked ? "🔒 ورود" : (downloaded ? "✓ دانلود شده" : ("دانلود" + costHint))}</span>`;
     if(downloaded) btn.classList.add("downloaded");
     btn.addEventListener("click", ()=>{
+      if(__downloadInFlight) return;
       if(!requireLoginForDownload()) return;
       if(isEpisodeDownloaded(currentWork, ep, idx)){
         showVpnDownloadBannerThen(()=>{
@@ -3951,13 +4306,21 @@ function renderMangaItemsList(items){
         });
         return;
       }
-      if(!trySpendCoinsForMangaDownload(currentWork)) return;
+      /* اول تأیید هزینه؛ کسر سکه فقط بعد از تأیید VPN تا در صورت انصراف سکه کم نشود */
+      if(!confirmMangaDownloadCost(currentWork, ep)) return;
       showVpnDownloadBannerThen(()=>{
-        forceDownload(ep.link, ep.title || "manga");
-        markEpisodeDownloaded(currentWork, ep, idx);
-        btn.classList.add("downloaded");
-        const action = btn.querySelector("span:last-child");
-        if(action) action.textContent = "✓ دانلود شده";
+        if(__downloadInFlight) return;
+        __downloadInFlight = true;
+        try{
+          if(!applyMangaDownloadCost(currentWork, ep)) return;
+          forceDownload(ep.link, ep.title || "manga");
+          markEpisodeDownloaded(currentWork, ep, idx);
+          btn.classList.add("downloaded");
+          const action = btn.querySelector("span:last-child");
+          if(action) action.textContent = "✓ دانلود شده";
+        }finally{
+          __downloadInFlight = false;
+        }
       });
     });
     box.appendChild(btn);
@@ -4115,7 +4478,8 @@ function renderEpisodesList(episodes){
   const box = $("chaptersList");
   if(!box) return;
   box.innerHTML = "";
-  window.currentEpisodes = episodes || [];
+  if(!Array.isArray(episodes)) episodes = [];
+  window.currentEpisodes = episodes;
   if(!episodes.length){ showEmpty(box, "قسمتی ثبت نشده است."); return; }
   episodes.forEach((ep, idx) => {
     const btn = document.createElement("button");
@@ -4126,6 +4490,7 @@ function renderEpisodesList(episodes){
     btn.innerHTML = `<span>${escapeHtml(ep.title || ("قسمت " + (idx+1)))}</span><span>${locked ? "🔒 ورود" : (downloaded ? "✓ دانلود شده" : "دانلود")}</span>`;
     if(downloaded) btn.classList.add("downloaded");
     btn.addEventListener("click", ()=>{
+      if(__downloadInFlight) return;
       if(!requireLoginForDownload()) return;
       if(isEpisodeDownloaded(currentWork, ep, idx)){
         showVpnDownloadBannerThen(()=>{
@@ -4133,13 +4498,21 @@ function renderEpisodesList(episodes){
         });
         return;
       }
-      if(!trySpendCoinsForDownload(currentWork)) return;
+      /* اول تأیید هزینه؛ کسر سکه فقط بعد از تأیید VPN تا در صورت انصراف سکه کم نشود */
+      if(!confirmAnimeDownloadCost(currentWork)) return;
       showVpnDownloadBannerThen(()=>{
-        forceDownload(ep.link, ep.title || "episode");
-        markEpisodeDownloaded(currentWork, ep, idx);
-        btn.classList.add("downloaded");
-        const action = btn.querySelector("span:last-child");
-        if(action) action.textContent = "✓ دانلود شده";
+        if(__downloadInFlight) return;
+        __downloadInFlight = true;
+        try{
+          if(!applyAnimeDownloadCost(currentWork)) return;
+          forceDownload(ep.link, ep.title || "episode");
+          markEpisodeDownloaded(currentWork, ep, idx);
+          btn.classList.add("downloaded");
+          const action = btn.querySelector("span:last-child");
+          if(action) action.textContent = "✓ دانلود شده";
+        }finally{
+          __downloadInFlight = false;
+        }
       });
     });
     box.appendChild(btn);
@@ -4274,8 +4647,8 @@ function renderSimilar(work){
     })
     .filter(x => x.score > 0)
     .sort((a,b)=> b.score - a.score || (b.w.createdAt||0)-(a.w.createdAt||0));
-  let list = scored.map(x => x.w).slice(0, 9);
-  if(!list.length) list = allWorks.filter(w => w.id !== work.id).slice(0, 6);
+  let list = scored.map(x => x.w).slice(0, 24);
+  if(!list.length) list = allWorks.filter(w => w.id !== work.id).slice(0, 12);
   if(!list.length){ showEmpty(box, "مورد مشابهی نیست."); return; }
   list.forEach(w => box.appendChild(createBookCard(w)));
 }
@@ -4291,6 +4664,17 @@ $("downloadBtn")?.addEventListener("click", ()=>{
 
 async function forceDownload(url, filename){
   if(!isValidUrl(url)){
+    showToast("لینک معتبر نیست");
+    return;
+  }
+  /* فقط http/https — جلوگیری از javascript: و مشابه */
+  try{
+    const proto = new URL(String(url).trim()).protocol;
+    if(proto !== "http:" && proto !== "https:"){
+      showToast("لینک معتبر نیست");
+      return;
+    }
+  }catch(e){
     showToast("لینک معتبر نیست");
     return;
   }
@@ -4625,12 +5009,84 @@ $("copyReferralBtn")?.addEventListener("click", async ()=>{
   }
 });
 
-$("supportBtn")?.addEventListener("click", async ()=>{
-  try{
-    await navigator.clipboard.writeText("@animearchive_support");
-    showToast("آیدی پشتیبانی کپی شد");
-  }catch{ showToast("کپی انجام نشد — @animearchive_support"); }
+$("supportBtn")?.addEventListener("click", ()=>{
+  openTelegramSupport("support");
 });
+$("faqBtn")?.addEventListener("click", ()=>{
+  renderFaqList();
+  showPage("faqPage");
+});
+$("faqBack")?.addEventListener("click", ()=> showPage("profilePage"));
+$("reportAnimeBtn")?.addEventListener("click", ()=>{
+  openTelegramSupport("report");
+});
+
+const FAQ_ITEMS = [
+  {
+    q: "دانلود شروع نمی‌شود؛ دلیلش چیست؟",
+    a: "رایج‌ترین علت روشن بودن فیلترشکن است. VPN را کامل خاموش کنید، چند ثانیه صبر کنید، بعد دوباره روی همان قسمت یا چپتر بزنید. اگر باز هم دانلود شروع نشد، اینترنت را یک‌بار قطع و وصل کنید. در صورت ادامهٔ مشکل، از پشتیبانی پیام دهید و نام انیمه و شمارهٔ قسمت را بنویسید."
+  },
+  {
+    q: "منظور از «این انیمه هنوز منتشر نشده» چیست؟",
+    a: "یعنی ادمین اثر را ثبت کرده ولی هنوز قسمت، فصل یا چپتری برای دانلود نگذاشته است. در این حالت دکمهٔ دانلود فعال نیست. وقتی قسمت‌ها اضافه شوند، همان صفحهٔ جزئیات به‌روز می‌شود و می‌توانید دانلود کنید."
+  },
+  {
+    q: "سکه چیست و کجا مصرف می‌شود؟",
+    a: "سکه پول داخل اپ است. با آن می‌توانید قسمت‌های انیمه، چپتر یا جلد مانگا را دانلود کنید و دفتر خاطره بسازید. سکهٔ رایگان را از دکمهٔ «دریافت سکه امروز» در پروفایل بگیرید. برای خرید بیشتر هم از همان صفحه وارد «خرید سکه» شوید."
+  },
+  {
+    q: "هر دانلود چند سکه کم می‌کند؟",
+    a: "قیمت پیش‌فرض این است: قسمت سریالی ۲ سکه، فیلم سینمایی ۴ سکه، چپتر مانگا ۲ سکه، جلد مانگا ۸ سکه. اگر برای یک مورد قیمت جداگانه گذاشته شده باشد، همان عدد کنار دکمهٔ دانلود همان مورد نشان داده می‌شود."
+  },
+  {
+    q: "کد معرف چیست و چطور با آن سکه بگیرم؟",
+    a: "کد معرف یک کد مخصوص حساب شماست و در بخش «کد معرف» پروفایل دیده می‌شود. آن را کپی کنید و به دوستتان بدهید. دوستتان باید موقع ثبت‌نام این کد را در کادر «کد معرف» وارد کند. بعد از ثبت‌نام موفق او، ۳۰ سکه به حساب شما اضافه می‌شود."
+  },
+  {
+    q: "دفتر خاطره چیست و اطلاعاتش کجا می‌ماند؟",
+    a: "دفتر خاطره جایی برای نوشتن یادداشت شخصی دربارهٔ انیمه‌هاست. متن و جلدهایی که می‌گذارید فقط روی همان گوشی یا مرورگری که استفاده می‌کنید ذخیره می‌شود و روی سرور اپ نگه داشته نمی‌شود. اگر حافظهٔ مرورگر پاک شود، دفترها هم پاک می‌شوند مگر اینکه قبلاً کد دفتر را کپی کرده باشید."
+  },
+  {
+    q: "چطور دفتر بسازم و به گوشی دیگر منتقل کنم؟",
+    a: "از پروفایل وارد «دفتر خاطره» شوید، «ساخت دفتر» را بزنید، اسم و رنگ را انتخاب کنید و تأیید کنید. برای انتقال به دستگاه دیگر: وارد همان دفتر شوید، «کپی کد» را بزنید، در دستگاه جدید دوباره «دفتر خاطره» را باز کنید، «جای‌گذاری کد» را انتخاب کنید، کد را بچسبانید و اسم بگذارید."
+  },
+  {
+    q: "برای ساخت دفتر چقدر سکه لازم است؟",
+    a: "ساخت هر دفتر ۱۰ سکه است. اگر سکهٔ نامحدود فعال داشته باشید، در هر بازهٔ ۴۸ ساعته می‌توانید تا ۲ دفتر را رایگان بسازید؛ از دفتر سوم به بعد در همان بازه دوباره ۱۰ سکه کم می‌شود."
+  },
+  {
+    q: "انیمه‌ای که می‌خواهم در اپ نیست؛ چه کار کنم؟",
+    a: "از پروفایل گزینهٔ «پشتیبانی و درخواست انیمه» را باز کنید و برای پشتیبانی پیام بفرستید. نام دقیق انیمه، و اگر می‌دانید فصل یا کیفیت موردنظر را هم بنویسید تا بررسی و در صورت امکان اضافه شود."
+  }
+];
+function renderFaqList(){
+  const box = $("faqList");
+  if(!box) return;
+  box.innerHTML = "";
+  FAQ_ITEMS.forEach((item) => {
+    const el = document.createElement("div");
+    el.className = "faqItem";
+    el.innerHTML =
+      `<button type="button" class="faqQ" aria-expanded="false">` +
+      `<span>${escapeHtml(item.q)}</span>` +
+      `<span class="faqChevron" aria-hidden="true">▼</span>` +
+      `</button>` +
+      `<div class="faqA">${escapeHtml(item.a)}</div>`;
+    el.querySelector(".faqQ")?.addEventListener("click", ()=>{
+      const wasOpen = el.classList.contains("open");
+      box.querySelectorAll(".faqItem.open").forEach(x => {
+        x.classList.remove("open");
+        const b = x.querySelector(".faqQ");
+        if(b) b.setAttribute("aria-expanded", "false");
+      });
+      if(!wasOpen){
+        el.classList.add("open");
+        el.querySelector(".faqQ")?.setAttribute("aria-expanded", "true");
+      }
+    });
+    box.appendChild(el);
+  });
+}
 
 /* Admin — Appwrite + سخت‌گیری ایمیل */
 async function verifyAppwriteAdminSession(){
@@ -4906,7 +5362,24 @@ function renderPendingMangaItems(){
   pendingMangaItems.forEach((ch, i) => {
     const div = document.createElement("div");
     div.className = "pendingChapter";
-    div.innerHTML = `<span>${escapeHtml(ch.title)}</span>`;
+    div.style.flexWrap = "wrap";
+    div.style.gap = "6px";
+    const titleSpan = document.createElement("span");
+    titleSpan.textContent = (i + 1) + ". " + (ch.title || "");
+    titleSpan.style.flex = "1";
+    titleSpan.style.minWidth = "80px";
+    const costIn = document.createElement("input");
+    costIn.type = "number";
+    costIn.min = "0";
+    costIn.className = "mangaCostInput";
+    costIn.placeholder = "سکه";
+    costIn.title = "قیمت دستی (خالی = پیش‌فرض)";
+    if(ch.cost != null && ch.cost !== "") costIn.value = String(ch.cost);
+    costIn.addEventListener("input", ()=>{
+      const v = costIn.value.trim();
+      if(v === "") delete ch.cost;
+      else ch.cost = Math.max(0, Math.floor(Number(v) || 0));
+    });
     const del = document.createElement("button");
     del.type = "button";
     del.className = "delete";
@@ -4916,6 +5389,8 @@ function renderPendingMangaItems(){
       renderPendingMangaItems();
       updateMangaLabels();
     });
+    div.appendChild(titleSpan);
+    div.appendChild(costIn);
     div.appendChild(del);
     box.appendChild(div);
   });
@@ -5201,11 +5676,15 @@ $("publishBtn")?.addEventListener("click", async ()=>{
 
   const mangaNumbering = adminMangaNumbering === "volume" ? "volume" : "chapter";
   /* مانگا و انیمه جدا ذخیره می‌شوند تا قسمت‌های انیمه پاک نشوند */
-  const mangaPayload = pendingMangaItems.map(c => ({
-    id: c.id || uid(),
-    title: c.title,
-    link: c.link
-  }));
+  const mangaPayload = pendingMangaItems.map(c => {
+    const o = {
+      id: c.id || uid(),
+      title: c.title,
+      link: c.link
+    };
+    if(c.cost != null && c.cost !== "" && !isNaN(Number(c.cost))) o.cost = Math.max(0, Math.floor(Number(c.cost)));
+    return o;
+  });
   let episodesPayload = [];
   if(isUnpublished){
     episodesPayload = [];
@@ -5526,6 +6005,24 @@ function renderEditMangaItems(){
     l.value = ch.link || "";
     l.placeholder = "لینک مستقیم";
     l.addEventListener("input", ()=> { ch.link = l.value; });
+    const costRow = document.createElement("div");
+    costRow.style.cssText = "display:flex;align-items:center;gap:8px";
+    const costLabel = document.createElement("span");
+    costLabel.style.cssText = "font-size:10px;color:#8d7660;white-space:nowrap";
+    costLabel.textContent = (i+1) + ". سکه:";
+    const costIn = document.createElement("input");
+    costIn.type = "number";
+    costIn.min = "0";
+    costIn.className = "mangaCostInput";
+    costIn.placeholder = "پیش‌فرض";
+    if(ch.cost != null && ch.cost !== "") costIn.value = String(ch.cost);
+    costIn.addEventListener("input", ()=>{
+      const v = costIn.value.trim();
+      if(v === "") delete ch.cost;
+      else ch.cost = Math.max(0, Math.floor(Number(v) || 0));
+    });
+    costRow.appendChild(costLabel);
+    costRow.appendChild(costIn);
     const del = document.createElement("button");
     del.type = "button";
     del.className = "delete";
@@ -5536,6 +6033,7 @@ function renderEditMangaItems(){
     });
     div.appendChild(t);
     div.appendChild(l);
+    div.appendChild(costRow);
     div.appendChild(del);
     box.appendChild(div);
   });
@@ -5840,11 +6338,15 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     if(!(ch.title||"").trim()){ showToast("عنوان یکی از چپتر/جلدها خالی است"); return; }
     if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از چپتر/جلدها نامعتبر است"); return; }
   }
-  const mangaPayload = editingMangaItems.map(c => ({
-    id: c.id || uid(),
-    title: (c.title||"").trim(),
-    link: (c.link||"").trim()
-  }));
+  const mangaPayload = editingMangaItems.map(c => {
+    const o = {
+      id: c.id || uid(),
+      title: (c.title||"").trim(),
+      link: (c.link||"").trim()
+    };
+    if(c.cost != null && c.cost !== "" && !isNaN(Number(c.cost))) o.cost = Math.max(0, Math.floor(Number(c.cost)));
+    return o;
+  });
 
   let episodesPayload = [];
   if(isUnpublished){
@@ -5963,6 +6465,18 @@ $("buyCoinsBtn")?.addEventListener("click", ()=>{
   $("buyCoinsModal")?.classList.add("active");
 });
 $("closeBuyCoinsModal")?.addEventListener("click", ()=> $("buyCoinsModal")?.classList.remove("active"));
+function bindSocialLink(el, url){
+  if(!el) return;
+  el.addEventListener("click", function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    openExternalLink(url);
+  });
+}
+$("buyCoinsIgBtn")?.addEventListener("click", function(e){ e.preventDefault(); e.stopPropagation(); openInstagramPage("coins"); });
+$("buyCoinsTgBtn")?.addEventListener("click", function(e){ e.preventDefault(); e.stopPropagation(); openTelegramSupport("coins"); });
+$("buyCoinsTgText")?.addEventListener("click", function(e){ e.preventDefault(); e.stopPropagation(); openTelegramSupport("coins"); });
+$("buyCoinsIgText")?.addEventListener("click", function(e){ e.preventDefault(); e.stopPropagation(); openInstagramPage("coins"); });
 document.querySelectorAll("[data-grant]").forEach(el => {
   el.addEventListener("click", ()=> setGrantMode(el.getAttribute("data-grant")));
 });
@@ -6076,7 +6590,7 @@ async function openUserInfoModal(u){
   </div>`;
 
   html += `<div class="userInfoSection">
-    <h4>انیمه‌های دانلودشده (${dlMap.size})</h4>`;
+    <h4>دانلودها (انیمه و مانگا) (${dlMap.size})</h4>`;
   if(!dlMap.size){
     html += `<div class="userInfoRow">دانلودی ثبت نشده.</div>`;
   }else{
@@ -6133,7 +6647,8 @@ function openUserDlEpsModal(work, epKeys){
     if(work){
       const allEps = work.type === "movie" ? (work.episodes || []) :
         flattenSeasonsEpisodes(work.seasons || []).concat(work.episodes || []);
-      allEps.forEach(e => {
+      const manga = work.mangaItems || [];
+      allEps.concat(manga).forEach(e => {
         if(e && e.id) epTitleMap.set(String(e.id), e.title || "");
         if(e && e.title) epTitleMap.set(String(e.title), e.title);
       });
@@ -7210,9 +7725,23 @@ function mapStudioDoc(doc){
 async function loadStudios(){
   if(!appwriteReady || !databases){ allStudios = []; return; }
   try{
-    const queries = [appwriteQuery.limit(100)];
-    const res = await databases.listDocuments(DATABASE_ID, COLLECTION_STUDIOS, queries);
-    allStudios = (res.documents || []).map(mapStudioDoc).filter(Boolean);
+    const PAGE_SIZE = 100;
+    let docs = [];
+    let cursor = null;
+    let pages = 0;
+    const MAX_PAGES = 20;
+    while(pages < MAX_PAGES){
+      const queries = [appwriteQuery.limit(PAGE_SIZE)];
+      if(cursor) queries.push(appwriteQuery.cursorAfter(cursor));
+      const res = await databases.listDocuments(DATABASE_ID, COLLECTION_STUDIOS, queries);
+      const batch = res.documents || [];
+      if(!batch.length) break;
+      docs = docs.concat(batch);
+      if(batch.length < PAGE_SIZE) break;
+      cursor = batch[batch.length - 1].$id;
+      pages++;
+    }
+    allStudios = docs.map(mapStudioDoc).filter(Boolean);
   }catch(e){
     console.error("loadStudios", e);
     allStudios = [];
@@ -7310,7 +7839,7 @@ function renderHomeStudios(){
   const head = $("studiosSectionHead");
   if(!track) return;
   track.innerHTML = "";
-  const list = getPublishedStudios().slice(0, 12);
+  const list = shuffleArray(getPublishedStudios()).slice(0, 12);
   if(!list.length){
     if(head) head.style.display = "none";
     const strip = $("homeStudios");
@@ -7578,6 +8107,68 @@ $("saveEditStudioBtn")?.addEventListener("click", async ()=>{
   }
 });
 
+
+
+function parseMangaPriceIndices(raw, maxLen){
+  const out = [];
+  String(raw || "").split(/[,،\s]+/).forEach(p => {
+    const n = parseInt(p, 10);
+    if(!isNaN(n) && n >= 1 && n <= maxLen) out.push(n - 1);
+  });
+  return [...new Set(out)];
+}
+function applyMangaManualPrice(list, costRaw, scope, indicesRaw){
+  if(!Array.isArray(list) || !list.length){ showToast("موردی نیست"); return false; }
+  const v = String(costRaw || "").trim();
+  let cost = null;
+  if(v !== ""){
+    cost = Math.max(0, Math.floor(Number(v) || 0));
+  }
+  let targets = [];
+  if(scope === "all"){
+    targets = list.map((_, i) => i);
+  }else{
+    targets = parseMangaPriceIndices(indicesRaw, list.length);
+    if(!targets.length){ showToast("شماره مورد(ها) را وارد کنید (مثلاً 1 یا 1,3,5)"); return false; }
+    if(scope === "one" && targets.length > 1) targets = [targets[0]];
+  }
+  targets.forEach(i => {
+    if(cost === null) delete list[i].cost;
+    else list[i].cost = cost;
+  });
+  showToast("قیمت برای " + targets.length + " مورد اعمال شد");
+  return true;
+}
+(function bindMangaPriceUI(){
+  let adminScope = "all";
+  document.querySelectorAll("#adminMangaPriceScopeSeg button").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      adminScope = btn.getAttribute("data-price-scope") || "all";
+      document.querySelectorAll("#adminMangaPriceScopeSeg button").forEach(b=> b.classList.toggle("active", b === btn));
+      const inp = $("adminMangaPriceIndices");
+      if(inp) inp.style.display = adminScope === "all" ? "none" : "";
+    });
+  });
+  $("adminApplyMangaPriceBtn")?.addEventListener("click", ()=>{
+    if(applyMangaManualPrice(pendingMangaItems, $("adminMangaManualCost")?.value, adminScope, $("adminMangaPriceIndices")?.value)){
+      renderPendingMangaItems();
+    }
+  });
+  let editScope = "all";
+  document.querySelectorAll("#editMangaPriceScopeSeg button").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      editScope = btn.getAttribute("data-price-scope") || "all";
+      document.querySelectorAll("#editMangaPriceScopeSeg button").forEach(b=> b.classList.toggle("active", b === btn));
+      const inp = $("editMangaPriceIndices");
+      if(inp) inp.style.display = editScope === "all" ? "none" : "";
+    });
+  });
+  $("editApplyMangaPriceBtn")?.addEventListener("click", ()=>{
+    if(applyMangaManualPrice(editingMangaItems, $("editMangaManualCost")?.value, editScope, $("editMangaPriceIndices")?.value)){
+      renderEditMangaItems();
+    }
+  });
+})();
 
 async function init(){
   fillGenreSelect();
