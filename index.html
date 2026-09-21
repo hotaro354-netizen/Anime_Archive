@@ -261,11 +261,92 @@ button{cursor:pointer}
 .chapterItem{
   width:100%;min-height:52px;display:flex;align-items:center;justify-content:space-between;
   border:1px solid #33231a;border-radius:12px;background:#241912;color:#dfc9ad;
-  padding:12px;text-align:right;font-size:11px;cursor:pointer
+  padding:12px;text-align:right;font-size:11px;cursor:default;gap:8px
 }
-.chapterItem span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.chapterItem span:last-child{color:#c37934;margin-right:8px;flex-shrink:0}
-.chapterItem.downloaded span:last-child{color:#7fbf78;font-size:10px}
+.chapterItem.playing{
+  border-color:var(--orange);background:#2a1c14;
+  box-shadow:0 0 0 1px rgba(196,122,53,.25)
+}
+.chapterItem .epTitleWrap{
+  flex:1;min-width:0;display:flex;flex-direction:column;gap:3px
+}
+.chapterItem .epTitle{
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;
+  font-size:11px;color:#ead4b8;text-align:right
+}
+.chapterItem .epTitle .epPlayingBadge{
+  color:var(--orange);font-weight:700;font-size:10px;margin-left:4px
+}
+.chapterItem .epWatchHint{
+  font-size:9.5px;color:#a08a70;text-align:right
+}
+.chapterItem .epActions{
+  display:flex;align-items:center;gap:6px;flex-shrink:0
+}
+.chapterItem .epBtn{
+  border:0;border-radius:10px;height:34px;padding:0 11px;font-size:10.5px;font-weight:600;
+  display:inline-flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap;
+  cursor:pointer;transition:transform .1s,opacity .15s,background .15s
+}
+.chapterItem .epBtn:active{transform:scale(.96)}
+.chapterItem .epBtnPlay{
+  background:var(--orange);color:#21150e
+}
+.chapterItem .epBtnPlay:hover{background:#d48a42}
+.chapterItem .epBtnPlay.isPlaying{
+  background:#6b4a2a;color:#f5e6c8
+}
+.chapterItem .epBtnDl{
+  background:#3a2a1c;color:#ead4b8;border:1px solid #4a3222
+}
+.chapterItem .epBtnDl:hover{background:#4a3525}
+.chapterItem .epBtnDl.downloaded{
+  color:#7fbf78;border-color:#3a5a38
+}
+.chapterItem .epBtnLocked{
+  background:#2a1c14;color:#8d7660;border:1px solid #3a2a1c;cursor:pointer
+}
+/* سازگاری با ردیف‌های فصل (بدون دکمه‌های پخش) */
+.chapterItem > span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.chapterItem > span:last-child{color:#c37934;margin-right:0;flex-shrink:0}
+.chapterItem.downloaded > span:last-child{color:#7fbf78;font-size:10px}
+
+/* صفحه جدا فقط برای پخش ویدیو */
+.playerOnlyWrap{
+  padding:4px 0 20px
+}
+.playerOnlyTitle{
+  font-size:15px;font-weight:700;color:#ead4b8;line-height:1.5;
+  margin-bottom:6px;text-align:center;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden
+}
+.playerOnlyMeta{
+  font-size:11px;color:#c37934;text-align:center;margin-bottom:14px
+}
+.playerOnlyFrame{
+  width:100%;border-radius:14px;overflow:hidden;background:#000;
+  border:1px solid var(--line);box-shadow:0 10px 28px rgba(0,0,0,.4)
+}
+.standaloneMediaPlayer{
+  width:100%;max-height:min(70vh,480px);min-height:200px;background:#000;
+  display:block;outline:none
+}
+.standaloneMediaPlayer.audioOnly{
+  max-height:64px;min-height:52px
+}
+.playerOnlyHint{
+  margin-top:12px;font-size:10px;color:var(--muted);line-height:1.8;text-align:center
+}
+.playerOnlyControls{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.playerOnlyControls .outlineBtn{margin-top:0}
+.playerOnlyControls .navEpBtn{font-size:10.5px;padding:9px 12px;white-space:nowrap}
+.standaloneMediaPlayer:fullscreen{max-height:100vh;width:100%}
+.standaloneMediaPlayer:-webkit-full-screen{max-height:100vh;width:100%}
+body.playerFullscreenActive .standaloneMediaPlayer{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;
+  width:100vw;height:100vh;max-height:100vh;min-height:0;border-radius:0;background:#000;
+}
+body.playerFullscreenActive .nav{display:none}
 
 /* فصل‌ها — سریالی */
 .seasonTabs{
@@ -324,8 +405,14 @@ button{cursor:pointer}
 .delete{background:#5b3028;color:#e3b8a5}
 .pendingChapter{
   background:#2a1c14;border-radius:10px;padding:10px;margin-bottom:8px;
-  display:flex;align-items:center;justify-content:space-between;font-size:11px
+  display:flex;align-items:center;justify-content:space-between;font-size:11px;gap:6px
 }
+.onlineToggleBtn{
+  flex:0 0 auto;border:1px solid #3a2a1c;background:#20150f;color:#9c8770;
+  font-size:9.5px;padding:5px 8px;border-radius:8px;cursor:pointer;white-space:nowrap
+}
+.onlineToggleBtn.on{color:#8fd19e;border-color:#2e5c3a}
+.onlineToggleBtn.off{color:#e0a94e;border-color:#6b4a2a}
 .keywordPicker{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:8px}
 .keywordChip{
   display:inline-flex;align-items:center;gap:6px;background:#3a2a1c;color:#e0a94e;
@@ -907,6 +994,11 @@ button{cursor:pointer}
   overflow:hidden;transition:border-color .2s,background .2s
 }
 .faqItem.open{border-color:#6b4a2a;background:#2a1c14}
+.faqItem.faqImportant{border-color:#c37934;background:#2a1c14}
+.faqImportantBadge{
+  display:inline-block;background:#c37934;color:#21150e;font-size:9px;font-weight:800;
+  padding:2px 7px;border-radius:9px;margin-left:6px;vertical-align:middle
+}
 .faqQ{
   width:100%;border:0;background:transparent;color:#e7d6bf;padding:15px 14px;
   text-align:right;font-size:12.5px;font-weight:600;line-height:1.55;
@@ -1388,6 +1480,36 @@ button{cursor:pointer}
   </div>
 </section>
 
+<!-- ========== PLAYER (صفحه جدا فقط برای ویدیو) ========== -->
+<section id="playerPage" class="page">
+  <div class="top">
+    <button class="back" id="playerBack" type="button">←</button>
+    <h2 id="playerPageTitle">پخش</h2>
+  </div>
+  <div class="playerOnlyWrap">
+    <div class="playerOnlyTitle" id="playerOnlyEpisodeTitle">—</div>
+    <div class="playerOnlyMeta" id="playerOnlyMeta"></div>
+    <div class="playerOnlyFrame">
+      <video
+        id="standaloneMediaPlayer"
+        class="standaloneMediaPlayer"
+        controls
+        playsinline
+        preload="metadata"
+        controlslist="nodownload"
+      >
+        مرورگر شما از پخش این رسانه پشتیبانی نمی‌کند.
+      </video>
+    </div>
+    <div class="playerOnlyControls">
+      <button type="button" id="playerNextBtn" class="outlineBtn navEpBtn" style="display:none">قسمت بعدی ‹</button>
+      <button type="button" id="standaloneFullscreenBtn" class="outlineBtn">⛶ تمام صفحه</button>
+      <button type="button" id="playerPrevBtn" class="outlineBtn navEpBtn" style="display:none">› قسمت قبلی</button>
+    </div>
+    <p class="playerOnlyHint">پخش مستقیم در مرورگر — برای ذخیره فایل از دکمه «دانلود» در لیست قسمت‌ها استفاده کنید.</p>
+  </div>
+</section>
+
 <!-- ========== LIST (برای فلش بخش‌ها) ========== -->
 <section id="listPage" class="page">
   <div class="top">
@@ -1496,6 +1618,7 @@ button{cursor:pointer}
           <label style="margin-top:14px" id="episodeSectionLabel">قسمت‌ها</label>
           <input id="chapterTitle" placeholder="عنوان قسمت (مثلاً قسمت ۱)">
           <input id="chapterLinkInput" type="url" placeholder="لینک مستقیم فایل">
+          <input id="chapterSubtitleInput" type="url" placeholder="لینک زیرنویس (اختیاری، vtt یا srt)">
           <button class="addBtn" id="addChapterBtn" type="button">+ افزودن قسمت</button>
           <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
             <input id="bulkChapterCount" type="number" min="1" max="500" placeholder="تعداد" style="width:90px;margin:0">
@@ -1522,6 +1645,7 @@ button{cursor:pointer}
               <label style="margin-top:4px;margin-bottom:6px">قسمت‌های این فصل</label>
               <input id="seasonChapterTitle" placeholder="عنوان قسمت">
               <input id="seasonChapterLink" type="url" placeholder="لینک مستقیم فایل">
+              <input id="seasonChapterSubtitleInput" type="url" placeholder="لینک زیرنویس (اختیاری، vtt یا srt)">
               <button class="addBtn" id="addSeasonEpisodeBtn" type="button">+ افزودن قسمت به این فصل</button>
               <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
                 <input id="bulkSeasonEpCount" type="number" min="1" max="500" placeholder="تعداد" style="width:90px;margin:0">
@@ -1601,6 +1725,7 @@ button{cursor:pointer}
       <div id="adminStudiosList"></div>
     </div>
 
+    <button class="modalBtn" id="enableFingerprintBtn" type="button" style="display:none;background:#2a3c2f;color:#8fd19e;margin-top:15px">👆 فعال‌سازی ورود با اثر انگشت در این دستگاه</button>
     <button class="modalBtn adminLogoutBtn" id="adminLogoutBtn" type="button">🚪 خروج از پنل</button>
   </div>
 </section>
@@ -1664,6 +1789,7 @@ button{cursor:pointer}
   <div class="modalContent">
     <h3>ورود به پنل مدیریت</h3>
     <p>فقط حساب ادمین مجاز است. رمز Appwrite خود را وارد کنید.</p>
+    <button class="modalBtn" id="fingerprintLoginBtn" type="button" style="display:none;background:#2a3c2f;color:#8fd19e;margin-bottom:10px">👆 ورود سریع با اثر انگشت</button>
     <input id="adminEmailInput" class="modalInput" type="email" autocomplete="username" placeholder="ایمیل ادمین" readonly>
     <input id="adminPasswordInput" class="modalInput" type="password" autocomplete="current-password" placeholder="رمز عبور Appwrite">
     <button class="modalBtn" id="checkAdminBtn" type="button">ورود به حساب مدیریت</button>
@@ -1950,6 +2076,8 @@ const DAILY_FREE_COINS = 5;
 const START_COINS = 30;
 const COST_SERIAL_EP = 2;
 const COST_MOVIE = 4;
+const PLAY_COST_SERIAL_EP = 3;
+const PLAY_COST_MOVIE = 5;
 const COST_MANGA_CHAPTER = 2;
 const COST_MANGA_VOLUME = 8;
 const COST_NOTEBOOK = 10;
@@ -1970,7 +2098,10 @@ const STORAGE_HISTORY = "animearchive_history_v1";
 const STORAGE_USERS = "animearchive_users_v1";
 const STORAGE_SESSION = "animearchive_session_v1";
 const STORAGE_DOWNLOADS = "animearchive_downloads_v1";
+const STORAGE_PLAYED = "animearchive_played_v1";
 const STORAGE_BANNER_READ = "animearchive_banner_read_v1";
+const STORAGE_WATCH_POS = "animearchive_watchpos_v1";
+const STORAGE_ADMIN_WEBAUTHN = "animearchive_admin_webauthn_v1";
 const COLLECTION_SETTINGS = "settings";
 const SETTINGS_GENRES_DOC_ID = "genres_config";
 
@@ -2834,11 +2965,44 @@ function parseEpisodes(raw){
   return [];
 }
 
+/** آیا پخش آنلاین این قسمت فعال است؟ پیش‌فرض همیشه فعال است مگر صراحتاً خاموش شده باشد */
+function isOnlinePlaybackEnabled(ep){
+  return !(ep && ep.onlineEnabled === false);
+}
+/** حفظ لینک زیرنویس و وضعیت پخش آنلاین هنگام نرمال‌سازی هر قسمت */
+function normalizeEpisodeObj(e){
+  const o = {
+    id: (e && e.id) || uid(),
+    title: (e && e.title) || "",
+    link: (e && e.link) || ""
+  };
+  if(e && e.subtitleLink) o.subtitleLink = e.subtitleLink;
+  o.onlineEnabled = isOnlinePlaybackEnabled(e);
+  return o;
+}
+/** مرتب‌سازی خودکار فایل‌های انیمه سینمایی: همیشه زیرنویس فارسی قبل از دوبله فارسی */
+function movieFileSortRank(title){
+  const t = String(title || "");
+  if(t.indexOf("زیرنویس") !== -1) return 0;
+  if(t.indexOf("دوبله") !== -1) return 1;
+  return 2;
+}
+function sortMovieEpisodesForDisplay(list){
+  return (list || [])
+    .map((e, i) => ({ e, i }))
+    .sort((a, b) => {
+      const ra = movieFileSortRank(a.e.title), rb = movieFileSortRank(b.e.title);
+      if(ra !== rb) return ra - rb;
+      return a.i - b.i;
+    })
+    .map(x => x.e);
+}
+
 /** نرمال‌سازی فصل‌ها — سازگار با داده‌های قدیمی (لیست تخت قسمت‌ها) */
 function normalizeWorkSeasons(rawEpisodes, type){
   const parsed = parseEpisodes(rawEpisodes);
   if(type === "movie"){
-    return { seasons: [], flatEpisodes: parsed };
+    return { seasons: [], flatEpisodes: sortMovieEpisodesForDisplay(parsed.map(normalizeEpisodeObj)) };
   }
   /* فرمت جدید: آرایهٔ فصل‌ها که هر کدام episodes دارند */
   if(parsed.length && Array.isArray(parsed[0]?.episodes)){
@@ -2846,11 +3010,7 @@ function normalizeWorkSeasons(rawEpisodes, type){
       seasons: parsed.map(s => ({
         id: s.id || uid(),
         title: s.title || "فصل",
-        episodes: Array.isArray(s.episodes) ? s.episodes.map(e => ({
-          id: e.id || uid(),
-          title: e.title || "",
-          link: e.link || ""
-        })) : []
+        episodes: Array.isArray(s.episodes) ? s.episodes.map(normalizeEpisodeObj) : []
       })),
       flatEpisodes: []
     };
@@ -2861,11 +3021,7 @@ function normalizeWorkSeasons(rawEpisodes, type){
       seasons: [{
         id: uid(),
         title: "فصل ۱",
-        episodes: parsed.map(e => ({
-          id: e.id || uid(),
-          title: e.title || "",
-          link: e.link || ""
-        }))
+        episodes: parsed.map(normalizeEpisodeObj)
       }],
       flatEpisodes: []
     };
@@ -3377,6 +3533,11 @@ function showPage(id, fromPop){
     heroAnimationTimer = null;
     heroAnimating = false;
   }
+  /* ترک صفحه پخش → توقف ویدیو */
+  if(previousPage === "playerPage" && id !== "playerPage"){
+    try{ stopStandalonePlayer(); }catch(e){}
+  }
+
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   const page = $(id);
   if(page) page.classList.add("active");
@@ -3384,6 +3545,10 @@ function showPage(id, fromPop){
   document.querySelectorAll("#mainNav button").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.page === id);
   });
+
+  /* صفحه پخش: نوار پایین مخفی تا فقط ویدیو دیده شود */
+  const nav = $("mainNav");
+  if(nav) nav.style.display = (id === "playerPage") ? "none" : "";
 
   window.scrollTo(0, 0);
 
@@ -3411,6 +3576,7 @@ function showPage(id, fromPop){
     fillGenreSelect();
     renderGenreAdmin();
     renderPublishedWorks();
+    try{ updateFingerprintUI(); }catch(e){}
   }
 
   if(!fromPop){
@@ -4217,6 +4383,8 @@ function renderDetailStudios(work){
 
 function openDetail(work){
   if(!work) return;
+  /* انیمه جدید → توقف پخش قبلی */
+  try{ closeDetailPlayer(); }catch(e){}
   currentWork = work;
   try{ pushHistory(work.id); }catch(e){}
 
@@ -4361,6 +4529,16 @@ $("detailTabEpisodes")?.addEventListener("click", ()=> setDetailTab("episodes"))
 $("detailTabManga")?.addEventListener("click", ()=> setDetailTab("manga"));
 $("detailTabSimilar")?.addEventListener("click", ()=> setDetailTab("similar"));
 $("detailBack")?.addEventListener("click", ()=>{
+  /* خروج از صفحه جزئیات → توقف پخش */
+  if(!(
+    currentWork &&
+    currentWork.type === "serial" &&
+    currentWork.seasons &&
+    currentWork.seasons.length &&
+    selectedDetailSeasonIdx >= 0
+  )){
+    closeDetailPlayer();
+  }
   /* اگر داخل فصل هستیم، با history.back تا هم UI و هم دکمه Back گوشی هم‌خوان بمانند */
   if(
     currentWork &&
@@ -4474,6 +4652,530 @@ function updateReferralPage(){
   const box = $("referralCodeBox");
   if(box) box.textContent = currentUser && currentUser.id ? makeReferralCode(currentUser.id) : "برای دیدن کد معرف وارد شوید";
 }
+
+/* ========== پخش آنلاین — صفحه جدا + هزینه سکه ========== */
+/* سریالی: COST_SERIAL_EP (۲) — سینمایی: COST_MOVIE (۴) */
+let currentPlayingEpisodeKey = null;
+let playerReturnWorkId = null;
+
+function episodePlayKey(work, ep, idx){
+  if(!work || !ep) return "";
+  return String(work.id || "") + "::" + String(ep.id || ep.title || idx);
+}
+
+function isProbablyAudioUrl(url){
+  const u = String(url || "").toLowerCase();
+  return /\.(mp3|m4a|aac|ogg|wav|flac)(\?|$)/i.test(u);
+}
+
+function getPlayStorageKey(){
+  if(currentUser && currentUser.id) return STORAGE_PLAYED + "_" + currentUser.id;
+  if(currentUser && currentUser.email) return STORAGE_PLAYED + "_" + normalizeEmail(currentUser.email);
+  return STORAGE_PLAYED + "_guest";
+}
+function getPlayedEpisodeKeys(){
+  if(!currentUser) return [];
+  if(currentUser && Array.isArray(currentUser.played) && currentUser.played.length){
+    return currentUser.played.slice();
+  }
+  const key = getPlayStorageKey();
+  return key ? loadJSON(key, []) : [];
+}
+function isEpisodePlayed(work, ep, idx){
+  if(!currentUser || !work || !ep) return false;
+  const episodeKey = episodePlayKey(work, ep, idx);
+  return getPlayedEpisodeKeys().includes(episodeKey);
+}
+function markEpisodePlayed(work, ep, idx){
+  if(!currentUser || !work || !ep) return;
+  const episodeKey = episodePlayKey(work, ep, idx);
+  const list = getPlayedEpisodeKeys();
+  if(list.includes(episodeKey)) return;
+  list.push(episodeKey);
+  if(currentUser) currentUser.played = list;
+  const key = getPlayStorageKey();
+  if(key) saveJSON(key, list);
+  /* فیلد played اختیاری روی سرور — اگر attribute نبود فقط محلی می‌ماند */
+  if(currentUser.id && appwriteReady){
+    updateUserDoc(currentUser.id, { played: list }).then(updated => {
+      if(updated && Array.isArray(updated.played)) currentUser.played = updated.played;
+    }).catch(()=>{ /* attribute ممکن است نباشد */ });
+  }
+}
+
+/* ========== ذخیره آخرین زمان تماشا ========== */
+function getWatchPosStorageKey(){
+  if(currentUser && currentUser.id) return STORAGE_WATCH_POS + "_" + currentUser.id;
+  if(currentUser && currentUser.email) return STORAGE_WATCH_POS + "_" + normalizeEmail(currentUser.email);
+  return STORAGE_WATCH_POS + "_guest";
+}
+function getWatchPositions(){
+  const key = getWatchPosStorageKey();
+  return key ? loadJSON(key, {}) : {};
+}
+function saveWatchPosition(work, ep, idx, seconds){
+  if(!work || !ep || !currentUser) return;
+  const key = episodePlayKey(work, ep, idx);
+  if(!key) return;
+  const map = getWatchPositions();
+  map[key] = { t: Math.max(0, Math.floor(seconds || 0)), at: Date.now() };
+  saveJSON(getWatchPosStorageKey(), map);
+}
+function getWatchPosition(work, ep, idx){
+  if(!work || !ep) return 0;
+  const key = episodePlayKey(work, ep, idx);
+  const map = getWatchPositions();
+  const rec = map[key];
+  return (rec && rec.t > 0) ? rec.t : 0;
+}
+function formatClock(totalSeconds){
+  const total = Math.max(0, Math.floor(totalSeconds || 0));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const ss = String(s).padStart(2, "0");
+  if(h > 0) return h + ":" + String(m).padStart(2, "0") + ":" + ss;
+  return m + ":" + ss;
+}
+
+function playCostForWork(work){
+  return (work && work.type === "movie") ? PLAY_COST_MOVIE : PLAY_COST_SERIAL_EP;
+}
+
+function confirmAnimePlayCost(work){
+  if(!currentUser || !currentUser.email) return false;
+  if(hasActiveUnlimited(currentUser)) return true;
+  const cost = playCostForWork(work);
+  const have = toInt(currentUser.coins, 0);
+  if(have < cost){
+    showToast("سکه کافی نیست (موجودی: " + have + " — نیاز: " + cost + ")");
+    return false;
+  }
+  if(cost <= 0) return true;
+  const msg = work && work.type === "movie"
+    ? ("برای پخش این انیمه سینمایی " + cost + " سکه از شما کم می‌شود. تأیید می‌کنید؟")
+    : ("برای پخش این قسمت " + cost + " سکه از شما کم می‌شود. تأیید می‌کنید؟");
+  return confirm(msg);
+}
+
+function applyAnimePlayCost(work){
+  if(!currentUser || !currentUser.email) return false;
+  if(hasActiveUnlimited(currentUser)) return true;
+  const cost = playCostForWork(work);
+  if(cost <= 0) return true;
+  const have = toInt(currentUser.coins, 0);
+  if(have < cost){
+    showToast("سکه کافی نیست (موجودی: " + have + " — نیاز: " + cost + ")");
+    return false;
+  }
+  const left = Math.max(0, have - cost);
+  currentUser.coins = left;
+  updateCoinUI();
+  if(currentUser.id && appwriteReady){
+    updateUserDoc(currentUser.id, { coins: left }).then(updated => {
+      if(updated) applyUserToSession(updated);
+      updateCoinUI();
+    }).catch(e => {
+      console.error(e);
+      showToast("پخش شروع شد؛ ذخیره سکه روی سرور مشکل داشت");
+    });
+  }
+  return true;
+}
+
+let currentSubtitleBlobUrl = null;
+
+function clearPlayerSubtitle(){
+  const player = $("standaloneMediaPlayer");
+  if(player){
+    const oldTrack = player.querySelector("track");
+    if(oldTrack) oldTrack.remove();
+  }
+  if(currentSubtitleBlobUrl){
+    try{ URL.revokeObjectURL(currentSubtitleBlobUrl); }catch(e){}
+    currentSubtitleBlobUrl = null;
+  }
+}
+
+/* تبدیل فرمت srt به vtt (فقط تعویض کاما با نقطه در زمان‌ها و افزودن هدر) */
+function srtTextToVtt(srtText){
+  const body = String(srtText || "")
+    .replace(/\r/g, "")
+    .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, "$1.$2");
+  return "WEBVTT\n\n" + body;
+}
+
+async function setPlayerSubtitle(url){
+  clearPlayerSubtitle();
+  const player = $("standaloneMediaPlayer");
+  if(!player || !url) return;
+  try{
+    const isSrt = /\.srt(\?|#|$)/i.test(url);
+    let vttUrl = url;
+    if(isSrt){
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("subtitle fetch failed: " + res.status);
+      const text = await res.text();
+      const blob = new Blob([srtTextToVtt(text)], { type: "text/vtt" });
+      vttUrl = URL.createObjectURL(blob);
+      currentSubtitleBlobUrl = vttUrl;
+    }
+    const track = document.createElement("track");
+    track.kind = "subtitles";
+    track.label = "فارسی";
+    track.srclang = "fa";
+    track.default = true;
+    track.src = vttUrl;
+    player.appendChild(track);
+    setTimeout(()=>{
+      try{
+        if(player.textTracks && player.textTracks.length){
+          player.textTracks[0].mode = "showing";
+        }
+      }catch(e){}
+    }, 200);
+  }catch(e){
+    console.error("subtitle load error", e);
+    showToast("خطا در بارگذاری زیرنویس — لینک را بررسی کنید");
+  }
+}
+
+function isNativeFullscreenActive(){
+  return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+}
+function exitNativeFullscreen(){
+  const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+  if(exit){ try{ exit.call(document); }catch(e){} }
+}
+function setFullscreenBtnLabel(active){
+  const btn = $("standaloneFullscreenBtn");
+  if(btn) btn.textContent = active ? "✕ خروج از تمام صفحه" : "⛶ تمام صفحه";
+}
+function applyFullscreenOrientation(){
+  try{
+    if(screen.orientation && screen.orientation.lock){
+      screen.orientation.lock("landscape").catch(()=>{});
+    }
+  }catch(e){}
+}
+function releaseFullscreenOrientation(){
+  try{
+    if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+  }catch(e){}
+}
+function toggleStandaloneFullscreen(){
+  const player = $("standaloneMediaPlayer");
+  if(!player) return;
+  const active = document.body.classList.contains("playerFullscreenActive");
+  if(active){
+    document.body.classList.remove("playerFullscreenActive");
+    releaseFullscreenOrientation();
+    setFullscreenBtnLabel(false);
+    if(isNativeFullscreenActive()) exitNativeFullscreen();
+    return;
+  }
+  /* روش قابل‌اطمینان: کلاس CSS که مستقل از پشتیبانی مرورگر همیشه کار می‌کند */
+  document.body.classList.add("playerFullscreenActive");
+  setFullscreenBtnLabel(true);
+  /* تلاش اضافه برای فولاسکرین واقعی مرورگر — اگر پشتیبانی نشود بی‌اثر است */
+  try{
+    if(player.requestFullscreen) player.requestFullscreen().catch(()=>{});
+    else if(player.webkitRequestFullscreen) player.webkitRequestFullscreen();
+    else if(player.webkitEnterFullscreen) player.webkitEnterFullscreen();
+    else if(player.mozRequestFullScreen) player.mozRequestFullScreen();
+    else if(player.msRequestFullscreen) player.msRequestFullscreen();
+  }catch(e){}
+  applyFullscreenOrientation();
+}
+$("standaloneFullscreenBtn")?.addEventListener("click", toggleStandaloneFullscreen);
+["fullscreenchange","webkitfullscreenchange","mozfullscreenchange","MSFullscreenChange"].forEach(evt=>{
+  document.addEventListener(evt, ()=>{
+    if(!isNativeFullscreenActive()){
+      document.body.classList.remove("playerFullscreenActive");
+      setFullscreenBtnLabel(false);
+    }
+  });
+});
+
+let currentPlayerEpisodeCtx = null; /* {work, ep, idx} — برای ذخیره آخرین زمان تماشا */
+let playerNavCtx = null; /* {work, isMovie, seasonIdx, index} — برای دکمه‌های قسمت قبلی/بعدی */
+let __lastWatchSaveTs = 0;
+
+function saveCurrentPlayerPosition(){
+  const p = $("standaloneMediaPlayer");
+  if(!p || !currentPlayerEpisodeCtx) return;
+  if(isNaN(p.currentTime) || p.currentTime <= 0) return;
+  saveWatchPosition(currentPlayerEpisodeCtx.work, currentPlayerEpisodeCtx.ep, currentPlayerEpisodeCtx.idx, p.currentTime);
+}
+
+function stopStandalonePlayer(){
+  saveCurrentPlayerPosition();
+  const player = $("standaloneMediaPlayer");
+  if(player){
+    try{ player.pause(); }catch(e){}
+    try{ player.removeAttribute("src"); player.load(); }catch(e){}
+  }
+  clearPlayerSubtitle();
+  if(document.body.classList.contains("playerFullscreenActive")){
+    document.body.classList.remove("playerFullscreenActive");
+    releaseFullscreenOrientation();
+    if(isNativeFullscreenActive()) exitNativeFullscreen();
+    setFullscreenBtnLabel(false);
+  }
+  currentPlayingEpisodeKey = null;
+  currentPlayerEpisodeCtx = null;
+  playerNavCtx = null;
+}
+
+/** سازگاری با فراخوانی‌های قبلی */
+function closeDetailPlayer(){
+  stopStandalonePlayer();
+}
+
+/**
+ * پخش: اول هزینه (سریالی ۲ / سینمایی ۴)، بعد رفتن به صفحه جدا فقط ویدیو
+ * اگر قبلاً برای همان قسمت پرداخت شده باشد، دوباره سکه کم نمی‌شود.
+ */
+function playEpisodeInSite(ep, idx){
+  if(!ep || !ep.link){
+    showToast("لینک پخش موجود نیست");
+    return;
+  }
+  if(!isValidUrl(ep.link)){
+    showToast("لینک معتبر نیست");
+    return;
+  }
+  if(!isOnlinePlaybackEnabled(ep)){
+    showToast("پخش آنلاین این قسمت غیرفعال است — از دکمه دانلود استفاده کنید");
+    return;
+  }
+  if(!requireLoginForDownload()) return;
+  if(!currentWork) return;
+
+  const already = isEpisodePlayed(currentWork, ep, idx);
+  if(already){
+    showVpnDownloadBannerThen(()=>{
+      openPlayerPage(currentWork, ep, idx);
+    });
+    return;
+  }
+
+  /* اول تأیید هزینه؛ کسر سکه فقط بعد از تأیید VPN تا در صورت انصراف سکه کم نشود */
+  if(!confirmAnimePlayCost(currentWork)) return;
+  showVpnDownloadBannerThen(()=>{
+    if(!applyAnimePlayCost(currentWork)) return;
+    markEpisodePlayed(currentWork, ep, idx);
+    openPlayerPage(currentWork, ep, idx);
+  });
+}
+
+/** محاسبه قسمت قبلی/بعدی — بین قسمت‌های یک فصل و بین فصل‌های پیاپی */
+function computeAdjacentEpisode(direction){
+  if(!playerNavCtx) return null;
+  const { work, isMovie, seasonIdx, index } = playerNavCtx;
+  if(isMovie){
+    const list = work.episodes || [];
+    const ni = index + direction;
+    if(ni < 0 || ni >= list.length) return null;
+    return { ep: list[ni], index: ni, seasonIdx: -1, crossSeason: false };
+  }
+  const seasons = work.seasons || [];
+  if(!seasons.length){
+    const list = work.episodes || [];
+    const ni = index + direction;
+    if(ni < 0 || ni >= list.length) return null;
+    return { ep: list[ni], index: ni, seasonIdx: -1, crossSeason: false };
+  }
+  const season = seasons[seasonIdx];
+  const list = (season && season.episodes) || [];
+  const ni = index + direction;
+  if(ni >= 0 && ni < list.length){
+    return { ep: list[ni], index: ni, seasonIdx, crossSeason: false };
+  }
+  const targetSeasonIdx = seasonIdx + direction;
+  if(targetSeasonIdx < 0 || targetSeasonIdx >= seasons.length) return null;
+  const targetSeason = seasons[targetSeasonIdx];
+  const targetList = (targetSeason && targetSeason.episodes) || [];
+  if(!targetList.length) return null;
+  const targetIndex = direction === 1 ? 0 : targetList.length - 1;
+  return { ep: targetList[targetIndex], index: targetIndex, seasonIdx: targetSeasonIdx, crossSeason: true };
+}
+
+function updatePlayerNavButtons(){
+  const nextBtn = $("playerNextBtn");
+  const prevBtn = $("playerPrevBtn");
+  if(!nextBtn || !prevBtn) return;
+  const nextT = computeAdjacentEpisode(1);
+  const prevT = computeAdjacentEpisode(-1);
+  if(nextT){
+    nextBtn.style.display = "";
+    nextBtn.textContent = nextT.crossSeason ? "فصل بعدی ‹" : "قسمت بعدی ‹";
+  }else{
+    nextBtn.style.display = "none";
+  }
+  if(prevT){
+    prevBtn.style.display = "";
+    prevBtn.textContent = prevT.crossSeason ? "› فصل قبلی" : "› قسمت قبلی";
+  }else{
+    prevBtn.style.display = "none";
+  }
+}
+
+function goPlayerAdjacent(direction){
+  const target = computeAdjacentEpisode(direction);
+  if(!target || !currentWork) return;
+  if(!isOnlinePlaybackEnabled(target.ep)){
+    showToast("پخش آنلاین این قسمت غیرفعال است — از دکمه دانلود استفاده کنید");
+    return;
+  }
+  if(target.seasonIdx !== -1) selectedDetailSeasonIdx = target.seasonIdx;
+  playEpisodeInSite(target.ep, target.index);
+}
+$("playerNextBtn")?.addEventListener("click", ()=> goPlayerAdjacent(1));
+$("playerPrevBtn")?.addEventListener("click", ()=> goPlayerAdjacent(-1));
+
+function openPlayerPage(work, ep, idx){
+  if(!work || !ep) return;
+  const key = episodePlayKey(work, ep, idx);
+  currentPlayingEpisodeKey = key;
+  playerReturnWorkId = work.id;
+  currentPlayerEpisodeCtx = { work, ep, idx };
+
+  const seasons = work.seasons || [];
+  playerNavCtx = {
+    work,
+    isMovie: work.type === "movie",
+    seasonIdx: (work.type !== "movie" && seasons.length) ? selectedDetailSeasonIdx : -1,
+    index: idx
+  };
+  updatePlayerNavButtons();
+
+  const title = ep.title || ("قسمت " + (idx + 1));
+  if($("playerPageTitle")) $("playerPageTitle").textContent = "پخش";
+  if($("playerOnlyEpisodeTitle")) $("playerOnlyEpisodeTitle").textContent = title;
+  if($("playerOnlyMeta")){
+    const animeName = work.title || "";
+    const costHint = isEpisodePlayed(work, ep, idx) || hasActiveUnlimited(currentUser)
+      ? "باز کردن مجدد — رایگان"
+      : "";
+    $("playerOnlyMeta").textContent = [animeName, costHint].filter(Boolean).join(" · ");
+  }
+
+  const player = $("standaloneMediaPlayer");
+  if(player){
+    const audio = isProbablyAudioUrl(ep.link);
+    player.classList.toggle("audioOnly", audio);
+    player.src = ep.link;
+    player.load();
+    if(ep.subtitleLink){
+      setPlayerSubtitle(ep.subtitleLink);
+    }else{
+      clearPlayerSubtitle();
+    }
+  }
+
+  showPage("playerPage");
+
+  /* بعد از نمایش صفحه، پخش را شروع کن */
+  setTimeout(()=>{
+    const p = $("standaloneMediaPlayer");
+    if(!p) return;
+    p.play().then(()=>{
+      showToast("در حال پخش: " + title);
+    }).catch((err)=>{
+      console.warn("play error", err);
+      showToast("پخش خودکار ممکن نشد — دکمه پخش روی پلیر را بزنید");
+    });
+  }, 80);
+}
+
+function leavePlayerPage(){
+  stopStandalonePlayer();
+  /* برگشت به جزئیات همان انیمه */
+  if(playerReturnWorkId && currentWork && currentWork.id === playerReturnWorkId){
+    showPage("detailPage");
+    setDetailTab("episodes");
+    try{
+      const all = getActiveDetailEpisodes(currentWork);
+      const q = normalizeText($("episodeSearchInput")?.value || "");
+      renderEpisodesList(q ? all.filter(e => normalizeText(e.title).includes(q)) : all);
+    }catch(e){}
+  }else if(playerReturnWorkId){
+    const w = (typeof allWorks !== "undefined" ? allWorks : []).find(x => x.id === playerReturnWorkId);
+    if(w) openDetail(w);
+    else showPage("homePage");
+  }else{
+    showPage("detailPage");
+  }
+  playerReturnWorkId = null;
+}
+
+$("playerBack")?.addEventListener("click", leavePlayerPage);
+$("standaloneMediaPlayer")?.addEventListener("ended", ()=>{
+  showToast("پایان قسمت");
+  if(currentPlayerEpisodeCtx){
+    saveWatchPosition(currentPlayerEpisodeCtx.work, currentPlayerEpisodeCtx.ep, currentPlayerEpisodeCtx.idx, 0);
+  }
+});
+$("standaloneMediaPlayer")?.addEventListener("error", ()=>{
+  showToast("خطا در بارگذاری فایل — لینک یا فرمت را بررسی کنید");
+});
+$("standaloneMediaPlayer")?.addEventListener("pause", saveCurrentPlayerPosition);
+$("standaloneMediaPlayer")?.addEventListener("timeupdate", ()=>{
+  const now = Date.now();
+  if(now - __lastWatchSaveTs > 4000){
+    __lastWatchSaveTs = now;
+    saveCurrentPlayerPosition();
+  }
+});
+$("standaloneMediaPlayer")?.addEventListener("loadedmetadata", ()=>{
+  const p = $("standaloneMediaPlayer");
+  if(!p || !currentPlayerEpisodeCtx) return;
+  const saved = getWatchPosition(currentPlayerEpisodeCtx.work, currentPlayerEpisodeCtx.ep, currentPlayerEpisodeCtx.idx);
+  if(saved > 3 && (!p.duration || saved < p.duration - 5)){
+    try{ p.currentTime = saved; }catch(e){}
+    showToast("ادامه از دقیقه " + formatClock(saved));
+  }
+});
+document.addEventListener("visibilitychange", ()=>{
+  if(document.hidden && $("playerPage")?.classList.contains("active")){
+    saveCurrentPlayerPosition();
+    try{ $("standaloneMediaPlayer")?.pause(); }catch(e){}
+  }
+});
+
+
+function startEpisodeDownload(ep, idx, rowEl){
+  if(__downloadInFlight) return;
+  if(!requireLoginForDownload()) return;
+  if(isEpisodeDownloaded(currentWork, ep, idx)){
+    showVpnDownloadBannerThen(()=>{
+      forceDownload(ep.link, ep.title || "episode");
+    });
+    return;
+  }
+  /* اول تأیید هزینه؛ کسر سکه فقط بعد از تأیید VPN تا در صورت انصراف سکه کم نشود */
+  if(!confirmAnimeDownloadCost(currentWork)) return;
+  showVpnDownloadBannerThen(()=>{
+    if(__downloadInFlight) return;
+    __downloadInFlight = true;
+    try{
+      if(!applyAnimeDownloadCost(currentWork)) return;
+      forceDownload(ep.link, ep.title || "episode");
+      markEpisodeDownloaded(currentWork, ep, idx);
+      if(rowEl){
+        const dlBtn = rowEl.querySelector(".epBtnDl");
+        if(dlBtn){
+          dlBtn.classList.add("downloaded");
+          dlBtn.textContent = "✓ دانلود شده";
+        }
+      }
+    }finally{
+      __downloadInFlight = false;
+    }
+  });
+}
+
 function renderEpisodesList(episodes){
   const box = $("chaptersList");
   if(!box) return;
@@ -4481,41 +5183,64 @@ function renderEpisodesList(episodes){
   if(!Array.isArray(episodes)) episodes = [];
   window.currentEpisodes = episodes;
   if(!episodes.length){ showEmpty(box, "قسمتی ثبت نشده است."); return; }
+  const playCost = playCostForWork(currentWork);
   episodes.forEach((ep, idx) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "chapterItem";
+    const row = document.createElement("div");
+    row.className = "chapterItem";
     const locked = !(currentUser && currentUser.email);
     const downloaded = isEpisodeDownloaded(currentWork, ep, idx);
-    btn.innerHTML = `<span>${escapeHtml(ep.title || ("قسمت " + (idx+1)))}</span><span>${locked ? "🔒 ورود" : (downloaded ? "✓ دانلود شده" : "دانلود")}</span>`;
-    if(downloaded) btn.classList.add("downloaded");
-    btn.addEventListener("click", ()=>{
-      if(__downloadInFlight) return;
-      if(!requireLoginForDownload()) return;
-      if(isEpisodeDownloaded(currentWork, ep, idx)){
-        showVpnDownloadBannerThen(()=>{
-          forceDownload(ep.link, ep.title || "episode");
-        });
-        return;
+    const played = isEpisodePlayed(currentWork, ep, idx);
+    const unlimited = hasActiveUnlimited(currentUser);
+    const onlineOn = isOnlinePlaybackEnabled(ep);
+
+    const watchSec = (!locked && currentUser) ? getWatchPosition(currentWork, ep, idx) : 0;
+    const watchHtml = (onlineOn && watchSec > 3)
+      ? `<div class="epWatchHint">آخرین بار تا دقیقه ${formatClock(watchSec)} مشاهده شده</div>`
+      : "";
+
+    const titleHtml = `<div class="epTitleWrap"><div class="epTitle">${played ? '<span class="epPlayingBadge">✓ باز</span> ' : ""}${escapeHtml(ep.title || ("قسمت " + (idx+1)))}</div>${watchHtml}</div>`;
+
+    let actionsHtml = "";
+    if(locked){
+      actionsHtml = `<div class="epActions">
+        <button type="button" class="epBtn epBtnLocked" data-act="login">🔒 ورود</button>
+      </div>`;
+    }else{
+      const dlLabel = downloaded ? "✓ دانلود شده" : "⬇ دانلود";
+      if(onlineOn){
+        const playLabel = (played || unlimited)
+          ? "▶ پخش"
+          : ("▶ پخش · " + playCost + "🪙");
+        actionsHtml = `<div class="epActions">
+          <button type="button" class="epBtn epBtnPlay" data-act="play">${playLabel}</button>
+          <button type="button" class="epBtn epBtnDl ${downloaded ? "downloaded" : ""}" data-act="download">${dlLabel}</button>
+        </div>`;
+      }else{
+        actionsHtml = `<div class="epActions">
+          <button type="button" class="epBtn epBtnDl ${downloaded ? "downloaded" : ""}" data-act="download">${dlLabel}</button>
+        </div>`;
       }
-      /* اول تأیید هزینه؛ کسر سکه فقط بعد از تأیید VPN تا در صورت انصراف سکه کم نشود */
-      if(!confirmAnimeDownloadCost(currentWork)) return;
-      showVpnDownloadBannerThen(()=>{
-        if(__downloadInFlight) return;
-        __downloadInFlight = true;
-        try{
-          if(!applyAnimeDownloadCost(currentWork)) return;
-          forceDownload(ep.link, ep.title || "episode");
-          markEpisodeDownloaded(currentWork, ep, idx);
-          btn.classList.add("downloaded");
-          const action = btn.querySelector("span:last-child");
-          if(action) action.textContent = "✓ دانلود شده";
-        }finally{
-          __downloadInFlight = false;
-        }
-      });
+    }
+
+    row.innerHTML = titleHtml + actionsHtml;
+
+    row.querySelector('[data-act="login"]')?.addEventListener("click", (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      requireLoginForDownload();
     });
-    box.appendChild(btn);
+    row.querySelector('[data-act="play"]')?.addEventListener("click", (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      playEpisodeInSite(ep, idx);
+    });
+    row.querySelector('[data-act="download"]')?.addEventListener("click", (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      startEpisodeDownload(ep, idx, row);
+    });
+
+    box.appendChild(row);
   });
 }
 
@@ -4536,6 +5261,7 @@ function renderSeasonsAsList(work){
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "chapterItem";
+    btn.style.cursor = "pointer";
     const epN = (s.episodes || []).length;
     btn.innerHTML = `<span>${escapeHtml(s.title || ("فصل " + (i+1)))}</span><span>${epN} قسمت ‹</span>`;
     btn.addEventListener("click", ()=>{
@@ -5023,6 +5749,11 @@ $("reportAnimeBtn")?.addEventListener("click", ()=>{
 
 const FAQ_ITEMS = [
   {
+    important: true,
+    q: "چرا بعضی از لینک‌ها با زدن دکمه دانلود، به صفحه یا فضای دیگری می‌روند و ویدئو را پخش می‌کنند؟",
+    a: "بعضی از لینک‌های دانلود ممکن است ابتدا ویدئو را در یک پخش‌کننده یا صفحه دیگر باز کنند. در این حالت، روی خود ویدئو، گزینه سه‌نقطه را در گوشه پایین سمت راست انتخاب کنید و سپس گزینه «بارگیری / دانلود» را بزنید تا فایل دانلود شود."
+  },
+  {
     q: "دانلود شروع نمی‌شود؛ دلیلش چیست؟",
     a: "رایج‌ترین علت روشن بودن فیلترشکن است. VPN را کامل خاموش کنید، چند ثانیه صبر کنید، بعد دوباره روی همان قسمت یا چپتر بزنید. اگر باز هم دانلود شروع نشد، اینترنت را یک‌بار قطع و وصل کنید. در صورت ادامهٔ مشکل، از پشتیبانی پیام دهید و نام انیمه و شمارهٔ قسمت را بنویسید."
   },
@@ -5065,10 +5796,10 @@ function renderFaqList(){
   box.innerHTML = "";
   FAQ_ITEMS.forEach((item) => {
     const el = document.createElement("div");
-    el.className = "faqItem";
+    el.className = "faqItem" + (item.important ? " faqImportant" : "");
     el.innerHTML =
       `<button type="button" class="faqQ" aria-expanded="false">` +
-      `<span>${escapeHtml(item.q)}</span>` +
+      `<span>${item.important ? '<span class="faqImportantBadge">⚠ مهم</span> ' : ""}${escapeHtml(item.q)}</span>` +
       `<span class="faqChevron" aria-hidden="true">▼</span>` +
       `</button>` +
       `<div class="faqA">${escapeHtml(item.a)}</div>`;
@@ -5136,6 +5867,7 @@ async function loginAdmin(){
     if($("adminPasswordInput")) $("adminPasswordInput").value = "";
     showPage("adminPage");
     renderPublishedWorks();
+    updateFingerprintUI();
     showToast("وارد پنل شدید");
   }catch(error){
     console.error(error);
@@ -5165,6 +5897,98 @@ async function requireAdminAction(){
   return true;
 }
 
+/* ========== ورود سریع با اثر انگشت (WebAuthn — قفل‌گشایی محلی این دستگاه) ========== */
+function bufToB64url(buf){
+  return btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+function b64urlToBuf(str){
+  const pad = "=".repeat((4 - (str.length % 4)) % 4);
+  const base64 = (str + pad).replace(/-/g,"+").replace(/_/g,"/");
+  const raw = atob(base64);
+  const buf = new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++) buf[i] = raw.charCodeAt(i);
+  return buf;
+}
+async function isPlatformAuthAvailable(){
+  try{
+    if(!window.PublicKeyCredential || !navigator.credentials) return false;
+    return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+  }catch(e){ return false; }
+}
+function getRegisteredFingerprintCredId(){
+  try{
+    const raw = localStorage.getItem(STORAGE_ADMIN_WEBAUTHN);
+    if(!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && parsed.credId ? parsed.credId : null;
+  }catch(e){ return null; }
+}
+async function registerFingerprintForDevice(){
+  const available = await isPlatformAuthAvailable();
+  if(!available){ showToast("این دستگاه یا مرورگر از اثر انگشت پشتیبانی نمی‌کند"); return; }
+  try{
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+    const userId = crypto.getRandomValues(new Uint8Array(16));
+    const cred = await navigator.credentials.create({
+      publicKey: {
+        challenge,
+        rp: { name: "Anime Archive Admin" },
+        user: { id: userId, name: normalizeEmail(ADMIN_EMAIL), displayName: "Admin" },
+        pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+        authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+        timeout: 60000
+      }
+    });
+    if(!cred) throw new Error("no credential");
+    localStorage.setItem(STORAGE_ADMIN_WEBAUTHN, JSON.stringify({ credId: bufToB64url(cred.rawId) }));
+    showToast("اثر انگشت برای این دستگاه فعال شد");
+    updateFingerprintUI();
+  }catch(e){
+    console.error(e);
+    showToast("ثبت اثر انگشت ناموفق بود");
+  }
+}
+async function tryFingerprintLogin(){
+  const credId = getRegisteredFingerprintCredId();
+  if(!credId) return;
+  try{
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+    const assertion = await navigator.credentials.get({
+      publicKey: {
+        challenge,
+        allowCredentials: [{ id: b64urlToBuf(credId), type: "public-key" }],
+        userVerification: "required",
+        timeout: 60000
+      }
+    });
+    if(!assertion) throw new Error("no assertion");
+    /* اثر انگشت فقط هویت فیزیکی روی همین دستگاه را تأیید می‌کند؛
+       اگر نشست ادمین روی Appwrite هنوز معتبر باشد پنل باز می‌شود، وگرنه رمز لازم است */
+    const ok = await verifyAppwriteAdminSession();
+    if(ok){
+      isAdminMode = true;
+      $("adminModal")?.classList.remove("active");
+      showPage("adminPage");
+      renderPublishedWorks();
+      showToast("ورود با اثر انگشت موفق بود");
+    }else{
+      showToast("نشست منقضی شده — یک‌بار با رمز عبور وارد شوید");
+    }
+  }catch(e){
+    console.warn("fingerprint login cancelled/failed", e);
+  }
+}
+async function updateFingerprintUI(){
+  const hasCred = !!getRegisteredFingerprintCredId();
+  const available = await isPlatformAuthAvailable();
+  const loginBtn = $("fingerprintLoginBtn");
+  if(loginBtn) loginBtn.style.display = (available && hasCred) ? "" : "none";
+  const enableBtn = $("enableFingerprintBtn");
+  if(enableBtn) enableBtn.style.display = (isAdminMode && available && !hasCred) ? "" : "none";
+}
+$("fingerprintLoginBtn")?.addEventListener("click", tryFingerprintLogin);
+$("enableFingerprintBtn")?.addEventListener("click", registerFingerprintForDevice);
+
 $("adminAccessBtn")?.addEventListener("click", async ()=>{
   if(!canSeeAdminButton()){
     showToast("دسترسی پنل مدیریت ندارید");
@@ -5173,12 +5997,14 @@ $("adminAccessBtn")?.addEventListener("click", async ()=>{
   if(isAdminMode && await verifyAppwriteAdminSession()){
     showPage("adminPage");
     renderPublishedWorks();
+    updateFingerprintUI();
     return;
   }
   isAdminMode = false;
   if($("adminEmailInput")) $("adminEmailInput").value = normalizeEmail(ADMIN_EMAIL);
   if($("adminPasswordInput")) $("adminPasswordInput").value = "";
   $("adminModal")?.classList.add("active");
+  updateFingerprintUI();
 });
 $("checkAdminBtn")?.addEventListener("click", loginAdmin);
 $("adminPasswordInput")?.addEventListener("keydown", e => { if(e.key === "Enter") loginAdmin(); });
@@ -5448,9 +6274,14 @@ $("addChapterBtn")?.addEventListener("click", ()=>{
   const link = ($("chapterLinkInput").value || "").trim();
   if(!link){ showToast("لینک قسمت را وارد کنید"); return; }
   if(!isValidUrl(link)){ showToast("لینک معتبر نیست"); return; }
-  pendingChapters.push({ id: uid(), title, link });
+  const subtitleLink = ($("chapterSubtitleInput")?.value || "").trim();
+  if(subtitleLink && !isValidUrl(subtitleLink)){ showToast("لینک زیرنویس معتبر نیست"); return; }
+  const ch = { id: uid(), title, link, onlineEnabled: true };
+  if(subtitleLink) ch.subtitleLink = subtitleLink;
+  pendingChapters.push(ch);
   renderPendingChapters();
   setDefaultEpisodeTitleInput();
+  if($("chapterSubtitleInput")) $("chapterSubtitleInput").value = "";
 });
 
 $("bulkAddChaptersBtn")?.addEventListener("click", ()=>{
@@ -5464,7 +6295,7 @@ $("bulkAddChaptersBtn")?.addEventListener("click", ()=>{
     const title = isMovie
       ? ((num % 2 === 1) ? "زیرنویس فارسی، ۷۲۰p" : "دوبله فارسی، ۷۲۰p")
       : ("قسمت " + num);
-    pendingChapters.push({ id: uid(), title, link: "" });
+    pendingChapters.push({ id: uid(), title, link: "", onlineEnabled: true });
   }
   renderPendingChapters();
   setDefaultEpisodeTitleInput();
@@ -5480,6 +6311,22 @@ $("clearAllChaptersBtn")?.addEventListener("click", ()=>{
   showToast("همه قسمت‌ها حذف شدند");
 });
 
+/** دکمهٔ کوچک فعال/غیرفعال کردن پخش آنلاین کنار هر قسمت (در افزودن و ویرایش) */
+function buildOnlineToggleBtn(ch, onChange){
+  const btn = document.createElement("button");
+  btn.type = "button";
+  const on = isOnlinePlaybackEnabled(ch);
+  btn.className = "onlineToggleBtn" + (on ? " on" : " off");
+  btn.textContent = on ? "🟢 پخش آنلاین: روشن" : "⚪ پخش آنلاین: خاموش (فقط دانلود)";
+  btn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    ch.onlineEnabled = !isOnlinePlaybackEnabled(ch);
+    if(onChange) onChange();
+  });
+  return btn;
+}
+
 function renderPendingChapters(){
   const box = $("pendingChapters");
   if(!box) return;
@@ -5488,6 +6335,7 @@ function renderPendingChapters(){
     const div = document.createElement("div");
     div.className = "pendingChapter";
     div.innerHTML = `<span>${escapeHtml(ch.title)}</span>`;
+    div.appendChild(buildOnlineToggleBtn(ch, ()=> renderPendingChapters()));
     const del = document.createElement("button");
     del.type = "button";
     del.className = "delete";
@@ -5550,6 +6398,7 @@ function renderAdminSeasonsUI(){
   const season = pendingSeasons[selectedAdminSeasonIdx];
   if($("seasonChapterTitle")) $("seasonChapterTitle").value = nextSeasonEpisodeDefaultTitle(season);
   if($("seasonChapterLink")) $("seasonChapterLink").value = "";
+  if($("seasonChapterSubtitleInput")) $("seasonChapterSubtitleInput").value = "";
 }
 
 function renderPendingSeasonEpisodes(){
@@ -5590,6 +6439,7 @@ function renderPendingSeasonEpisodes(){
       season.episodes.splice(i, 1);
       renderAdminSeasonsUI();
     });
+    div.appendChild(buildOnlineToggleBtn(ch, ()=> renderAdminSeasonsUI()));
     div.appendChild(moveSel);
     div.appendChild(del);
     box.appendChild(div);
@@ -5614,7 +6464,7 @@ $("bulkAddSeasonEpsBtn")?.addEventListener("click", ()=>{
   const season = pendingSeasons[selectedAdminSeasonIdx];
   const start = (season.episodes || []).length + 1;
   for(let i=0;i<n;i++){
-    season.episodes.push({ id: uid(), title: "قسمت " + (start + i), link: "" });
+    season.episodes.push({ id: uid(), title: "قسمت " + (start + i), link: "", onlineEnabled: true });
   }
   renderAdminSeasonsUI();
   if($("bulkSeasonEpCount")) $("bulkSeasonEpCount").value = "";
@@ -5651,7 +6501,11 @@ $("addSeasonEpisodeBtn")?.addEventListener("click", ()=>{
   const link = ($("seasonChapterLink")?.value || "").trim();
   if(!link){ showToast("لینک قسمت را وارد کنید"); return; }
   if(!isValidUrl(link)){ showToast("لینک معتبر نیست"); return; }
-  season.episodes.push({ id: uid(), title, link });
+  const subtitleLink = ($("seasonChapterSubtitleInput")?.value || "").trim();
+  if(subtitleLink && !isValidUrl(subtitleLink)){ showToast("لینک زیرنویس معتبر نیست"); return; }
+  const ep = { id: uid(), title, link, onlineEnabled: true };
+  if(subtitleLink) ep.subtitleLink = subtitleLink;
+  season.episodes.push(ep);
   renderAdminSeasonsUI();
 });
 
@@ -5689,20 +6543,20 @@ $("publishBtn")?.addEventListener("click", async ()=>{
   if(isUnpublished){
     episodesPayload = [];
   }else if(type === "movie"){
-    episodesPayload = pendingChapters.map(c => ({
-      id: c.id || uid(),
-      title: c.title,
-      link: c.link
-    }));
+    episodesPayload = pendingChapters.map(c => {
+      const o = { id: c.id || uid(), title: c.title, link: c.link, onlineEnabled: isOnlinePlaybackEnabled(c) };
+      if(c.subtitleLink) o.subtitleLink = c.subtitleLink;
+      return o;
+    });
   }else{
     episodesPayload = pendingSeasons.map(s => ({
       id: s.id || uid(),
       title: s.title,
-      episodes: (s.episodes || []).map(e => ({
-        id: e.id || uid(),
-        title: e.title,
-        link: e.link
-      }))
+      episodes: (s.episodes || []).map(e => {
+        const o = { id: e.id || uid(), title: e.title, link: e.link, onlineEnabled: isOnlinePlaybackEnabled(e) };
+        if(e.subtitleLink) o.subtitleLink = e.subtitleLink;
+        return o;
+      })
     }));
   }
   const hasAnime = type === "movie"
@@ -6117,6 +6971,13 @@ function renderEditChapters(){
     l.value = ch.link || "";
     l.placeholder = "لینک مستقیم";
     l.addEventListener("input", ()=> { ch.link = l.value; });
+    const s = document.createElement("input");
+    s.className = "modalInput";
+    s.style.marginBottom = "0";
+    s.type = "url";
+    s.value = ch.subtitleLink || "";
+    s.placeholder = "لینک زیرنویس (اختیاری، vtt یا srt)";
+    s.addEventListener("input", ()=> { ch.subtitleLink = s.value; });
     const del = document.createElement("button");
     del.type = "button";
     del.className = "delete";
@@ -6127,13 +6988,15 @@ function renderEditChapters(){
     });
     div.appendChild(t);
     div.appendChild(l);
+    div.appendChild(s);
+    div.appendChild(buildOnlineToggleBtn(ch, ()=> renderEditChapters()));
     div.appendChild(del);
     box.appendChild(div);
   });
 }
 
 $("addEditChapterBtn")?.addEventListener("click", ()=>{
-  editingChapters.push({ id: uid(), title: nextEditEpisodeDefaultTitle(), link: "" });
+  editingChapters.push({ id: uid(), title: nextEditEpisodeDefaultTitle(), link: "", onlineEnabled: true });
   renderEditChapters();
 });
 
@@ -6208,6 +7071,13 @@ function renderEditSeasonEpisodes(){
     l.value = ch.link || "";
     l.placeholder = "لینک مستقیم";
     l.addEventListener("input", ()=> { ch.link = l.value; });
+    const s = document.createElement("input");
+    s.className = "modalInput";
+    s.style.marginBottom = "0";
+    s.type = "url";
+    s.value = ch.subtitleLink || "";
+    s.placeholder = "لینک زیرنویس (اختیاری، vtt یا srt)";
+    s.addEventListener("input", ()=> { ch.subtitleLink = s.value; });
     const row = document.createElement("div");
     row.style.cssText = "display:flex;gap:6px;align-items:center";
     const moveSel = document.createElement("select");
@@ -6240,6 +7110,8 @@ function renderEditSeasonEpisodes(){
     row.appendChild(del);
     div.appendChild(t);
     div.appendChild(l);
+    div.appendChild(s);
+    div.appendChild(buildOnlineToggleBtn(ch, ()=> renderEditSeasonEpisodes()));
     div.appendChild(row);
     box.appendChild(div);
   });
@@ -6263,7 +7135,7 @@ $("editBulkAddChaptersBtn")?.addEventListener("click", ()=>{
     const title = isMovie
       ? ((num % 2 === 1) ? "زیرنویس فارسی، ۷۲۰p" : "دوبله فارسی، ۷۲۰p")
       : ("قسمت " + num);
-    editingChapters.push({ id: uid(), title, link: "" });
+    editingChapters.push({ id: uid(), title, link: "", onlineEnabled: true });
   }
   renderEditChapters();
   if($("editBulkChapterCount")) $("editBulkChapterCount").value = "";
@@ -6285,7 +7157,7 @@ $("editBulkAddSeasonEpsBtn")?.addEventListener("click", ()=>{
   const season = editingSeasons[selectedEditSeasonIdx];
   const start = (season.episodes || []).length + 1;
   for(let i=0;i<n;i++){
-    season.episodes.push({ id: uid(), title: "قسمت " + (start + i), link: "" });
+    season.episodes.push({ id: uid(), title: "قسمت " + (start + i), link: "", onlineEnabled: true });
   }
   renderEditSeasonsUI();
   if($("editBulkSeasonEpCount")) $("editBulkSeasonEpCount").value = "";
@@ -6355,27 +7227,29 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     for(const ch of editingChapters){
       if(!(ch.title||"").trim()){ showToast("عنوان یکی از قسمت‌ها خالی است"); return; }
       if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از قسمت‌ها نامعتبر است"); return; }
+      if(ch.subtitleLink && !isValidUrl(ch.subtitleLink)){ showToast("لینک زیرنویس یکی از قسمت‌ها نامعتبر است"); return; }
     }
-    episodesPayload = editingChapters.map(c => ({
-      id: c.id || uid(),
-      title: (c.title||"").trim(),
-      link: (c.link||"").trim()
-    }));
+    episodesPayload = editingChapters.map(c => {
+      const o = { id: c.id || uid(), title: (c.title||"").trim(), link: (c.link||"").trim(), onlineEnabled: isOnlinePlaybackEnabled(c) };
+      if((c.subtitleLink||"").trim()) o.subtitleLink = c.subtitleLink.trim();
+      return o;
+    });
   }else{
     for(const s of editingSeasons){
       for(const ch of (s.episodes || [])){
         if(!(ch.title||"").trim()){ showToast("عنوان یکی از قسمت‌ها خالی است"); return; }
         if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از قسمت‌ها نامعتبر است"); return; }
+        if(ch.subtitleLink && !isValidUrl(ch.subtitleLink)){ showToast("لینک زیرنویس یکی از قسمت‌ها نامعتبر است"); return; }
       }
     }
     episodesPayload = editingSeasons.map(s => ({
       id: s.id || uid(),
       title: s.title,
-      episodes: (s.episodes || []).map(e => ({
-        id: e.id || uid(),
-        title: (e.title||"").trim(),
-        link: (e.link||"").trim()
-      }))
+      episodes: (s.episodes || []).map(e => {
+        const o = { id: e.id || uid(), title: (e.title||"").trim(), link: (e.link||"").trim(), onlineEnabled: isOnlinePlaybackEnabled(e) };
+        if((e.subtitleLink||"").trim()) o.subtitleLink = e.subtitleLink.trim();
+        return o;
+      })
     }));
   }
   const hasAnime = type === "movie"
