@@ -389,7 +389,7 @@ body.playerFullscreenActive .nav{display:none}
 
 .adminBox{background:#211710;border-radius:18px;padding:15px}
 .adminTabs{
-  display:grid;grid-template-columns:repeat(5,1fr);background:#2b1d14;padding:4px;
+  display:grid;grid-template-columns:repeat(6,1fr);background:#2b1d14;padding:4px;
   border-radius:13px;margin-bottom:18px;gap:3px
 }
 .adminTabs button{border:0;background:none;color:#8f775f;padding:10px 2px;border-radius:10px;font-size:9px;line-height:1.3;white-space:normal}
@@ -1070,6 +1070,330 @@ body.playerFullscreenActive .nav{display:none}
 .mangaCostInput{width:70px;font-size:10px;padding:6px 8px;margin:0;background:#2b1d15;color:#e7d6bf;border:0;border-radius:8px}
 .mangaPriceBox{background:#1a120e;border:1px solid #302119;border-radius:12px;padding:12px;margin:10px 0}
 
+
+/* ========== سینما ========== */
+.cinemaSchedFeatured{
+  background:linear-gradient(145deg,#2a1c14,#1a120e);border:1px solid #4a3222;
+  border-radius:16px;padding:14px;margin-bottom:16px;cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.28)
+}
+.cinemaSchedFeatured.live{border-color:rgba(196,122,53,.5)}
+.cinemaSchedFeaturedRow{display:flex;align-items:center;gap:12px;direction:rtl}
+.cinemaSchedFeaturedCover{
+  width:56px !important;height:84px !important;max-width:56px !important;max-height:84px !important;
+  border-radius:9px;overflow:hidden;background:#1a120e;flex:0 0 56px;flex-shrink:0;
+  border:1px solid #5a3a22;display:flex;align-items:center;justify-content:center
+}
+.cinemaSchedFeaturedCover img{
+  width:100% !important;height:100% !important;max-width:56px !important;max-height:84px !important;
+  object-fit:contain !important;object-position:center center;display:block
+}
+.cinemaSchedFeaturedBody{flex:1;min-width:0}
+.cinemaSchedFeaturedLabel{font-size:9px;color:#e0a94e;font-weight:700;margin-bottom:4px}
+.cinemaSchedFeaturedTitle{font-size:14px;font-weight:700;color:#f2e4ca;line-height:1.4}
+.cinemaSchedFeaturedMeta{font-size:10px;color:#a89078;margin-top:5px}
+.cinemaSchedFeaturedTimer{
+  margin-top:10px;text-align:center;font-size:22px;font-weight:700;color:#8fd19e;
+  font-variant-numeric:tabular-nums;direction:ltr;letter-spacing:1px
+}
+.cinemaSchedFeaturedTimer.soon{color:#e0a94e}
+.cinemaSchedFeaturedHint{text-align:center;font-size:10px;color:#8d7660;margin-top:4px}
+
+.cinemaSchedListRow{
+  display:flex;flex-direction:row;gap:10px;overflow-x:auto;padding:2px 1px 10px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch
+}
+.cinemaSchedListRow::-webkit-scrollbar{display:none}
+.cinemaSchedItem{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  width:78px;flex:0 0 78px;background:transparent;border:0;padding:0;margin:0;cursor:pointer
+}
+.cinemaSchedItem.live .cinemaSchedCover{border-color:rgba(196,122,53,.55);box-shadow:0 0 0 1px rgba(196,122,53,.2)}
+.cinemaSchedCover{
+  width:78px !important;height:116px !important;max-width:78px !important;max-height:116px !important;
+  border-radius:10px;overflow:hidden;background:#1a120e;
+  flex:0 0 78px;flex-shrink:0;border:1px solid #3a2a1c;position:relative;
+  display:flex;align-items:center;justify-content:center
+}
+.cinemaSchedCover img{
+  width:100% !important;height:100% !important;max-width:78px !important;max-height:116px !important;
+  object-fit:contain !important;object-position:center center;display:block
+}
+.cinemaSchedBody{width:100%;min-width:0;text-align:center}
+.cinemaSchedTitle{font-size:10px;font-weight:700;color:#ead4b8;line-height:1.3;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;max-width:100%}
+.cinemaSchedMeta{font-size:8.5px;color:#a89078;margin-top:2px;line-height:1.35}
+.cinemaSchedTime{
+  font-size:10px;font-weight:700;color:#e0a94e;white-space:nowrap;
+  direction:ltr;text-align:center;margin-top:2px
+}
+.cinemaSchedBadge{
+  font-size:9px;font-weight:700;padding:4px 7px;border-radius:8px;flex-shrink:0;white-space:nowrap
+}
+.cinemaSchedBadge.live{background:rgba(143,209,158,.15);color:#8fd19e}
+.cinemaSchedBadge.soon{background:rgba(224,169,78,.12);color:#e0a94e}
+.cinemaSchedBadge.done{background:#2a1c14;color:#8d7660}
+
+.cinemaHomeBanner{
+  margin:4px -4px 18px;border-radius:16px;overflow:hidden;
+  background:linear-gradient(135deg,#2a1c14 0%,#1a120e 55%,#241912 100%);
+  border:1px solid #4a3222;position:relative;min-height:92px;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
+.cinemaHomeBannerInner{display:flex;align-items:center;gap:12px;padding:12px 14px;direction:rtl}
+.cinemaHomeBannerCover{
+  width:56px;height:78px;border-radius:8px;overflow:hidden;flex-shrink:0;
+  background:#3a2a1c;border:1px solid #5a3a22
+}
+.cinemaHomeBannerCover img{width:100%;height:100%;object-fit:cover;display:block}
+.cinemaHomeBannerBody{flex:1;min-width:0}
+.cinemaHomeBannerLabel{font-size:9px;color:#e0a94e;font-weight:700;letter-spacing:.5px;margin-bottom:4px}
+.cinemaHomeBannerTitle{
+  font-size:13px;font-weight:700;color:#f2e4ca;line-height:1.4;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical
+}
+.cinemaHomeBannerMeta{font-size:10px;color:#a89078;margin-top:5px}
+.cinemaHomeBannerTimer{font-size:12px;color:#8fd19e;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums;direction:ltr;text-align:right}
+.cinemaHomeBannerBtn{
+  border:0;border-radius:12px;padding:10px 12px;font-size:10px;font-weight:700;
+  background:var(--orange);color:#21150e;white-space:nowrap;flex-shrink:0
+}
+.cinemaHomeBannerBtn:disabled{opacity:.45}
+.cinemaHomeBanner.empty{opacity:.7;min-height:70px}
+.cinemaHomeBanner.empty .cinemaHomeBannerTitle{color:#8d7660;font-weight:600;font-size:12px}
+
+.cinemaLiveWrap{padding:0 0 20px}
+.cinemaLivePlayerBox{
+  width:100%;border-radius:14px;overflow:hidden;background:#000;
+  border:1px solid var(--line);position:relative;min-height:200px
+}
+.cinemaLivePlayer{
+  width:100%;max-height:min(52vh,420px);min-height:180px;background:#000;display:block
+}
+.cinemaLiveOverlay{
+  position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  background:rgba(12,8,5,.88);z-index:5;flex-direction:column;gap:10px;padding:20px;text-align:center
+}
+.cinemaLiveOverlay.active{display:flex}
+.cinemaLiveOverlay h3{font-size:15px;color:#e0a94e}
+.cinemaLiveOverlay .clTimer{font-size:28px;font-weight:700;color:#f2e4ca;font-variant-numeric:tabular-nums;direction:ltr}
+.cinemaLiveOverlay p{font-size:11px;color:#a89078;line-height:1.8}
+
+/* ========== چت سینما — ظاهر تلگرام‌مانند با پالت سایت ========== */
+.cinemaChatBox{
+  margin-top:12px;background:#17100c;border:1px solid #302119;border-radius:16px;
+  display:flex;flex-direction:column;height:min(48vh,380px);overflow:hidden;
+  position:relative;box-shadow:0 8px 24px rgba(0,0,0,.28)
+}
+.cinemaChatHead{
+  flex:0 0 auto;padding:10px 12px;border-bottom:1px solid #302119;
+  background:linear-gradient(180deg,#211710,#1a120e);
+  display:flex;align-items:center;gap:10px;z-index:5
+}
+.cinemaChatHeadAvatar{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(145deg,#6b4a2a,#3d281a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:#f2e4ca;border:1px solid #5a3a22
+}
+.cinemaChatHeadInfo{flex:1;min-width:0}
+.cinemaChatHeadTitle{
+  font-size:13px;font-weight:700;color:#ead4b8;line-height:1.3;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+}
+.cinemaChatHeadStatus{
+  font-size:10px;color:#8fd19e;margin-top:2px;line-height:1.2
+}
+.cinemaChatHeadStatus.idle{color:#8d7660}
+.cinemaChatHeadMeta{font-size:10px;color:#8d7660;flex-shrink:0}
+
+/* پس‌زمینه ظریف پیام‌ها */
+.cinemaChatList{
+  flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  padding:10px 10px 8px;
+  display:flex;flex-direction:column;gap:2px;
+  direction:ltr; /* چیدمان: چپ=دیگران، راست=من */
+  background:
+    radial-gradient(ellipse at 20% 10%,rgba(104,65,38,.14),transparent 42%),
+    radial-gradient(ellipse at 80% 90%,rgba(196,122,53,.06),transparent 40%),
+    #120c09;
+  scroll-behavior:smooth
+}
+.cinemaChatList::-webkit-scrollbar{width:4px}
+.cinemaChatList::-webkit-scrollbar-thumb{background:#3a2a1c;border-radius:4px}
+
+.cinemaChatEmpty{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:28px 16px;color:#8d7660;font-size:12px;line-height:1.9;gap:6px
+}
+.cinemaChatEmpty .ceIcon{font-size:28px;opacity:.7;margin-bottom:4px}
+
+.cinemaDateSep{
+  align-self:center;margin:10px 0 8px;padding:4px 12px;border-radius:12px;
+  background:rgba(36,25,18,.85);border:1px solid #302119;
+  font-size:10px;color:#a89078;font-weight:600;letter-spacing:.2px
+}
+
+.cinemaChatMsg{
+  max-width:82%;padding:6px 10px 5px;position:relative;
+  word-break:break-word;animation:cmIn .18s ease;
+  direction:rtl;text-align:right; /* متن فارسی داخل حباب */
+}
+@keyframes cmIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.cinemaChatMsg.them{
+  align-self:flex-start; /* سمت چپ */
+  background:#241912;border:1px solid #302119;
+  border-radius:14px 14px 14px 4px;color:#ead4b8
+}
+.cinemaChatMsg.mine{
+  align-self:flex-end; /* سمت راست */
+  background:linear-gradient(145deg,#6b4a2a,#5a3a22);
+  border:1px solid #8b552d;
+  border-radius:14px 14px 4px 14px;color:#f5e6c8
+}
+.cinemaChatMsg.grouped{margin-top:1px}
+.cinemaChatMsg.grouped.them{border-radius:4px 14px 14px 4px}
+.cinemaChatMsg.grouped.mine{border-radius:14px 4px 4px 14px}
+.cinemaChatMsg.firstInGroup{margin-top:8px}
+.cinemaChatMsg.firstInGroup.them{border-radius:14px 14px 14px 4px}
+.cinemaChatMsg.firstInGroup.mine{border-radius:14px 14px 4px 14px}
+
+.cinemaChatMsg .cmName{
+  font-size:11px;font-weight:700;color:#e0a94e;margin-bottom:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+}
+.cinemaChatMsg.mine .cmName{color:#f0d4a8}
+.cinemaChatMsg .cmReply{
+  font-size:10px;color:#a89078;border-right:2px solid #c37934;
+  padding:4px 0 4px 8px;margin:0 0 4px;line-height:1.45;
+  background:rgba(0,0,0,.12);border-radius:0 6px 6px 0;cursor:pointer
+}
+.cinemaChatMsg.mine .cmReply{border-right-color:#e0a94e;color:#d6b994}
+.cinemaChatMsg .cmText{
+  font-size:13px;line-height:1.55;color:inherit;white-space:pre-wrap
+}
+.cinemaChatMsg .cmMeta{
+  display:flex;align-items:center;justify-content:flex-end;gap:4px;
+  margin-top:3px;font-size:9.5px;color:#927d67;direction:ltr
+}
+.cinemaChatMsg.mine .cmMeta{color:rgba(242,228,202,.55)}
+.cinemaChatMsg .cmEdited{font-style:italic;opacity:.85;margin-left:2px}
+.cinemaChatMsg{
+  position:relative;
+  touch-action:pan-y;
+  will-change:transform;
+  transition:transform .18s ease;
+  overflow:visible;
+}
+.cinemaChatMsg.cmSwipeActive{transition:none;z-index:2}
+.cinemaChatMsg .cmSwipeHint{
+  position:absolute;top:50%;transform:translateY(-50%);
+  font-size:18px;opacity:0;pointer-events:none;color:#c37934;
+  transition:opacity .12s;font-weight:700;
+}
+.cinemaChatMsg .cmSwipeHint{left:auto;right:8px}
+.cinemaChatMsg.cmSwipeShowHint .cmSwipeHint{opacity:1}
+
+
+/* منوی زمینه */
+.cinemaCtxOverlay{
+  position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.45);display:none
+}
+.cinemaCtxOverlay.active{display:block}
+.cinemaCtxMenu{
+  position:fixed;z-index:6001;min-width:180px;max-width:260px;
+  background:#211710;border:1px solid #4a3222;border-radius:14px;
+  box-shadow:0 12px 36px rgba(0,0,0,.5);overflow:hidden;
+  animation:ctxIn .16s ease
+}
+@keyframes ctxIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.cinemaCtxMenu button{
+  width:100%;border:0;background:transparent;color:#ead4b8;
+  padding:12px 16px;font-size:13px;text-align:right;cursor:pointer;
+  display:flex;align-items:center;gap:10px;border-bottom:1px solid #302119
+}
+.cinemaCtxMenu button:last-child{border-bottom:0}
+.cinemaCtxMenu button:active,.cinemaCtxMenu button:hover{background:#2a1c14}
+.cinemaCtxMenu button.danger{color:#e3b8a5}
+.cinemaCtxSheet{
+  position:fixed;left:50%;bottom:0;transform:translateX(-50%);
+  width:100%;max-width:520px;z-index:6001;
+  background:#211710;border-radius:18px 18px 0 0;border:1px solid #4a3222;
+  border-bottom:0;padding:8px 0 calc(12px + env(safe-area-inset-bottom,0px));
+  box-shadow:0 -8px 32px rgba(0,0,0,.4);animation:sheetUp .2s ease
+}
+@keyframes sheetUp{from{transform:translateX(-50%) translateY(100%)}to{transform:translateX(-50%) translateY(0)}}
+.cinemaCtxSheet button{
+  width:100%;border:0;background:transparent;color:#ead4b8;
+  padding:14px 20px;font-size:14px;text-align:right;cursor:pointer;
+  display:flex;align-items:center;gap:12px;border-bottom:1px solid #302119
+}
+.cinemaCtxSheet button:last-child{border-bottom:0}
+.cinemaCtxSheet button.danger{color:#e3b8a5}
+.cinemaCtxSheet .ctxHandle{
+  width:36px;height:4px;border-radius:2px;background:#4a3222;margin:6px auto 10px
+}
+
+/* نوار پاسخ */
+.cinemaChatReplyBar{
+  display:none;flex:0 0 auto;padding:8px 12px;background:#1e1510;
+  border-top:1px solid #302119;align-items:center;gap:10px;
+  animation:replyIn .18s ease
+}
+.cinemaChatReplyBar.active{display:flex}
+@keyframes replyIn{from{opacity:0;max-height:0}to{opacity:1;max-height:80px}}
+.cinemaChatReplyBar .crAccent{
+  width:3px;align-self:stretch;border-radius:2px;background:#c37934;flex-shrink:0
+}
+.cinemaChatReplyBar .crBody{flex:1;min-width:0}
+.cinemaChatReplyBar .crLabel{font-size:10px;color:#e0a94e;font-weight:700;margin-bottom:2px}
+.cinemaChatReplyBar .crPreview{
+  font-size:11px;color:#a89078;overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+}
+.cinemaChatReplyBar .crCancel{
+  border:0;background:none;color:#8d7660;font-size:18px;padding:4px 8px;cursor:pointer;line-height:1
+}
+
+/* کامپوزر */
+.cinemaChatComposer{
+  flex:0 0 auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+  background:#1a120e;border-top:1px solid #302119;
+  display:flex;align-items:flex-end;gap:6px
+}
+.cinemaChatComposer .ccInputWrap{
+  flex:1;min-width:0;background:#241912;border:1px solid #302119;border-radius:20px;
+  padding:8px 14px;display:flex;align-items:flex-end;max-height:120px
+}
+.cinemaChatComposer textarea{
+  width:100%;border:0;outline:0;background:transparent;color:#e7d6bf;
+  font-size:13px;line-height:1.45;resize:none;max-height:100px;min-height:22px;
+  padding:0;margin:0;font-family:inherit
+}
+.cinemaChatComposer textarea::placeholder{color:#806c59}
+.cinemaChatComposer .ccSend{
+  width:40px;height:40px;border-radius:50%;border:0;flex-shrink:0;
+  background:#3a2a1c;color:#8d7660;font-size:18px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:background .15s,color .15s,transform .12s
+}
+.cinemaChatComposer .ccSend.active{
+  background:var(--orange);color:#21150e
+}
+.cinemaChatComposer .ccSend:active{transform:scale(.94)}
+
+.cinemaChatNewBtn{
+  position:absolute;bottom:70px;left:50%;transform:translateX(-50%);
+  z-index:8;display:none;border:0;border-radius:16px;padding:7px 14px;
+  background:#2a1c14;color:#e0a94e;font-size:11px;font-weight:600;
+  border:1px solid #4a3222;box-shadow:0 4px 16px rgba(0,0,0,.35);cursor:pointer
+}
+.cinemaChatNewBtn.show{display:block;animation:cmIn .2s ease}
+
+.adminCinemaItem{background:#2a1c14;border-radius:12px;padding:12px;margin-bottom:10px}
+.adminCinemaItem b{font-size:12px;display:block;color:#ead4b8}
+.adminCinemaItem small{display:block;color:#866d57;font-size:10px;margin-top:5px;line-height:1.7}
+
 </style>
 </head>
 <body>
@@ -1081,6 +1405,21 @@ body.playerFullscreenActive .nav{display:none}
     <button id="tabAll" class="active" type="button">همه</button>
     <button id="tabSerial" type="button">انیمه‌ی سریالی</button>
     <button id="tabMovie" type="button">انیمه‌ی سینمایی</button>
+  </div>
+
+
+  <!-- بنر سینما -->
+  <div id="cinemaHomeBanner" class="cinemaHomeBanner empty" style="display:none">
+    <div class="cinemaHomeBannerInner">
+      <div class="cinemaHomeBannerCover" id="cinemaHomeCover"></div>
+      <div class="cinemaHomeBannerBody">
+        <div class="cinemaHomeBannerLabel">🎬 سینما</div>
+        <div class="cinemaHomeBannerTitle" id="cinemaHomeTitle">برنامه‌ای نیست</div>
+        <div class="cinemaHomeBannerMeta" id="cinemaHomeMeta"></div>
+        <div class="cinemaHomeBannerTimer" id="cinemaHomeTimer"></div>
+      </div>
+      <button type="button" class="cinemaHomeBannerBtn" id="cinemaHomeEnterBtn" style="display:none">ورود به سینما</button>
+    </div>
   </div>
 
   <!-- بنر سینمایی فقط در تب «همه» -->
@@ -1455,6 +1794,9 @@ body.playerFullscreenActive .nav{display:none}
       <div class="description" id="detailDescription"></div>
       <div class="detailStudiosLabel" id="detailStudiosLabel" style="display:none">استودیو</div>
       <div id="detailStudiosRow" class="detailStudiosRow" style="display:none"></div>
+      <div id="detailTrailerBox" style="display:none;margin:16px 0 8px;text-align:center">
+        <button type="button" class="modalBtn" id="detailPlayTrailerBtn" style="width:auto;min-width:160px;height:44px;padding:0 20px;margin:0">▶ پخش تریلر</button>
+      </div>
       <button type="button" class="reportAnimeBtn" id="reportAnimeBtn">🚩 گزارش انیمه</button>
     </div>
     <div id="detailPanelEpisodes" class="detailPanel">
@@ -1520,6 +1862,65 @@ body.playerFullscreenActive .nav{display:none}
 </section>
 
 <!-- ========== ADMIN ========== -->
+
+<!-- ========== CINEMA LIVE ========== -->
+
+<!-- ========== CINEMA SCHEDULE ========== -->
+<section id="cinemaSchedulePage" class="page">
+  <div class="top">
+    <button class="back" id="cinemaScheduleBack" type="button">←</button>
+    <h2>سینما</h2>
+  </div>
+  <div id="cinemaScheduleFeatured"></div>
+  <div class="sectionHead" id="cinemaScheduleListHead" style="display:none"><h3>سایر برنامه‌ها</h3></div>
+  <div id="cinemaScheduleList"></div>
+</section>
+
+<section id="cinemaLivePage" class="page">
+  <div class="top">
+    <button class="back" id="cinemaLiveBack" type="button">←</button>
+    <h2 id="cinemaLiveTitle">سینما</h2>
+  </div>
+  <div class="cinemaLiveWrap">
+    <div class="cinemaLivePlayerBox">
+      <video id="cinemaLivePlayer" class="cinemaLivePlayer" playsinline preload="auto" controlslist="nodownload noplaybackrate"></video>
+      <div id="cinemaLiveOverlay" class="cinemaLiveOverlay">
+        <h3 id="cinemaOverlayTitle">زمان استراحت</h3>
+        <div class="clTimer" id="cinemaOverlayTimer">05:00</div>
+        <p id="cinemaOverlayHint">پخش به‌صورت خودکار ادامه می‌یابد</p>
+      </div>
+    </div>
+    <div class="cinemaChatBox" id="cinemaChatBox">
+      <div class="cinemaChatHead">
+        <div class="cinemaChatHeadAvatar" aria-hidden="true">💬</div>
+        <div class="cinemaChatHeadInfo">
+          <div class="cinemaChatHeadTitle">چت زنده سینما</div>
+          <div class="cinemaChatHeadStatus" id="cinemaChatStatus">آنلاین</div>
+        </div>
+        <span class="cinemaChatHeadMeta" id="cinemaChatCount"></span>
+      </div>
+      <div class="cinemaChatList" id="cinemaChatList"></div>
+      <button type="button" class="cinemaChatNewBtn" id="cinemaChatNewBtn">↓ پیام‌های جدید</button>
+      <div class="cinemaChatReplyBar" id="cinemaChatReplyBar">
+        <div class="crAccent"></div>
+        <div class="crBody">
+          <div class="crLabel" id="cinemaChatReplyLabel">پاسخ</div>
+          <div class="crPreview" id="cinemaChatReplyText"></div>
+        </div>
+        <button type="button" class="crCancel" id="cinemaChatReplyCancel" aria-label="لغو پاسخ">×</button>
+      </div>
+      <div class="cinemaChatComposer">
+        <div class="ccInputWrap">
+          <textarea id="cinemaChatInput" rows="1" placeholder="پیام بنویس..." maxlength="500" autocomplete="off"></textarea>
+        </div>
+        <button type="button" class="ccSend" id="cinemaChatSendBtn" aria-label="ارسال">➤</button>
+      </div>
+    </div>
+    <div class="cinemaCtxOverlay" id="cinemaCtxOverlay"></div>
+    <div id="cinemaCtxMenuRoot"></div>
+  </div>
+</section>
+
 <section id="adminPage" class="page">
   <div class="top">
     <button class="back" id="adminBack" type="button">←</button>
@@ -1530,6 +1931,7 @@ body.playerFullscreenActive .nav{display:none}
       <button class="active" data-admin-tab="add" type="button">افزودن</button>
       <button data-admin-tab="genres" type="button">ژانرها</button>
       <button data-admin-tab="published" type="button">منتشرشده</button>
+      <button data-admin-tab="cinema" type="button">سینما</button>
       <button data-admin-tab="studios" type="button">استودیوها</button>
       <button data-admin-tab="accounts" type="button">اکانت‌ها</button>
     </div>
@@ -1557,6 +1959,10 @@ body.playerFullscreenActive .nav{display:none}
 
         <label>لینک مستقیم جلد</label>
         <input id="adminCoverUrl" type="url" placeholder="https://...">
+
+        <label>لینک تریلر</label>
+        <input id="adminTrailerUrl" type="url" placeholder="https://... (فقط تریلر — اختیاری)">
+        <div class="keywordHint">اگر خالی باشد بخش تریلر در صفحه انیمه نمایش داده نمی‌شود</div>
 
         <label>توضیحات</label>
         <textarea id="adminDescription" placeholder="خلاصه داستان..."></textarea>
@@ -1617,7 +2023,10 @@ body.playerFullscreenActive .nav{display:none}
         <div id="adminEpisodesFlatBlock">
           <label style="margin-top:14px" id="episodeSectionLabel">قسمت‌ها</label>
           <input id="chapterTitle" placeholder="عنوان قسمت (مثلاً قسمت ۱)">
-          <input id="chapterLinkInput" type="url" placeholder="لینک مستقیم فایل">
+          <label style="margin-top:6px;margin-bottom:4px;font-size:10px;color:#c37934">لینک دانلود</label>
+          <input id="chapterLinkInput" type="url" placeholder="لینک مستقیم دانلود">
+          <label style="margin-top:6px;margin-bottom:4px;font-size:10px;color:#c37934">لینک پخش</label>
+          <input id="chapterPlayLinkInput" type="url" placeholder="لینک پخش آنلاین (خالی = همان لینک دانلود)">
           <input id="chapterSubtitleInput" type="url" placeholder="لینک زیرنویس (اختیاری، vtt یا srt)">
           <button class="addBtn" id="addChapterBtn" type="button">+ افزودن قسمت</button>
           <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
@@ -1644,7 +2053,10 @@ body.playerFullscreenActive .nav{display:none}
               </div>
               <label style="margin-top:4px;margin-bottom:6px">قسمت‌های این فصل</label>
               <input id="seasonChapterTitle" placeholder="عنوان قسمت">
-              <input id="seasonChapterLink" type="url" placeholder="لینک مستقیم فایل">
+              <label style="margin-top:6px;margin-bottom:4px;font-size:10px;color:#c37934">لینک دانلود</label>
+              <input id="seasonChapterLink" type="url" placeholder="لینک مستقیم دانلود">
+              <label style="margin-top:6px;margin-bottom:4px;font-size:10px;color:#c37934">لینک پخش</label>
+              <input id="seasonChapterPlayLink" type="url" placeholder="لینک پخش آنلاین (خالی = همان لینک دانلود)">
               <input id="seasonChapterSubtitleInput" type="url" placeholder="لینک زیرنویس (اختیاری، vtt یا srt)">
               <button class="addBtn" id="addSeasonEpisodeBtn" type="button">+ افزودن قسمت به این فصل</button>
               <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
@@ -1652,7 +2064,18 @@ body.playerFullscreenActive .nav{display:none}
                 <button class="addBtn" id="bulkAddSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">+ ساخت خودکار</button>
                 <button class="delete" id="clearSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">حذف همه</button>
               </div>
-              <div class="keywordHint">شماره‌گذاری از ادامهٔ آخرین قسمت این فصل شروع می‌شود</div>
+              <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;background:#1a120e;border:1px solid #302119;border-radius:12px;padding:10px">
+                <span style="font-size:10px;color:#e0a94e;width:100%">مدیریت گروهی پخش آنلاین این فصل</span>
+                <input id="bulkOnlineCount" type="number" min="1" max="500" placeholder="تعداد" style="width:70px;margin:0">
+                <select id="bulkOnlineSide" style="font-size:10px;background:#2b1d15;color:#e7d6bf;border:0;border-radius:8px;padding:8px;margin:0">
+                  <option value="first">قسمت‌های اول</option>
+                  <option value="last">قسمت‌های آخر</option>
+                  <option value="all">همه قسمت‌ها</option>
+                </select>
+                <button class="addBtn" id="bulkOnlineOffBtn" type="button" style="width:auto;height:36px;padding:0 10px;margin:0;font-size:10px;background:#5b3028">غیرفعال پخش</button>
+                <button class="addBtn" id="bulkOnlineOnBtn" type="button" style="width:auto;height:36px;padding:0 10px;margin:0;font-size:10px;background:#2e5c3a">فعال پخش</button>
+              </div>
+              <div class="keywordHint">شماره‌گذاری از ادامهٔ آخرین قسمت این فصل شروع می‌شود · برای غیرفعال‌کردن گروهی پخش آنلاین از کادر بالا استفاده کنید</div>
               <div id="pendingSeasonEpisodes" class="seasonEpList" style="margin-top:10px"></div>
             </div>
             <div id="adminNoSeasonHint" class="seasonEmptyHint">اول یک فصل بساز، بعد قسمت‌ها را به آن اضافه کن.</div>
@@ -1685,6 +2108,15 @@ body.playerFullscreenActive .nav{display:none}
     </div>
 
     <div id="adminAccounts" class="adminSection">
+      <div class="adminBox" style="margin-bottom:14px;padding:12px;border:1px solid #3a2a1c;border-radius:12px;background:#1a120e">
+        <div style="font-size:12px;color:#e0a94e;font-weight:700;margin-bottom:6px">👆 ثبت اثر انگشت ادمین</div>
+        <p class="keywordHint" style="margin:0 0 10px">اثر انگشت روی همین دستگاه ذخیره می‌شود. بعد از ثبت، هنگام ورود به پنل می‌توانید به‌جای رمز از اثر انگشت استفاده کنید.</p>
+        <div id="adminFpStatus" style="font-size:11px;color:#a89078;margin-bottom:10px;line-height:1.7">در حال بررسی...</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button class="addBtn" id="adminFpRegisterBtn" type="button" style="margin:0;height:42px">ثبت اثر انگشت</button>
+          <button class="delete" id="adminFpRemoveBtn" type="button" style="margin:0;height:42px;width:100%">حذف اثر انگشت</button>
+        </div>
+      </div>
       <p class="adminCount">تعداد اکانت‌ها: <b id="accountsCount">0</b></p>
       <div class="searchBox" style="margin-bottom:12px">
         <span>🔍</span>
@@ -1693,6 +2125,35 @@ body.playerFullscreenActive .nav{display:none}
       </div>
       <button class="addBtn" id="bulkGrantCoinsBtn" type="button" style="margin-bottom:12px">🪙 سکه به همه کاربران</button>
       <div id="adminAccountsList"></div>
+    </div>
+
+    
+    <div id="adminCinema" class="adminSection">
+      <div class="form">
+        <label>انیمه سینمایی (اختیاری — برای نام و اطلاعات)</label>
+        <select id="cinemaWorkSelect">
+          <option value="">انتخاب انیمه سینمایی...</option>
+        </select>
+        <label>عنوان نمایشی (اگر انیمه انتخاب نشود)</label>
+        <input id="cinemaTitleCustom" type="text" placeholder="مثلاً تونل به تابستان">
+        <label>لینک پخش ویدیو (اجباری)</label>
+        <input id="cinemaPlayLink" type="url" placeholder="https://... لینک مستقیم ویدیو">
+        <label>لینک جلد / بنر (اختیاری)</label>
+        <input id="cinemaCoverUrl" type="url" placeholder="https://... تصویر جلد">
+        <label>زمان شروع اکران</label>
+        <input id="cinemaStartAt" type="datetime-local">
+        <label>مدت کل فیلم (دقیقه)</label>
+        <input id="cinemaDurationMin" type="number" min="1" max="600" placeholder="مثلاً ۹۰" value="90">
+        <label>دقیقه توقف / استراحت</label>
+        <input id="cinemaBreakAtMin" type="number" min="0" max="600" placeholder="مثلاً ۱ — در این دقیقه پخش متوقف و تایمر ۵ دقیقه می‌آید" value="0">
+        <div class="keywordHint">اگر مثلاً ۱ بگذاری، در دقیقه ۱ فیلم استاپ می‌شود، تایمر استراحت ۵ دقیقه‌ای می‌آید، بعد پخش ادامه پیدا می‌کند. ۰ = بدون استراحت میانی.</div>
+        <label>هزینه بلیت (سکه) — ۰ = رایگان</label>
+        <input id="cinemaTicketCost" type="number" min="0" value="0" placeholder="۰">
+        <button class="addBtn" id="cinemaAddProgramBtn" type="button" style="margin-top:10px">🎟 ثبت برنامه سینما</button>
+        <div class="keywordHint">لینک پخش را مستقیم وارد کنید. برنامه‌ها بر اساس زمان شروع مرتب می‌شوند.</div>
+      </div>
+      <div class="sectionHead" style="margin-top:16px"><h3>برنامه‌های ثبت‌شده</h3></div>
+      <div id="adminCinemaList"></div>
     </div>
 
     <div id="adminStudios" class="adminSection">
@@ -1725,7 +2186,6 @@ body.playerFullscreenActive .nav{display:none}
       <div id="adminStudiosList"></div>
     </div>
 
-    <button class="modalBtn" id="enableFingerprintBtn" type="button" style="display:none;background:#2a3c2f;color:#8fd19e;margin-top:15px">👆 فعال‌سازی ورود با اثر انگشت در این دستگاه</button>
     <button class="modalBtn adminLogoutBtn" id="adminLogoutBtn" type="button">🚪 خروج از پنل</button>
   </div>
 </section>
@@ -1788,12 +2248,13 @@ body.playerFullscreenActive .nav{display:none}
 <div id="adminModal" class="modal">
   <div class="modalContent">
     <h3>ورود به پنل مدیریت</h3>
-    <p>فقط حساب ادمین مجاز است. رمز Appwrite خود را وارد کنید.</p>
-    <button class="modalBtn" id="fingerprintLoginBtn" type="button" style="display:none;background:#2a3c2f;color:#8fd19e;margin-bottom:10px">👆 ورود سریع با اثر انگشت</button>
+    <p style="font-size:11px;color:#8d7660;line-height:1.9;margin-bottom:12px">فقط حساب ادمین مجاز است. رمز عبور Appwrite خود را وارد کنید.</p>
     <input id="adminEmailInput" class="modalInput" type="email" autocomplete="username" placeholder="ایمیل ادمین" readonly>
     <input id="adminPasswordInput" class="modalInput" type="password" autocomplete="current-password" placeholder="رمز عبور Appwrite">
     <button class="modalBtn" id="checkAdminBtn" type="button">ورود به حساب مدیریت</button>
-    <button class="modalBtn" id="closeAdminModal" type="button" style="background:#302119;color:#c8ad90">بستن</button>
+    <button class="modalBtn" id="adminFpLoginBtn" type="button" style="background:#3a2a1c;color:#ead4b8;margin-top:8px;display:none">👆 ورود با اثر انگشت</button>
+    <p id="adminFpLoginHint" class="keywordHint" style="display:none;margin-top:8px;text-align:center">اگر اثر انگشت ثبت کرده‌اید، می‌توانید بدون تایپ رمز وارد شوید (نشست دستگاه باید معتبر باشد).</p>
+    <button class="modalBtn" id="closeAdminModal" type="button" style="background:#302119;color:#c8ad90;margin-top:10px">بستن</button>
   </div>
 </div>
 
@@ -1825,6 +2286,9 @@ body.playerFullscreenActive .nav{display:none}
       <div class="keywordHint">هر کلیدواژه را جدا بنویس و Enter بزن</div>
       <label>لینک جلد</label>
       <input id="editCoverUrl" type="url" placeholder="https://...">
+      <label>لینک تریلر</label>
+      <input id="editTrailerUrl" type="url" placeholder="https://... (فقط تریلر — اختیاری)">
+      <div class="keywordHint">اگر خالی باشد بخش تریلر نمایش داده نمی‌شود</div>
 
       <label style="margin-top:10px;display:flex;align-items:center;gap:10px;cursor:pointer">
         <input id="editUnpublished" type="checkbox" style="width:18px;height:18px;accent-color:#c47a35">
@@ -1902,6 +2366,17 @@ body.playerFullscreenActive .nav{display:none}
               <input id="editBulkSeasonEpCount" type="number" min="1" max="500" placeholder="تعداد" style="width:90px;margin:0">
               <button class="addBtn" id="editBulkAddSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">+ ساخت خودکار</button>
               <button class="delete" id="editClearSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">حذف همه</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;background:#1a120e;border:1px solid #302119;border-radius:12px;padding:10px">
+              <span style="font-size:10px;color:#e0a94e;width:100%">مدیریت گروهی پخش آنلاین این فصل</span>
+              <input id="editBulkOnlineCount" type="number" min="1" max="500" placeholder="تعداد" style="width:70px;margin:0">
+              <select id="editBulkOnlineSide" style="font-size:10px;background:#2b1d15;color:#e7d6bf;border:0;border-radius:8px;padding:8px;margin:0">
+                <option value="first">قسمت‌های اول</option>
+                <option value="last">قسمت‌های آخر</option>
+                <option value="all">همه قسمت‌ها</option>
+              </select>
+              <button class="addBtn" id="editBulkOnlineOffBtn" type="button" style="width:auto;height:36px;padding:0 10px;margin:0;font-size:10px;background:#5b3028">غیرفعال پخش</button>
+              <button class="addBtn" id="editBulkOnlineOnBtn" type="button" style="width:auto;height:36px;padding:0 10px;margin:0;font-size:10px;background:#2e5c3a">فعال پخش</button>
             </div>
           </div>
         </div>
@@ -2071,11 +2546,13 @@ const APPWRITE_PROJECT = "6a9c13d8002a280adb24";
 const DATABASE_ID = "6a9c15f700270e8a347d";
 const COLLECTION_WORKS = "works";
 const COLLECTION_USERS = "app_users";
-const ADMIN_EMAIL = "hotaro354@gmail.com";
+const ADMIN_EMAIL = "haro354@gmail.com";
+/* ایمیل‌های مجاز ادمین (اصلی + سازگاری با اکانت قبلی) */
+const ADMIN_EMAIL_ALIASES = ["haro354@gmail.com", "hotaro354@gmail.com"];
 const DAILY_FREE_COINS = 5;
 const START_COINS = 30;
-const COST_SERIAL_EP = 2;
-const COST_MOVIE = 4;
+const COST_SERIAL_EP = 3;
+const COST_MOVIE = 5;
 const PLAY_COST_SERIAL_EP = 3;
 const PLAY_COST_MOVIE = 5;
 const COST_MANGA_CHAPTER = 2;
@@ -2101,8 +2578,8 @@ const STORAGE_DOWNLOADS = "animearchive_downloads_v1";
 const STORAGE_PLAYED = "animearchive_played_v1";
 const STORAGE_BANNER_READ = "animearchive_banner_read_v1";
 const STORAGE_WATCH_POS = "animearchive_watchpos_v1";
-const STORAGE_ADMIN_WEBAUTHN = "animearchive_admin_webauthn_v1";
 const COLLECTION_SETTINGS = "settings";
+const COLLECTION_CINEMA_MESSAGES = "6aba66d400088c3bf85e";
 const SETTINGS_GENRES_DOC_ID = "genres_config";
 
 let client = null;
@@ -2758,17 +3235,33 @@ function trySpendCoinsForDownload(work){
   return applyAnimeDownloadCost(work);
 }
 
-function showVpnDownloadBannerThen(action){
+function showVpnDownloadBannerThen(action, opts){
   if(typeof action !== "function") return;
   pendingDownloadAction = action;
-  $("vpnDownloadBanner")?.classList.add("active");
+  const banner = $("vpnDownloadBanner");
+  const titleEl = banner ? banner.querySelector("h3") : null;
+  const pEl = banner ? banner.querySelector("p") : null;
+  const btnEl = $("vpnDownloadOk");
+  const o = opts && typeof opts === "object" ? opts : null;
+  if(titleEl){
+    titleEl.textContent = (o && o.title) ? o.title : "قبل از دانلود";
+  }
+  if(pEl){
+    pEl.innerHTML = (o && o.html)
+      ? o.html
+      : "برای کیفیت بهتر دانلود، لطفاً <b>VPN / فیلترشکن</b> را خاموش کنید، سپس تأیید کنید.";
+  }
+  if(btnEl){
+    btnEl.textContent = (o && o.btn) ? o.btn : "تأیید — VPN خاموش است";
+  }
+  banner?.classList.add("active");
 }
 $("vpnDownloadOk")?.addEventListener("click", ()=>{
   $("vpnDownloadBanner")?.classList.remove("active");
   const act = pendingDownloadAction;
   pendingDownloadAction = null;
   if(typeof act === "function"){
-    try{ act(); }catch(e){ console.error(e); showToast("خطا در شروع دانلود"); }
+    try{ act(); }catch(e){ console.error(e); showToast("خطا در ادامه"); }
   }
 });
 
@@ -2976,9 +3469,18 @@ function normalizeEpisodeObj(e){
     title: (e && e.title) || "",
     link: (e && e.link) || ""
   };
+  /* لینک پخش جدا از لینک دانلود؛ اگر خالی باشد همان لینک دانلود استفاده می‌شود */
+  if(e && e.playLink) o.playLink = String(e.playLink).trim();
   if(e && e.subtitleLink) o.subtitleLink = e.subtitleLink;
   o.onlineEnabled = isOnlinePlaybackEnabled(e);
   return o;
+}
+/** لینک واقعی پخش: playLink اگر باشد، وگرنه link دانلود */
+function episodePlayUrl(ep){
+  if(!ep) return "";
+  const p = (ep.playLink || "").trim();
+  if(p) return p;
+  return (ep.link || "").trim();
 }
 /** مرتب‌سازی خودکار فایل‌های انیمه سینمایی: همیشه زیرنویس فارسی قبل از دوبله فارسی */
 function movieFileSortRank(title){
@@ -3108,6 +3610,7 @@ function mapWorkDoc(doc){
     keywords: doc.keywords || "",
     type,
     coverUrl: doc.coverUrl || "",
+    trailerUrl: (doc.trailerUrl || "").trim(),
     unpublished: !!(doc.unpublished === true || doc.unpublished === 1 || doc.unpublished === "true"),
     contentKind,
     mangaNumbering,
@@ -3407,7 +3910,12 @@ function normalizeEmail(v){
   return String(v || "").trim().toLowerCase();
 }
 function isAdminAccountEmail(email){
-  return normalizeEmail(email) === normalizeEmail(ADMIN_EMAIL);
+  const e = normalizeEmail(email);
+  if(!e) return false;
+  if(typeof ADMIN_EMAIL_ALIASES !== "undefined" && Array.isArray(ADMIN_EMAIL_ALIASES)){
+    return ADMIN_EMAIL_ALIASES.some(a => normalizeEmail(a) === e);
+  }
+  return e === normalizeEmail(ADMIN_EMAIL);
 }
 /* دکمه پنل فقط وقتی کاربر با ایمیل ادمین وارد شده باشد */
 function canSeeAdminButton(){
@@ -3537,6 +4045,9 @@ function showPage(id, fromPop){
   if(previousPage === "playerPage" && id !== "playerPage"){
     try{ stopStandalonePlayer(); }catch(e){}
   }
+  if(previousPage === "cinemaLivePage" && id !== "cinemaLivePage"){
+    try{ stopCinemaLive(); }catch(e){}
+  }
 
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   const page = $(id);
@@ -3548,7 +4059,7 @@ function showPage(id, fromPop){
 
   /* صفحه پخش: نوار پایین مخفی تا فقط ویدیو دیده شود */
   const nav = $("mainNav");
-  if(nav) nav.style.display = (id === "playerPage") ? "none" : "";
+  if(nav) nav.style.display = (id === "playerPage" || id === "cinemaLivePage") ? "none" : "";
 
   window.scrollTo(0, 0);
 
@@ -3576,7 +4087,6 @@ function showPage(id, fromPop){
     fillGenreSelect();
     renderGenreAdmin();
     renderPublishedWorks();
-    try{ updateFingerprintUI(); }catch(e){}
   }
 
   if(!fromPop){
@@ -4397,6 +4907,16 @@ function openDetail(work){
   const descEl = $("detailDescription");
   if(descEl) descEl.textContent = work.description || "توضیحاتی ثبت نشده است.";
   renderDetailStudios(work);
+  /* تریلر — فقط اگر لینک معتبر وجود داشته باشد */
+  const trailerBox = $("detailTrailerBox");
+  if(trailerBox){
+    const tUrl = (work.trailerUrl || "").trim();
+    if(tUrl && isValidUrl(tUrl)){
+      trailerBox.style.display = "";
+    }else{
+      trailerBox.style.display = "none";
+    }
+  }
 
   const cover = $("detailCover");
   if(cover) cover.className = "detailCover " + (work.type === "movie" ? "movieCover" : "serialCover");
@@ -4654,7 +5174,7 @@ function updateReferralPage(){
 }
 
 /* ========== پخش آنلاین — صفحه جدا + هزینه سکه ========== */
-/* سریالی: COST_SERIAL_EP (۲) — سینمایی: COST_MOVIE (۴) */
+/* سریالی: COST_SERIAL_EP (۳) — سینمایی: COST_MOVIE (۵) — پخش و دانلود یکسان */
 let currentPlayingEpisodeKey = null;
 let playerReturnWorkId = null;
 
@@ -4933,15 +5453,17 @@ function closeDetailPlayer(){
 }
 
 /**
- * پخش: اول هزینه (سریالی ۲ / سینمایی ۴)، بعد رفتن به صفحه جدا فقط ویدیو
+ * پخش: اول هزینه (سریالی ۳ / سینمایی ۵)، بعد رفتن به صفحه جدا فقط ویدیو
+ * لینک پخش از playLink (یا در صورت خالی بودن از link دانلود) خوانده می‌شود.
  * اگر قبلاً برای همان قسمت پرداخت شده باشد، دوباره سکه کم نمی‌شود.
  */
 function playEpisodeInSite(ep, idx){
-  if(!ep || !ep.link){
+  const playUrl = episodePlayUrl(ep);
+  if(!ep || !playUrl){
     showToast("لینک پخش موجود نیست");
     return;
   }
-  if(!isValidUrl(ep.link)){
+  if(!isValidUrl(playUrl)){
     showToast("لینک معتبر نیست");
     return;
   }
@@ -5063,9 +5585,9 @@ function openPlayerPage(work, ep, idx){
 
   const player = $("standaloneMediaPlayer");
   if(player){
-    const audio = isProbablyAudioUrl(ep.link);
+    const audio = isProbablyAudioUrl(episodePlayUrl(ep) || ep.link);
     player.classList.toggle("audioOnly", audio);
-    player.src = ep.link;
+    player.src = episodePlayUrl(ep) || ep.link;
     player.load();
     if(ep.subtitleLink){
       setPlayerSubtitle(ep.subtitleLink);
@@ -5119,6 +5641,16 @@ $("standaloneMediaPlayer")?.addEventListener("ended", ()=>{
 });
 $("standaloneMediaPlayer")?.addEventListener("error", ()=>{
   showToast("خطا در بارگذاری فایل — لینک یا فرمت را بررسی کنید");
+  try{
+    if(currentPlayerEpisodeCtx && currentPlayerEpisodeCtx.work && currentPlayerEpisodeCtx.ep){
+      markEpisodeLinkBroken(
+        currentPlayerEpisodeCtx.work.id,
+        currentPlayerEpisodeCtx.ep.id || currentPlayerEpisodeCtx.idx,
+        currentPlayerEpisodeCtx.ep.title || "",
+        "play"
+      );
+    }
+  }catch(e){}
 });
 $("standaloneMediaPlayer")?.addEventListener("pause", saveCurrentPlayerPosition);
 $("standaloneMediaPlayer")?.addEventListener("timeupdate", ()=>{
@@ -5138,11 +5670,63 @@ $("standaloneMediaPlayer")?.addEventListener("loadedmetadata", ()=>{
   }
 });
 document.addEventListener("visibilitychange", ()=>{
-  if(document.hidden && $("playerPage")?.classList.contains("active")){
-    saveCurrentPlayerPosition();
-    try{ $("standaloneMediaPlayer")?.pause(); }catch(e){}
+  if(document.hidden){
+    const onPlayer = $("playerPage")?.classList.contains("active");
+    if(onPlayer){
+      saveCurrentPlayerPosition();
+      try{ stopStandalonePlayer(); }catch(e){
+        try{ $("standaloneMediaPlayer")?.pause(); }catch(_){}
+      }
+    }
   }
 });
+/* خروج از تب / بک‌گراند مرورگر موبایل — توقف کامل پخش */
+window.addEventListener("pagehide", ()=>{
+  try{ stopStandalonePlayer(); }catch(e){}
+});
+window.addEventListener("freeze", ()=>{
+  try{ stopStandalonePlayer(); }catch(e){}
+});
+document.addEventListener("pause", ()=>{
+  try{
+    if($("playerPage")?.classList.contains("active")) stopStandalonePlayer();
+  }catch(e){}
+}, true);
+
+$("detailPlayTrailerBtn")?.addEventListener("click", ()=>{
+  const work = currentWork;
+  if(!work) return;
+  const tUrl = (work.trailerUrl || "").trim();
+  if(!tUrl || !isValidUrl(tUrl)){
+    showToast("لینک تریلر موجود نیست");
+    return;
+  }
+  /* پخش تریلر در صفحه پخش بدون کسر سکه */
+  const fakeEp = { id: "trailer_" + (work.id||""), title: "تریلر — " + (work.title||""), link: tUrl, playLink: tUrl, onlineEnabled: true };
+  stopStandalonePlayer();
+  currentPlayingEpisodeKey = "trailer::" + work.id;
+  playerReturnWorkId = work.id;
+  currentPlayerEpisodeCtx = null;
+  playerNavCtx = null;
+  updatePlayerNavButtons();
+  if($("playerPageTitle")) $("playerPageTitle").textContent = "تریلر";
+  if($("playerOnlyEpisodeTitle")) $("playerOnlyEpisodeTitle").textContent = "تریلر — " + (work.title || "");
+  if($("playerOnlyMeta")) $("playerOnlyMeta").textContent = "پخش تریلر · رایگان";
+  const player = $("standaloneMediaPlayer");
+  if(player){
+    player.classList.remove("audioOnly");
+    player.src = tUrl;
+    player.load();
+    clearPlayerSubtitle();
+  }
+  showPage("playerPage");
+  setTimeout(()=>{
+    const p = $("standaloneMediaPlayer");
+    if(!p) return;
+    p.play().then(()=> showToast("در حال پخش تریلر")).catch(()=> showToast("دکمه پخش را بزنید"));
+  }, 80);
+});
+
 
 
 function startEpisodeDownload(ep, idx, rowEl){
@@ -5841,8 +6425,12 @@ async function loginAdmin(){
     showToast("Appwrite هنوز آماده نیست");
     return;
   }
-  /* ایمیل ثابت ادمین — قابل تغییر توسط کاربر نیست */
-  const email = normalizeEmail(ADMIN_EMAIL);
+  /* ایمیل ادمین: از حساب فعلی (اگر ادمین است) یا ایمیل اصلی — کاربر عوضش نمی‌کند */
+  const email = normalizeEmail(
+    (currentUser && isAdminAccountEmail(currentUser.email))
+      ? currentUser.email
+      : ADMIN_EMAIL
+  );
   if($("adminEmailInput")) $("adminEmailInput").value = email;
   const password = $("adminPasswordInput")?.value || "";
   if(!password){
@@ -5863,11 +6451,12 @@ async function loginAdmin(){
       return;
     }
     isAdminMode = true;
+    markAdminFpDeviceTrusted();
     $("adminModal")?.classList.remove("active");
     if($("adminPasswordInput")) $("adminPasswordInput").value = "";
     showPage("adminPage");
     renderPublishedWorks();
-    updateFingerprintUI();
+    try{ updateAdminFpUI(); }catch(e){}
     showToast("وارد پنل شدید");
   }catch(error){
     console.error(error);
@@ -5897,97 +6486,226 @@ async function requireAdminAction(){
   return true;
 }
 
-/* ========== ورود سریع با اثر انگشت (WebAuthn — قفل‌گشایی محلی این دستگاه) ========== */
-function bufToB64url(buf){
-  return btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-}
-function b64urlToBuf(str){
-  const pad = "=".repeat((4 - (str.length % 4)) % 4);
-  const base64 = (str + pad).replace(/-/g,"+").replace(/_/g,"/");
-  const raw = atob(base64);
-  const buf = new Uint8Array(raw.length);
-  for(let i=0;i<raw.length;i++) buf[i] = raw.charCodeAt(i);
-  return buf;
-}
-async function isPlatformAuthAvailable(){
+
+
+/* ========== اثر انگشت ادمین (WebAuthn — فقط همین دستگاه) ========== */
+const STORAGE_ADMIN_FP = "animearchive_admin_fp_v1";
+const STORAGE_ADMIN_FP_UNLOCK = "animearchive_admin_fp_unlock_v1";
+
+function adminFpSupported(){
   try{
-    if(!window.PublicKeyCredential || !navigator.credentials) return false;
-    return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    return !!(window.isSecureContext && window.PublicKeyCredential && navigator.credentials && navigator.credentials.create);
   }catch(e){ return false; }
 }
-function getRegisteredFingerprintCredId(){
+function loadAdminFpRecord(){
   try{
-    const raw = localStorage.getItem(STORAGE_ADMIN_WEBAUTHN);
-    if(!raw) return null;
-    const parsed = JSON.parse(raw);
-    return parsed && parsed.credId ? parsed.credId : null;
-  }catch(e){ return null; }
+    const raw = loadJSON(STORAGE_ADMIN_FP, null);
+    if(raw && raw.credId) return raw;
+  }catch(e){}
+  return null;
 }
-async function registerFingerprintForDevice(){
-  const available = await isPlatformAuthAvailable();
-  if(!available){ showToast("این دستگاه یا مرورگر از اثر انگشت پشتیبانی نمی‌کند"); return; }
+function saveAdminFpRecord(rec){
+  try{ saveJSON(STORAGE_ADMIN_FP, rec || null); }catch(e){}
+}
+function clearAdminFpRecord(){
+  try{ localStorage.removeItem(STORAGE_ADMIN_FP); }catch(e){}
+  try{ localStorage.removeItem(STORAGE_ADMIN_FP_UNLOCK); }catch(e){}
+}
+function markAdminFpDeviceTrusted(){
+  try{ localStorage.setItem(STORAGE_ADMIN_FP_UNLOCK, String(Date.now())); }catch(e){}
+}
+function isAdminFpDeviceTrusted(){
+  try{ return !!localStorage.getItem(STORAGE_ADMIN_FP_UNLOCK); }catch(e){ return false; }
+}
+function b64urlFromBuf(buf){
+  const bytes = new Uint8Array(buf);
+  let s = "";
+  for(let i=0;i<bytes.length;i++) s += String.fromCharCode(bytes[i]);
+  return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+function bufFromB64url(str){
+  const s = String(str || "").replace(/-/g,"+").replace(/_/g,"/");
+  const pad = s.length % 4 === 0 ? "" : "=".repeat(4 - (s.length % 4));
+  const bin = atob(s + pad);
+  const out = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) out[i] = bin.charCodeAt(i);
+  return out.buffer;
+}
+function adminFpRpId(){
   try{
-    const challenge = crypto.getRandomValues(new Uint8Array(32));
-    const userId = crypto.getRandomValues(new Uint8Array(16));
-    const cred = await navigator.credentials.create({
-      publicKey: {
-        challenge,
-        rp: { name: "Anime Archive Admin" },
-        user: { id: userId, name: normalizeEmail(ADMIN_EMAIL), displayName: "Admin" },
-        pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-        authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
-        timeout: 60000
-      }
-    });
-    if(!cred) throw new Error("no credential");
-    localStorage.setItem(STORAGE_ADMIN_WEBAUTHN, JSON.stringify({ credId: bufToB64url(cred.rawId) }));
-    showToast("اثر انگشت برای این دستگاه فعال شد");
-    updateFingerprintUI();
-  }catch(e){
-    console.error(e);
-    showToast("ثبت اثر انگشت ناموفق بود");
+    const h = location.hostname || "";
+    if(!h || h === "localhost" || h === "127.0.0.1") return undefined;
+    return h;
+  }catch(e){ return undefined; }
+}
+function updateAdminFpUI(){
+  const status = $("adminFpStatus");
+  const regBtn = $("adminFpRegisterBtn");
+  const rmBtn = $("adminFpRemoveBtn");
+  const loginBtn = $("adminFpLoginBtn");
+  const loginHint = $("adminFpLoginHint");
+  const rec = loadAdminFpRecord();
+  const ok = adminFpSupported();
+  if(status){
+    if(!window.isSecureContext){
+      status.textContent = "اثر انگشت فقط روی HTTPS کار می‌کند (سایت باید با https باز شود).";
+    }else if(!ok){
+      status.textContent = "این دستگاه یا مرورگر از اثر انگشت پشتیبانی نمی‌کند.";
+    }else if(rec){
+      status.textContent = "اثر انگشت ثبت شده ✓ — در صفحه ورود پنل دکمه «ورود با اثر انگشت» را بزنید.";
+    }else{
+      status.textContent = "هنوز ثبت نشده. روی «ثبت اثر انگشت» بزنید و اثر انگشت / قفل صفحه را تأیید کنید.";
+    }
+  }
+  if(regBtn){
+    regBtn.disabled = !ok || !window.isSecureContext;
+    regBtn.textContent = rec ? "ثبت مجدد اثر انگشت" : "ثبت اثر انگشت";
+  }
+  if(rmBtn) rmBtn.disabled = !rec;
+  if(loginBtn){
+    loginBtn.style.display = (ok && rec) ? "block" : "none";
+  }
+  if(loginHint){
+    loginHint.style.display = (ok && rec) ? "block" : "none";
+    if(rec) loginHint.textContent = "اثر انگشت ثبت شده — می‌توانید بدون تایپ رمز وارد شوید.";
   }
 }
-async function tryFingerprintLogin(){
-  const credId = getRegisteredFingerprintCredId();
-  if(!credId) return;
+async function registerAdminFingerprint(){
+  if(!window.isSecureContext){
+    showToast("سایت را با HTTPS باز کنید تا اثر انگشت کار کند");
+    return;
+  }
+  if(!adminFpSupported()){ showToast("این دستگاه پشتیبانی نمی‌کند"); return; }
+  if(!canSeeAdminButton()){ showToast("دسترسی ندارید"); return; }
+  if(!isAdminMode){
+    showToast("اول با رمز وارد پنل شوید، بعد اثر انگشت را ثبت کنید");
+    return;
+  }
+  const regBtn = $("adminFpRegisterBtn");
+  const old = regBtn ? regBtn.textContent : "";
+  if(regBtn){ regBtn.disabled = true; regBtn.textContent = "منتظر تأیید..."; }
+  try{
+    const email = normalizeEmail(
+      (currentUser && isAdminAccountEmail(currentUser.email)) ? currentUser.email : ADMIN_EMAIL
+    );
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+    const userId = new TextEncoder().encode("aa-admin-" + email);
+    const pubKey = {
+      challenge,
+      rp: { name: "Anime Archive Admin" },
+      user: { id: userId, name: email, displayName: "Admin" },
+      pubKeyCredParams: [
+        { type: "public-key", alg: -7 },
+        { type: "public-key", alg: -257 }
+      ],
+      authenticatorSelection: {
+        userVerification: "required"
+      },
+      timeout: 90000,
+      attestation: "none"
+    };
+    const rpId = adminFpRpId();
+    if(rpId) pubKey.rp.id = rpId;
+    const cred = await navigator.credentials.create({ publicKey: pubKey });
+    if(!cred || !cred.rawId){ showToast("ثبت انجام نشد"); return; }
+    saveAdminFpRecord({
+      credId: b64urlFromBuf(cred.rawId),
+      email,
+      at: Date.now()
+    });
+    markAdminFpDeviceTrusted();
+    updateAdminFpUI();
+    showToast("اثر انگشت با موفقیت ثبت شد ✓");
+  }catch(e){
+    console.error("registerAdminFingerprint", e);
+    const msg = String((e && (e.name || e.message)) || e || "");
+    if(/NotAllowedError|AbortError|cancel/i.test(msg)) showToast("ثبت لغو شد یا دستگاه رد کرد");
+    else if(/InvalidState/i.test(msg)){
+      showToast("این اثر انگشت قبلاً ثبت شده — حذف کنید و دوباره ثبت کنید");
+    }else{
+      showToast("ثبت ناموفق: " + msg.slice(0, 80));
+    }
+  }finally{
+    if(regBtn){ regBtn.disabled = false; regBtn.textContent = old || "ثبت اثر انگشت"; }
+    updateAdminFpUI();
+  }
+}
+async function removeAdminFingerprint(){
+  if(!loadAdminFpRecord()){ showToast("اثر انگشتی ثبت نشده"); return; }
+  if(!confirm("اثر انگشت این دستگاه حذف شود؟")) return;
+  clearAdminFpRecord();
+  updateAdminFpUI();
+  showToast("اثر انگشت حذف شد");
+}
+async function loginAdminWithFingerprint(){
+  if(!canSeeAdminButton()){
+    showToast("فقط حساب ادمین به پنل دسترسی دارد");
+    return;
+  }
+  if(!window.isSecureContext){
+    showToast("سایت را با HTTPS باز کنید");
+    return;
+  }
+  const rec = loadAdminFpRecord();
+  if(!rec || !rec.credId){
+    showToast("اول از تب اکانت‌ها اثر انگشت را ثبت کنید");
+    return;
+  }
+  if(!adminFpSupported()){ showToast("این دستگاه پشتیبانی نمی‌کند"); return; }
+  const btn = $("adminFpLoginBtn");
+  const old = btn ? btn.textContent : "";
+  if(btn){ btn.disabled = true; btn.textContent = "در حال تأیید..."; }
   try{
     const challenge = crypto.getRandomValues(new Uint8Array(32));
-    const assertion = await navigator.credentials.get({
-      publicKey: {
-        challenge,
-        allowCredentials: [{ id: b64urlToBuf(credId), type: "public-key" }],
-        userVerification: "required",
-        timeout: 60000
-      }
-    });
-    if(!assertion) throw new Error("no assertion");
-    /* اثر انگشت فقط هویت فیزیکی روی همین دستگاه را تأیید می‌کند؛
-       اگر نشست ادمین روی Appwrite هنوز معتبر باشد پنل باز می‌شود، وگرنه رمز لازم است */
-    const ok = await verifyAppwriteAdminSession();
-    if(ok){
-      isAdminMode = true;
-      $("adminModal")?.classList.remove("active");
-      showPage("adminPage");
-      renderPublishedWorks();
-      showToast("ورود با اثر انگشت موفق بود");
+    const getOpts = {
+      challenge,
+      timeout: 90000,
+      userVerification: "required",
+      allowCredentials: [{
+        type: "public-key",
+        id: bufFromB64url(rec.credId)
+      }]
+    };
+    const rpId = adminFpRpId();
+    if(rpId) getOpts.rpId = rpId;
+    const assertion = await navigator.credentials.get({ publicKey: getOpts });
+    if(!assertion){ showToast("تأیید انجام نشد"); return; }
+
+    /* ورود محلی پس از تأیید بیومتریک — نشست Appwrite اگر باشد حفظ می‌شود */
+    markAdminFpDeviceTrusted();
+    isAdminMode = true;
+    $("adminModal")?.classList.remove("active");
+    if($("adminPasswordInput")) $("adminPasswordInput").value = "";
+    showPage("adminPage");
+    try{ renderPublishedWorks(); }catch(e){}
+    try{ updateAdminFpUI(); }catch(e){}
+    const hasSession = await verifyAppwriteAdminSession();
+    if(hasSession){
+      showToast("ورود با اثر انگشت ✓");
     }else{
-      showToast("نشست منقضی شده — یک‌بار با رمز عبور وارد شوید");
+      showToast("وارد شدید — برای بعضی عملیات ممکن است دوباره رمز لازم باشد");
     }
   }catch(e){
-    console.warn("fingerprint login cancelled/failed", e);
+    console.error("loginAdminWithFingerprint", e);
+    const msg = String((e && (e.name || e.message)) || e || "");
+    if(/NotAllowedError|AbortError|cancel/i.test(msg)) showToast("تأیید اثر انگشت لغو شد");
+    else showToast("ورود ناموفق: " + msg.slice(0, 80));
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = old || "👆 ورود با اثر انگشت"; }
   }
 }
-async function updateFingerprintUI(){
-  const hasCred = !!getRegisteredFingerprintCredId();
-  const available = await isPlatformAuthAvailable();
-  const loginBtn = $("fingerprintLoginBtn");
-  if(loginBtn) loginBtn.style.display = (available && hasCred) ? "" : "none";
-  const enableBtn = $("enableFingerprintBtn");
-  if(enableBtn) enableBtn.style.display = (isAdminMode && available && !hasCred) ? "" : "none";
-}
-$("fingerprintLoginBtn")?.addEventListener("click", tryFingerprintLogin);
-$("enableFingerprintBtn")?.addEventListener("click", registerFingerprintForDevice);
+$("adminFpRegisterBtn")?.addEventListener("click", (e)=>{
+  e.preventDefault();
+  registerAdminFingerprint();
+});
+$("adminFpRemoveBtn")?.addEventListener("click", (e)=>{
+  e.preventDefault();
+  removeAdminFingerprint();
+});
+$("adminFpLoginBtn")?.addEventListener("click", (e)=>{
+  e.preventDefault();
+  loginAdminWithFingerprint();
+});
 
 $("adminAccessBtn")?.addEventListener("click", async ()=>{
   if(!canSeeAdminButton()){
@@ -5997,14 +6715,17 @@ $("adminAccessBtn")?.addEventListener("click", async ()=>{
   if(isAdminMode && await verifyAppwriteAdminSession()){
     showPage("adminPage");
     renderPublishedWorks();
-    updateFingerprintUI();
+    try{ updateAdminFpUI(); }catch(e){}
     return;
   }
   isAdminMode = false;
-  if($("adminEmailInput")) $("adminEmailInput").value = normalizeEmail(ADMIN_EMAIL);
+  const adminEm = normalizeEmail(
+    (currentUser && isAdminAccountEmail(currentUser.email)) ? currentUser.email : ADMIN_EMAIL
+  );
+  if($("adminEmailInput")) $("adminEmailInput").value = adminEm;
   if($("adminPasswordInput")) $("adminPasswordInput").value = "";
+  try{ updateAdminFpUI(); }catch(e){}
   $("adminModal")?.classList.add("active");
-  updateFingerprintUI();
 });
 $("checkAdminBtn")?.addEventListener("click", loginAdmin);
 $("adminPasswordInput")?.addEventListener("keydown", e => { if(e.key === "Enter") loginAdmin(); });
@@ -6012,9 +6733,10 @@ $("closeAdminModal")?.addEventListener("click", ()=>{
   $("adminModal")?.classList.remove("active");
   if($("adminPasswordInput")) $("adminPasswordInput").value = "";
 });
+
 $("adminLogoutBtn")?.addEventListener("click", async ()=>{
   isAdminMode = false;
-  try{ if(account) await account.deleteSession("current"); }catch(e){}
+  /* نشست Appwrite را نگه می‌داریم تا ورود بعدی با اثر انگشت ممکن باشد */
   updateAdminAccessVisibility();
   showPage("profilePage");
   showToast("از پنل خارج شدید");
@@ -6033,8 +6755,12 @@ document.querySelectorAll("[data-admin-tab]").forEach(btn => {
       loadGenresFromServer().then(()=>{ fillGenreSelect(); renderGenreAdmin(); renderGenres(); }).catch(()=> renderGenreAdmin());
     }
     if(tab === "published"){ $("adminPublished").classList.add("active"); renderPublishedWorks(); }
+    if(tab === "cinema"){
+      $("adminCinema")?.classList.add("active");
+      try{ fillCinemaWorkSelect(); renderAdminCinemaList(); }catch(e){ console.error(e); }
+    }
     if(tab === "studios"){ $("adminStudios").classList.add("active"); renderAdminStudios(); }
-    if(tab === "accounts"){ $("adminAccounts").classList.add("active"); renderAdminAccounts(); }
+    if(tab === "accounts"){ $("adminAccounts").classList.add("active"); renderAdminAccounts(); try{ updateAdminFpUI(); }catch(e){} }
   });
 });
 
@@ -6272,15 +6998,19 @@ $("addChapterBtn")?.addEventListener("click", ()=>{
   if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
   const title = ($("chapterTitle").value || "").trim() || nextEpisodeDefaultTitle();
   const link = ($("chapterLinkInput").value || "").trim();
-  if(!link){ showToast("لینک قسمت را وارد کنید"); return; }
-  if(!isValidUrl(link)){ showToast("لینک معتبر نیست"); return; }
+  if(!link){ showToast("لینک دانلود را وارد کنید"); return; }
+  if(!isValidUrl(link)){ showToast("لینک دانلود معتبر نیست"); return; }
+  const playLink = ($("chapterPlayLinkInput")?.value || "").trim();
+  if(playLink && !isValidUrl(playLink)){ showToast("لینک پخش معتبر نیست"); return; }
   const subtitleLink = ($("chapterSubtitleInput")?.value || "").trim();
   if(subtitleLink && !isValidUrl(subtitleLink)){ showToast("لینک زیرنویس معتبر نیست"); return; }
   const ch = { id: uid(), title, link, onlineEnabled: true };
+  if(playLink) ch.playLink = playLink;
   if(subtitleLink) ch.subtitleLink = subtitleLink;
   pendingChapters.push(ch);
   renderPendingChapters();
   setDefaultEpisodeTitleInput();
+  if($("chapterPlayLinkInput")) $("chapterPlayLinkInput").value = "";
   if($("chapterSubtitleInput")) $("chapterSubtitleInput").value = "";
 });
 
@@ -6499,13 +7229,17 @@ $("addSeasonEpisodeBtn")?.addEventListener("click", ()=>{
   const season = pendingSeasons[selectedAdminSeasonIdx];
   const title = ($("seasonChapterTitle")?.value || "").trim() || nextSeasonEpisodeDefaultTitle(season);
   const link = ($("seasonChapterLink")?.value || "").trim();
-  if(!link){ showToast("لینک قسمت را وارد کنید"); return; }
-  if(!isValidUrl(link)){ showToast("لینک معتبر نیست"); return; }
+  if(!link){ showToast("لینک دانلود را وارد کنید"); return; }
+  if(!isValidUrl(link)){ showToast("لینک دانلود معتبر نیست"); return; }
+  const playLink = ($("seasonChapterPlayLink")?.value || "").trim();
+  if(playLink && !isValidUrl(playLink)){ showToast("لینک پخش معتبر نیست"); return; }
   const subtitleLink = ($("seasonChapterSubtitleInput")?.value || "").trim();
   if(subtitleLink && !isValidUrl(subtitleLink)){ showToast("لینک زیرنویس معتبر نیست"); return; }
   const ep = { id: uid(), title, link, onlineEnabled: true };
+  if(playLink) ep.playLink = playLink;
   if(subtitleLink) ep.subtitleLink = subtitleLink;
   season.episodes.push(ep);
+  if($("seasonChapterPlayLink")) $("seasonChapterPlayLink").value = "";
   renderAdminSeasonsUI();
 });
 
@@ -6523,10 +7257,12 @@ $("publishBtn")?.addEventListener("click", async ()=>{
   const description = ($("adminDescription").value || "").trim();
   const keywords = keywordsToStorage(adminKeywordsList);
   const coverUrl = ($("adminCoverUrl").value || "").trim();
+  const trailerUrl = ($("adminTrailerUrl")?.value || "").trim();
   const isUnpublished = !!($("adminUnpublished")?.checked);
 
   if(!title){ showToast("عنوان را وارد کنید"); return; }
   if(coverUrl && !isValidUrl(coverUrl)){ showToast("لینک جلد نامعتبر است"); return; }
+  if(trailerUrl && !isValidUrl(trailerUrl)){ showToast("لینک تریلر نامعتبر است"); return; }
 
   const mangaNumbering = adminMangaNumbering === "volume" ? "volume" : "chapter";
   /* مانگا و انیمه جدا ذخیره می‌شوند تا قسمت‌های انیمه پاک نشوند */
@@ -6545,6 +7281,7 @@ $("publishBtn")?.addEventListener("click", async ()=>{
   }else if(type === "movie"){
     episodesPayload = pendingChapters.map(c => {
       const o = { id: c.id || uid(), title: c.title, link: c.link, onlineEnabled: isOnlinePlaybackEnabled(c) };
+      if(c.playLink) o.playLink = c.playLink;
       if(c.subtitleLink) o.subtitleLink = c.subtitleLink;
       return o;
     });
@@ -6554,6 +7291,7 @@ $("publishBtn")?.addEventListener("click", async ()=>{
       title: s.title,
       episodes: (s.episodes || []).map(e => {
         const o = { id: e.id || uid(), title: e.title, link: e.link, onlineEnabled: isOnlinePlaybackEnabled(e) };
+        if(e.playLink) o.playLink = e.playLink;
         if(e.subtitleLink) o.subtitleLink = e.subtitleLink;
         return o;
       })
@@ -6586,6 +7324,7 @@ $("publishBtn")?.addEventListener("click", async ()=>{
       keywords,
       type,
       coverUrl,
+      trailerUrl,
       unpublished: isUnpublished,
       contentKind,
       mangaNumbering,
@@ -6602,10 +7341,11 @@ $("publishBtn")?.addEventListener("click", async ()=>{
       );
     }catch(createErr){
       const msg = String(createErr && createErr.message || "");
-      if(/contentKind|mangaNumbering|mangaItems|attribute|unknown/i.test(msg)){
+      if(/contentKind|mangaNumbering|mangaItems|trailerUrl|attribute|unknown/i.test(msg)){
         delete createPayload.contentKind;
         delete createPayload.mangaNumbering;
         delete createPayload.mangaItems;
+        if(/trailerUrl/i.test(msg)) delete createPayload.trailerUrl;
         /* اگر mangaItems attribute نبود، مانگا را موقتاً فقط وقتی اثر صرفاً مانگا است در episodes بگذار */
         if(contentKind === "manga" && mangaPayload.length && !hasAnime){
           createPayload.episodes = JSON.stringify(mangaPayload);
@@ -6639,6 +7379,7 @@ $("publishBtn")?.addEventListener("click", async ()=>{
     $("adminAuthor").value = "";
     $("adminDescription").value = "";
     $("adminCoverUrl").value = "";
+    if($("adminTrailerUrl")) $("adminTrailerUrl").value = "";
     $("adminType").value = "serial";
     if($("adminUnpublished")) $("adminUnpublished").checked = false;
     updateEpisodeLabels();
@@ -6727,8 +7468,8 @@ function renderPublishedWorks(){
     item.className = "adminItem";
     item.innerHTML = `
       <div class="adminItemInfo">
-        <b>${escapeHtml(work.title || "بدون عنوان")}</b>
-        <small>${escapeHtml(work.Author || "—")} · ${typeLabel(work.type)}${work.unpublished ? " · انتشار نشده" : ""} · ${countWorkEpisodes(work)} قسمت${work.type === "serial" && work.seasons && work.seasons.length ? " · " + work.seasons.length + " فصل" : ""}</small>
+        <b>${escapeHtml(work.title || "بدون عنوان")}${(()=>{ try{ const br=getBrokenLinksForWork(work.id); return br.length ? ' <span style="color:#e0a94e;font-size:10px">⚠ ' + br.length + ' لینک مشکل‌دار</span>' : ''; }catch(e){ return ''; } })()}</b>
+        <small>${escapeHtml(work.Author || "—")} · ${typeLabel(work.type)}${work.unpublished ? " · انتشار نشده" : ""} · ${countWorkEpisodes(work)} قسمت${work.type === "serial" && work.seasons && work.seasons.length ? " · " + work.seasons.length + " فصل" : ""}${(()=>{ try{ const br=getBrokenLinksForWork(work.id); if(!br.length) return ""; return " · " + br.map(b => (b.epTitle || "قسمت") + " → لینک پخش مشکل دارد").join("؛ "); }catch(e){ return ""; } })()}</small>
       </div>
       <div class="adminActions">
         <button class="editBtn" type="button">✏️ ویرایش</button>
@@ -6773,6 +7514,7 @@ function openEditWork(work){
   renderKeywordsPicker("editKeywordsPicker", editKeywordsList);
   if($("editKeywordsInput")) $("editKeywordsInput").value = "";
   $("editCoverUrl").value = work.coverUrl || "";
+  if($("editTrailerUrl")) $("editTrailerUrl").value = work.trailerUrl || "";
   if($("editUnpublished")) $("editUnpublished").checked = !!work.unpublished;
 
   /* مانگا همیشه جدا لود می‌شود تا قسمت‌های انیمه پاک نشوند */
@@ -6969,8 +7711,15 @@ function renderEditChapters(){
     l.style.marginBottom = "0";
     l.type = "url";
     l.value = ch.link || "";
-    l.placeholder = "لینک مستقیم";
+    l.placeholder = "لینک دانلود";
     l.addEventListener("input", ()=> { ch.link = l.value; });
+    const pl = document.createElement("input");
+    pl.className = "modalInput";
+    pl.style.marginBottom = "0";
+    pl.type = "url";
+    pl.value = ch.playLink || "";
+    pl.placeholder = "لینک پخش (خالی = همان دانلود)";
+    pl.addEventListener("input", ()=> { ch.playLink = pl.value; });
     const s = document.createElement("input");
     s.className = "modalInput";
     s.style.marginBottom = "0";
@@ -6988,6 +7737,7 @@ function renderEditChapters(){
     });
     div.appendChild(t);
     div.appendChild(l);
+    div.appendChild(pl);
     div.appendChild(s);
     div.appendChild(buildOnlineToggleBtn(ch, ()=> renderEditChapters()));
     div.appendChild(del);
@@ -7070,7 +7820,15 @@ function renderEditSeasonEpisodes(){
     l.type = "url";
     l.value = ch.link || "";
     l.placeholder = "لینک مستقیم";
+    l.placeholder = "لینک دانلود";
     l.addEventListener("input", ()=> { ch.link = l.value; });
+    const pl = document.createElement("input");
+    pl.className = "modalInput";
+    pl.style.marginBottom = "0";
+    pl.type = "url";
+    pl.value = ch.playLink || "";
+    pl.placeholder = "لینک پخش (خالی = همان دانلود)";
+    pl.addEventListener("input", ()=> { ch.playLink = pl.value; });
     const s = document.createElement("input");
     s.className = "modalInput";
     s.style.marginBottom = "0";
@@ -7110,6 +7868,7 @@ function renderEditSeasonEpisodes(){
     row.appendChild(del);
     div.appendChild(t);
     div.appendChild(l);
+    div.appendChild(pl);
     div.appendChild(s);
     div.appendChild(buildOnlineToggleBtn(ch, ()=> renderEditSeasonEpisodes()));
     div.appendChild(row);
@@ -7200,6 +7959,8 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   if(!title){ showToast("عنوان لازم است"); return; }
   const coverUrl = ($("editCoverUrl").value || "").trim();
   if(coverUrl && !isValidUrl(coverUrl)){ showToast("لینک جلد نامعتبر"); return; }
+  const trailerUrl = ($("editTrailerUrl")?.value || "").trim();
+  if(trailerUrl && !isValidUrl(trailerUrl)){ showToast("لینک تریلر نامعتبر"); return; }
 
   const type = $("editType").value === "movie" ? "movie" : "serial";
   const isUnpublished = !!($("editUnpublished")?.checked);
@@ -7231,6 +7992,7 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     }
     episodesPayload = editingChapters.map(c => {
       const o = { id: c.id || uid(), title: (c.title||"").trim(), link: (c.link||"").trim(), onlineEnabled: isOnlinePlaybackEnabled(c) };
+      if((c.playLink||"").trim()) o.playLink = c.playLink.trim();
       if((c.subtitleLink||"").trim()) o.subtitleLink = c.subtitleLink.trim();
       return o;
     });
@@ -7247,6 +8009,7 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
       title: s.title,
       episodes: (s.episodes || []).map(e => {
         const o = { id: e.id || uid(), title: (e.title||"").trim(), link: (e.link||"").trim(), onlineEnabled: isOnlinePlaybackEnabled(e) };
+        if((e.playLink||"").trim()) o.playLink = e.playLink.trim();
         if((e.subtitleLink||"").trim()) o.subtitleLink = e.subtitleLink.trim();
         return o;
       })
@@ -7272,6 +8035,7 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     description: ($("editDescription").value || "").trim(),
     keywords: keywordsToStorage(editKeywordsList),
     coverUrl,
+    trailerUrl,
     unpublished: isUnpublished,
     contentKind,
     mangaNumbering,
@@ -7293,11 +8057,12 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
       );
     }catch(upErr){
       const msg = String(upErr && upErr.message || "");
-      if(/contentKind|mangaNumbering|mangaItems|attribute|unknown/i.test(msg)){
+      if(/contentKind|mangaNumbering|mangaItems|trailerUrl|attribute|unknown/i.test(msg)){
         const p2 = Object.assign({}, payload);
         delete p2.contentKind;
         delete p2.mangaNumbering;
         delete p2.mangaItems;
+        if(/trailerUrl/i.test(msg)) delete p2.trailerUrl;
         if(contentKind === "manga" && mangaPayload.length && !hasAnime){
           p2.episodes = JSON.stringify(mangaPayload);
           p2.contentKind = "manga";
@@ -9044,6 +9809,1822 @@ function applyMangaManualPrice(list, costRaw, scope, indicesRaw){
   });
 })();
 
+
+function applyBulkOnlineToSeason(season, count, side, enabled){
+  if(!season || !Array.isArray(season.episodes) || !season.episodes.length){
+    showToast("قسمتی در این فصل نیست");
+    return false;
+  }
+  const eps = season.episodes;
+  let targets = [];
+  if(side === "all"){
+    targets = eps.slice();
+  }else{
+    const n = Math.max(1, Math.min(eps.length, parseInt(count, 10) || 0));
+    if(!n){ showToast("تعداد را وارد کنید"); return false; }
+    targets = side === "last" ? eps.slice(-n) : eps.slice(0, n);
+  }
+  targets.forEach(ep => { ep.onlineEnabled = !!enabled; });
+  showToast((enabled ? "پخش فعال شد: " : "پخش غیرفعال شد: ") + targets.length + " قسمت");
+  return true;
+}
+$("bulkOnlineOffBtn")?.addEventListener("click", ()=>{
+  if(selectedAdminSeasonIdx < 0 || !pendingSeasons[selectedAdminSeasonIdx]){ showToast("فصل را انتخاب کنید"); return; }
+  const side = $("bulkOnlineSide")?.value || "first";
+  const count = $("bulkOnlineCount")?.value;
+  if(applyBulkOnlineToSeason(pendingSeasons[selectedAdminSeasonIdx], count, side, false))
+    renderAdminSeasonsUI();
+});
+$("bulkOnlineOnBtn")?.addEventListener("click", ()=>{
+  if(selectedAdminSeasonIdx < 0 || !pendingSeasons[selectedAdminSeasonIdx]){ showToast("فصل را انتخاب کنید"); return; }
+  const side = $("bulkOnlineSide")?.value || "first";
+  const count = $("bulkOnlineCount")?.value;
+  if(applyBulkOnlineToSeason(pendingSeasons[selectedAdminSeasonIdx], count, side, true))
+    renderAdminSeasonsUI();
+});
+$("editBulkOnlineOffBtn")?.addEventListener("click", ()=>{
+  if(selectedEditSeasonIdx < 0 || !editingSeasons[selectedEditSeasonIdx]){ showToast("فصل را انتخاب کنید"); return; }
+  const side = $("editBulkOnlineSide")?.value || "first";
+  const count = $("editBulkOnlineCount")?.value;
+  if(applyBulkOnlineToSeason(editingSeasons[selectedEditSeasonIdx], count, side, false))
+    renderEditSeasonsUI();
+});
+$("editBulkOnlineOnBtn")?.addEventListener("click", ()=>{
+  if(selectedEditSeasonIdx < 0 || !editingSeasons[selectedEditSeasonIdx]){ showToast("فصل را انتخاب کنید"); return; }
+  const side = $("editBulkOnlineSide")?.value || "first";
+  const count = $("editBulkOnlineCount")?.value;
+  if(applyBulkOnlineToSeason(editingSeasons[selectedEditSeasonIdx], count, side, true))
+    renderEditSeasonsUI();
+});
+
+
+/* ========== گزارش لینک خراب ========== */
+const STORAGE_BROKEN_LINKS = "animearchive_broken_links_v1";
+function loadBrokenLinks(){
+  try{
+    const raw = loadJSON(STORAGE_BROKEN_LINKS, {});
+    return raw && typeof raw === "object" ? raw : {};
+  }catch(e){ return {}; }
+}
+function saveBrokenLinks(map){
+  try{ saveJSON(STORAGE_BROKEN_LINKS, map || {}); }catch(e){}
+}
+function markEpisodeLinkBroken(workId, epId, epTitle, kind){
+  if(!workId || !epId) return;
+  const map = loadBrokenLinks();
+  const key = String(workId) + "::" + String(epId);
+  map[key] = {
+    workId: String(workId),
+    epId: String(epId),
+    epTitle: epTitle || "",
+    kind: kind || "play",
+    at: Date.now()
+  };
+  saveBrokenLinks(map);
+}
+function clearBrokenLink(workId, epId){
+  const map = loadBrokenLinks();
+  const key = String(workId) + "::" + String(epId);
+  if(map[key]){ delete map[key]; saveBrokenLinks(map); }
+}
+function getBrokenLinksForWork(workId){
+  const map = loadBrokenLinks();
+  const out = [];
+  Object.keys(map).forEach(k => {
+    if(map[k] && map[k].workId === String(workId)) out.push(map[k]);
+  });
+  return out;
+}
+
+
+
+/* =========================================================
+   سینما — برنامه‌ریزی، بنر، پخش همزمان، استراحت ۳۰ دقیقه، چت
+   ========================================================= */
+const STORAGE_CINEMA_PROGRAMS = "animearchive_cinema_programs_v1";
+const STORAGE_CINEMA_CHAT_PREFIX = "animearchive_cinema_chat_";
+const STORAGE_CINEMA_TICKETS = "animearchive_cinema_tickets_v1";
+const CINEMA_BREAK_AT_SEC = 30 * 60; /* دقیقه ۳۰ */
+const CINEMA_BREAK_DURATION_SEC = 5 * 60; /* ۵ دقیقه استراحت */
+const CINEMA_SETTINGS_DOC = "cinema_programs";
+
+let cinemaPrograms = [];
+let cinemaTicker = null;
+let cinemaLiveProgramId = null;
+let cinemaLiveSyncTimer = null;
+let cinemaChatReplyTo = null;
+let cinemaGuestName = null;
+
+/* پیش‌شمارش ۳۰ ثانیه‌ای: از لحظه‌ی startAt برنامه شروع می‌شود و فیلم دقیقاً ۳۰ ثانیه بعد آغاز می‌گردد */
+const CINEMA_INTRO_SEC = 30;
+
+/* ساعت مشترک: اختلاف ساعت دستگاه با ساعت سرور، تا همه کاربران یک زمان واحد ببینند */
+let cinemaClockOffset = 0;
+function cinemaNow(){ return Date.now() + cinemaClockOffset; }
+async function syncCinemaClock(){
+  const sources = [];
+  if(/^https?:/i.test(location.protocol)) sources.push(location.href.split("#")[0]);
+  try{ sources.push(APPWRITE_ENDPOINT + "/health/time"); }catch(e){}
+  for(const url of sources){
+    try{
+      const t0 = Date.now();
+      const res = await fetch(url, { method: "HEAD", cache: "no-store" });
+      const t1 = Date.now();
+      const h = res.headers.get("Date");
+      const server = h ? new Date(h).getTime() : NaN;
+      if(!isFinite(server)) continue;
+      /* هدر Date دقت ۱ ثانیه دارد → ۵۰۰ms میانگین؛ نصف RTT هم جبران می‌شود */
+      cinemaClockOffset = (server + 500) + (t1 - t0) / 2 - t1;
+      return true;
+    }catch(e){}
+  }
+  return false; /* در صورت شکست، ساعت دستگاه استفاده می‌شود */
+}
+
+function loadCinemaProgramsLocal(){
+  const raw = loadJSON(STORAGE_CINEMA_PROGRAMS, []);
+  return Array.isArray(raw) ? raw : [];
+}
+function saveCinemaProgramsLocal(list){
+  cinemaPrograms = Array.isArray(list) ? list : [];
+  saveJSON(STORAGE_CINEMA_PROGRAMS, cinemaPrograms);
+}
+function loadCinemaTickets(){
+  const raw = loadJSON(STORAGE_CINEMA_TICKETS, {});
+  return raw && typeof raw === "object" ? raw : {};
+}
+function saveCinemaTickets(map){
+  saveJSON(STORAGE_CINEMA_TICKETS, map || {});
+}
+function hasCinemaTicket(programId){
+  const map = loadCinemaTickets();
+  const uid = (currentUser && currentUser.id) ? currentUser.id : ("guest_" + getCinemaGuestName());
+  return !!(map[String(programId)] && map[String(programId)][uid]);
+}
+function grantCinemaTicket(programId){
+  const map = loadCinemaTickets();
+  const uid = (currentUser && currentUser.id) ? currentUser.id : ("guest_" + getCinemaGuestName());
+  if(!map[String(programId)]) map[String(programId)] = {};
+  map[String(programId)][uid] = Date.now();
+  saveCinemaTickets(map);
+}
+function getCinemaGuestName(){
+  if(cinemaGuestName) return cinemaGuestName;
+  try{
+    let n = localStorage.getItem("animearchive_cinema_guest_name");
+    if(!n){
+      n = "مهمان" + Math.floor(1000 + Math.random() * 9000);
+      localStorage.setItem("animearchive_cinema_guest_name", n);
+    }
+    cinemaGuestName = n;
+    return n;
+  }catch(e){
+    cinemaGuestName = "مهمان";
+    return cinemaGuestName;
+  }
+}
+function cinemaDisplayName(){
+  if(currentUser && currentUser.name) return currentUser.name;
+  if(currentUser && currentUser.email) return currentUser.email.split("@")[0];
+  return getCinemaGuestName();
+}
+
+function normalizeCinemaProgram(p){
+  if(!p || typeof p !== "object") return null;
+  const durationMin = Math.max(1, Math.floor(Number(p.durationMin) || 90));
+  let breakAtMin = Math.max(0, Math.floor(Number(p.breakAtMin) || 0));
+  /* سازگاری با برنامه‌های قدیمی که break ثابت ۳۰ داشتند */
+  if(p.breakAtMin == null && p.breakAtMin !== 0 && durationMin > 30 && !("breakAtMin" in (p || {}))){
+    /* داده قدیمی بدون فیلد — بدون استراحت اجباری مگر صریح */
+    breakAtMin = 0;
+  }
+  if(breakAtMin >= durationMin) breakAtMin = 0; /* توقف نباید در/بعد از پایان باشد */
+  return {
+    id: p.id || uid(),
+    workId: String(p.workId || ""),
+    title: String(p.title || "").trim(),
+    playLink: String(p.playLink || "").trim(),
+    coverUrl: String(p.coverUrl || "").trim(),
+    startAt: Number(p.startAt) || 0,
+    durationMin,
+    breakAtMin,
+    ticketCost: Math.max(0, Math.floor(Number(p.ticketCost) || 0)),
+    createdAt: Number(p.createdAt) || Date.now()
+  };
+}
+function cinemaProgramTitle(p){
+  if(!p) return "سینما";
+  if(p.title) return p.title;
+  const w = cinemaWorkForProgram(p);
+  return (w && w.title) || "بدون عنوان";
+}
+function cinemaProgramCover(p){
+  if(!p) return "";
+  if(p.coverUrl && isValidUrl(p.coverUrl)) return p.coverUrl;
+  const w = cinemaWorkForProgram(p);
+  if(w && w.coverUrl && isValidUrl(w.coverUrl)) return w.coverUrl;
+  return "";
+}
+
+async function loadCinemaPrograms(){
+  let list = loadCinemaProgramsLocal().map(normalizeCinemaProgram).filter(Boolean);
+  /* تلاش برای همگام‌سازی از Appwrite settings (اختیاری) */
+  if(appwriteReady && databases){
+    try{
+      const doc = await databases.getDocument(DATABASE_ID, COLLECTION_SETTINGS, CINEMA_SETTINGS_DOC);
+      if(doc && doc.value){
+        const parsed = JSON.parse(doc.value);
+        if(Array.isArray(parsed)) list = parsed.map(normalizeCinemaProgram).filter(Boolean);
+      }
+    }catch(e){ /* سند ممکن است وجود نداشته باشد */ }
+  }
+  cinemaPrograms = list.sort((a,b)=> a.startAt - b.startAt);
+  saveCinemaProgramsLocal(cinemaPrograms);
+  return cinemaPrograms;
+}
+
+async function persistCinemaPrograms(){
+  saveCinemaProgramsLocal(cinemaPrograms);
+  if(!appwriteReady || !databases) return;
+  const payload = { value: JSON.stringify(cinemaPrograms) };
+  try{
+    await databases.updateDocument(DATABASE_ID, COLLECTION_SETTINGS, CINEMA_SETTINGS_DOC, payload);
+  }catch(e){
+    try{
+      await databases.createDocument(DATABASE_ID, COLLECTION_SETTINGS, CINEMA_SETTINGS_DOC, payload);
+    }catch(e2){ console.warn("cinema persist", e2); }
+  }
+}
+
+function cinemaWorkForProgram(p){
+  if(!p) return null;
+  return (allWorks || []).find(w => w.id === p.workId) || null;
+}
+
+/** مدت کل برنامه شامل استراحت‌ها (ثانیه) */
+function cinemaBreakAtSec(p){
+  const m = Math.max(0, Math.floor(Number(p && p.breakAtMin) || 0));
+  return m > 0 ? m * 60 : 0;
+}
+
+function cinemaProgramTotalDurationSec(p){
+  const filmSec = (p.durationMin || 90) * 60;
+  const breakAt = cinemaBreakAtSec(p);
+  /* ۳۰ ثانیه پیش‌شمارش + (در صورت وجود) ۵ دقیقه استراحت به کل زمان برنامه اضافه می‌شود */
+  if(breakAt > 0 && breakAt < filmSec){
+    return CINEMA_INTRO_SEC + filmSec + CINEMA_BREAK_DURATION_SEC;
+  }
+  return CINEMA_INTRO_SEC + filmSec;
+}
+
+function cinemaProgramEndAt(p){
+  return (p.startAt || 0) + cinemaProgramTotalDurationSec(p) * 1000;
+}
+
+/**
+ * وضعیت زمانی سینما:
+ * breakAtMin توسط ادمین تعیین می‌شود (مثلاً ۱ = در دقیقه ۱ استراحت ۵ دقیقه‌ای)
+ * { phase, filmTimeSec, breakLeftSec, msToStart }
+ */
+function getCinemaTimelineState(p, now){
+  now = now || cinemaNow();
+  if(!p || !p.startAt) return { phase: "ended" };
+  const msToStart = p.startAt - now;
+  if(msToStart > 0) return { phase: "upcoming", msToStart, filmTimeSec: 0, breakLeftSec: 0, introLeftSec: 0 };
+
+  const totalElapsedSec = (now - p.startAt) / 1000;
+
+  /* ۳۰ ثانیه‌ی ابتدایی: پیش‌شمارش مشترک (فقط بر اساس startAt، مستقل از ورود کاربران) */
+  if(totalElapsedSec < CINEMA_INTRO_SEC){
+    return { phase: "intro", introLeftSec: CINEMA_INTRO_SEC - totalElapsedSec, filmTimeSec: 0, breakLeftSec: 0, msToStart: 0 };
+  }
+
+  const filmSec = (p.durationMin || 90) * 60;
+  const breakAt = cinemaBreakAtSec(p);
+  const elapsedSec = totalElapsedSec - CINEMA_INTRO_SEC; /* ثانیه‌ی سپری‌شده از شروع واقعی فیلم */
+
+  /* بدون استراحت میانی */
+  if(!(breakAt > 0 && breakAt < filmSec)){
+    if(elapsedSec >= filmSec) return { phase: "ended", filmTimeSec: filmSec, breakLeftSec: 0 };
+    return { phase: "playing", filmTimeSec: elapsedSec, breakLeftSec: 0, msToStart: 0 };
+  }
+
+  /* قبل از نقطه توقف */
+  if(elapsedSec < breakAt){
+    return { phase: "playing", filmTimeSec: elapsedSec, breakLeftSec: 0, msToStart: 0 };
+  }
+  /* داخل ۵ دقیقه استراحت — فیلم روی همان دقیقه توقف مانده */
+  if(elapsedSec < breakAt + CINEMA_BREAK_DURATION_SEC){
+    const breakLeft = (breakAt + CINEMA_BREAK_DURATION_SEC) - elapsedSec;
+    return { phase: "break", filmTimeSec: breakAt, breakLeftSec: breakLeft, msToStart: 0 };
+  }
+  /* بعد از استراحت: زمان فیلم = elapsed - 5min */
+  const afterBreak = elapsedSec - CINEMA_BREAK_DURATION_SEC;
+  if(afterBreak >= filmSec) return { phase: "ended", filmTimeSec: filmSec, breakLeftSec: 0 };
+  return { phase: "playing", filmTimeSec: afterBreak, breakLeftSec: 0, msToStart: 0 };
+}
+
+/** برنامه فعال = در حال پخش یا استراحت وسط همان فیلم (نه برنامه بعدی) */
+function getActiveCinemaProgram(now){
+  now = now || cinemaNow();
+  const sorted = (cinemaPrograms || []).slice().sort((a,b)=> a.startAt - b.startAt);
+  for(const p of sorted){
+    const st = getCinemaTimelineState(p, now);
+    if(st.phase === "playing" || st.phase === "break" || st.phase === "intro") return p;
+  }
+  return null;
+}
+
+function getNextUpcomingCinemaProgram(now){
+  now = now || cinemaNow();
+  const sorted = (cinemaPrograms || []).slice().sort((a,b)=> a.startAt - b.startAt);
+  for(const p of sorted){
+    if(getCinemaTimelineState(p, now).phase === "upcoming") return p;
+  }
+  return null;
+}
+
+/** برای بنر اصلی: اول برنامه در حال پخش، وگرنه نزدیک‌ترین آینده */
+function getCinemaBannerProgram(now){
+  return getActiveCinemaProgram(now) || getNextUpcomingCinemaProgram(now);
+}
+
+function formatCountdown(ms){
+  if(ms < 0) ms = 0;
+  const total = Math.floor(ms / 1000);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const pad = n => String(n).padStart(2, "0");
+  if(h > 0) return pad(h) + ":" + pad(m) + ":" + pad(s);
+  return pad(m) + ":" + pad(s);
+}
+
+function formatTimeFa(ts){
+  try{
+    return new Date(ts).toLocaleString("fa-IR", { hour: "2-digit", minute: "2-digit", month: "short", day: "numeric" });
+  }catch(e){ return "—"; }
+}
+
+function fillCinemaWorkSelect(){
+  const sel = $("cinemaWorkSelect");
+  if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = `<option value="">انتخاب انیمه سینمایی...</option>`;
+  const movies = (allWorks || []).filter(w => w.type === "movie" && !w.unpublished);
+  movies.sort((a,b)=> (a.title||"").localeCompare(b.title||"", "fa"));
+  movies.forEach(w => {
+    const opt = document.createElement("option");
+    opt.value = w.id;
+    opt.textContent = w.title || w.id;
+    sel.appendChild(opt);
+  });
+  if(cur) sel.value = cur;
+}
+
+function renderAdminCinemaList(){
+  const box = $("adminCinemaList");
+  if(!box) return;
+  box.innerHTML = "";
+  const list = (cinemaPrograms || []).slice().sort((a,b)=> a.startAt - b.startAt);
+  if(!list.length){
+    box.innerHTML = `<div class="empty" style="padding:24px">برنامه‌ای ثبت نشده.</div>`;
+    return;
+  }
+  const now = cinemaNow();
+  list.forEach(p => {
+    const st = getCinemaTimelineState(p, now);
+    const phaseLabel = st.phase === "playing" ? "در حال پخش"
+      : st.phase === "break" ? "استراحت"
+      : st.phase === "upcoming" ? "آینده"
+      : "پایان‌یافته";
+    const item = document.createElement("div");
+    item.className = "adminCinemaItem";
+    item.innerHTML = `
+      <b>${escapeHtml(cinemaProgramTitle(p))}</b>
+      <small>
+        شروع: ${escapeHtml(formatTimeFa(p.startAt))} · مدت: ${p.durationMin} دقیقه${p.breakAtMin ? (" · توقف در دقیقه " + p.breakAtMin) : ""} · بلیت: ${p.ticketCost ? (p.ticketCost + " سکه") : "رایگان"}
+        <br>وضعیت: ${phaseLabel}${p.playLink ? " · لینک پخش ✓" : " · بدون لینک پخش"}
+      </small>
+      <div class="adminActions" style="margin-top:8px">
+        <button class="delete" type="button" data-del="${escapeHtml(p.id)}">🗑 حذف</button>
+      </div>
+    `;
+    item.querySelector("[data-del]")?.addEventListener("click", async ()=>{
+      if(!confirm("این برنامه حذف شود؟")) return;
+      if(!(await requireAdminAction())) return;
+      const delId = p.id;
+      try{ await removeCinemaProgramById(delId); }catch(e){
+        cinemaPrograms = cinemaPrograms.filter(x => x.id !== delId);
+        try{ await persistCinemaPrograms(); }catch(e2){}
+        try{ await deleteAllCinemaChatMessages(delId); }catch(e3){}
+      }
+      renderAdminCinemaList();
+      updateCinemaHomeBanner();
+      showToast("حذف شد");
+    });
+    box.appendChild(item);
+  });
+}
+
+$("cinemaAddProgramBtn")?.addEventListener("click", async ()=>{
+  if(!(await requireAdminAction())) return;
+  const workId = ($("cinemaWorkSelect")?.value || "").trim();
+  const playLink = ($("cinemaPlayLink")?.value || "").trim();
+  const coverUrl = ($("cinemaCoverUrl")?.value || "").trim();
+  let title = ($("cinemaTitleCustom")?.value || "").trim();
+  if(workId){
+    const work = (allWorks || []).find(w => w.id === workId);
+    if(work && work.type !== "movie"){ showToast("فقط انیمه سینمایی از لیست"); return; }
+    if(!title && work) title = work.title || "";
+  }
+  if(!playLink){ showToast("لینک پخش ویدیو را وارد کنید"); return; }
+  if(!isValidUrl(playLink)){ showToast("لینک پخش نامعتبر است"); return; }
+  if(coverUrl && !isValidUrl(coverUrl)){ showToast("لینک جلد نامعتبر است"); return; }
+  if(!title && !workId){ showToast("عنوان یا انیمه را مشخص کنید"); return; }
+  const startRaw = ($("cinemaStartAt")?.value || "").trim();
+  if(!startRaw){ showToast("زمان شروع را وارد کنید"); return; }
+  const startAt = new Date(startRaw).getTime();
+  if(!startAt || isNaN(startAt)){ showToast("زمان نامعتبر"); return; }
+  const durationMin = Math.max(1, parseInt(($("cinemaDurationMin")?.value || "90"), 10) || 90);
+  const breakAtMin = Math.max(0, parseInt(($("cinemaBreakAtMin")?.value || "0"), 10) || 0);
+  const ticketCost = Math.max(0, parseInt(($("cinemaTicketCost")?.value || "0"), 10) || 0);
+  if(breakAtMin > 0 && breakAtMin >= durationMin){
+    showToast("دقیقه توقف باید کمتر از مدت کل فیلم باشد");
+    return;
+  }
+  const prog = normalizeCinemaProgram({
+    id: uid(),
+    workId,
+    title,
+    playLink,
+    coverUrl,
+    startAt,
+    durationMin,
+    breakAtMin,
+    ticketCost,
+    createdAt: Date.now()
+  });
+  cinemaPrograms.push(prog);
+  cinemaPrograms.sort((a,b)=> a.startAt - b.startAt);
+  await persistCinemaPrograms();
+  renderAdminCinemaList();
+  updateCinemaHomeBanner();
+  showToast("برنامه سینما ثبت شد");
+  if($("cinemaStartAt")) $("cinemaStartAt").value = "";
+  if($("cinemaPlayLink")) $("cinemaPlayLink").value = "";
+  if($("cinemaCoverUrl")) $("cinemaCoverUrl").value = "";
+  if($("cinemaTitleCustom")) $("cinemaTitleCustom").value = "";
+});
+
+/* تب ادمین سینما */
+document.querySelectorAll("[data-admin-tab]").forEach(btn => {
+  btn.addEventListener("click", ()=>{
+    if(btn.getAttribute("data-admin-tab") === "cinema"){
+      fillCinemaWorkSelect();
+      renderAdminCinemaList();
+    }
+  });
+});
+
+function updateCinemaHomeBanner(){
+  const banner = $("cinemaHomeBanner");
+  if(!banner) return;
+  const now = cinemaNow();
+  const p = getCinemaBannerProgram(now);
+  if(!p){
+    banner.style.display = "none";
+    return;
+  }
+  banner.style.display = "";
+  banner.classList.remove("empty");
+  const coverUrl = cinemaProgramCover(p);
+  const cover = $("cinemaHomeCover");
+  if(cover){
+    cover.innerHTML = "";
+    if(coverUrl){
+      const img = document.createElement("img");
+      img.src = coverUrl;
+      img.alt = cinemaProgramTitle(p);
+      cover.appendChild(img);
+    }
+  }
+  if($("cinemaHomeTitle")) $("cinemaHomeTitle").textContent = cinemaProgramTitle(p);
+  const st = getCinemaTimelineState(p, now);
+  const meta = $("cinemaHomeMeta");
+  const timer = $("cinemaHomeTimer");
+  const enterBtn = $("cinemaHomeEnterBtn");
+
+  /* کل بنر → صفحه برنامه‌ها */
+  banner.style.cursor = "pointer";
+  banner.onclick = (e)=>{
+    if(e.target && e.target.closest && e.target.closest("#cinemaHomeEnterBtn")) return;
+    openCinemaSchedulePage();
+  };
+
+  if(st.phase === "upcoming"){
+    if(meta) meta.textContent = "شروع: " + formatTimeFa(p.startAt) + (p.ticketCost ? (" · " + p.ticketCost + " سکه") : " · رایگان");
+    if(timer) timer.textContent = "شروع در " + formatCountdown(st.msToStart);
+    if(enterBtn){
+      enterBtn.style.display = "";
+      enterBtn.textContent = "برنامه‌ها";
+      enterBtn.disabled = false;
+      enterBtn.onclick = (e)=>{ e.stopPropagation(); openCinemaSchedulePage(); };
+    }
+  }else if(st.phase === "intro" || st.phase === "playing" || st.phase === "break"){
+    if(meta) meta.textContent = st.phase === "break" ? "زمان استراحت" : (st.phase === "intro" ? "در آستانه‌ی شروع پخش" : "در حال پخش زنده");
+    if(timer){
+      timer.textContent = st.phase === "break"
+        ? ("استراحت " + formatCountdown(st.breakLeftSec * 1000))
+        : st.phase === "intro"
+          ? ("شروع پخش در " + formatCountdown(st.introLeftSec * 1000))
+          : ("دقیقه " + formatCountdown(st.filmTimeSec * 1000));
+    }
+    if(enterBtn){
+      enterBtn.style.display = "";
+      enterBtn.textContent = "ورود به سینما";
+      enterBtn.disabled = false;
+      enterBtn.onclick = (e)=>{ e.stopPropagation(); enterCinemaLive(p.id); };
+    }
+  }else{
+    banner.style.display = "none";
+  }
+}
+
+function openCinemaSchedulePage(){
+  renderCinemaSchedulePage();
+  showPage("cinemaSchedulePage");
+}
+
+function formatClockOnly(ts){
+  try{
+    const d = new Date(ts);
+    const h = d.getHours();
+    const m = d.getMinutes();
+    const pad = n => String(n).padStart(2, "0");
+    /* ۱۲ ساعته با برچسب فارسی */
+    let period = "صبح";
+    if(h >= 12 && h < 14) period = "ظهر";
+    else if(h >= 14 && h < 17) period = "بعدازظهر";
+    else if(h >= 17 && h < 20) period = "عصر";
+    else if(h >= 20 || h < 5) period = "شب";
+    else period = "صبح";
+    let h12 = h % 12;
+    if(h12 === 0) h12 = 12;
+    return h12 + ":" + pad(m) + " " + period;
+  }catch(e){ return "—"; }
+}
+
+function renderCinemaSchedulePage(){
+  const now = cinemaNow();
+  const featBox = $("cinemaScheduleFeatured");
+  const listBox = $("cinemaScheduleList");
+  const listHead = $("cinemaScheduleListHead");
+  if(featBox) featBox.innerHTML = "";
+  if(listBox) listBox.innerHTML = "";
+
+  const sorted = (cinemaPrograms || []).slice().sort((a,b)=> a.startAt - b.startAt)
+    .filter(p => {
+      const st = getCinemaTimelineState(p, now);
+      return st.phase === "intro" || st.phase === "playing" || st.phase === "break" || st.phase === "upcoming";
+    });
+
+  if(!sorted.length){
+    if(featBox) featBox.innerHTML = `<div class="empty" style="padding:36px 16px">برنامه‌ای برای نمایش نیست.</div>`;
+    if(listHead) listHead.style.display = "none";
+    return;
+  }
+
+  const first = sorted[0];
+  const rest = sorted.slice(1);
+  const st0 = getCinemaTimelineState(first, now);
+
+  /* ---- کارت اصلی بالا با شمارش معکوس ---- */
+  if(featBox){
+    const card = document.createElement("div");
+    card.className = "cinemaSchedFeatured" + ((st0.phase === "intro" || st0.phase === "playing" || st0.phase === "break") ? " live" : "");
+    const coverUrl = cinemaProgramCover(first);
+    const coverHtml = coverUrl
+      ? `<div class="cinemaSchedFeaturedCover"><img src="${escapeHtml(coverUrl)}" alt=""></div>`
+      : `<div class="cinemaSchedFeaturedCover"></div>`;
+
+    let label = "برنامه بعدی";
+    let timerText = "";
+    let timerClass = "soon";
+    let hint = "ساعت پخش: " + formatClockOnly(first.startAt);
+    let meta = (first.ticketCost ? (first.ticketCost + " سکه") : "رایگان") + " · " + first.durationMin + " دقیقه";
+
+    if(st0.phase === "intro"){
+      label = "شروع پخش";
+      timerText = formatCountdown(st0.introLeftSec * 1000);
+      timerClass = "soon";
+      hint = "پخش برای همه هم‌زمان شروع می‌شود";
+    }else if(st0.phase === "playing"){
+      label = "در حال پخش";
+      timerText = formatCountdown(st0.filmTimeSec * 1000);
+      timerClass = "";
+      hint = "زمان سپری‌شده از شروع فیلم";
+    }else if(st0.phase === "break"){
+      label = "زمان استراحت";
+      timerText = formatCountdown(st0.breakLeftSec * 1000);
+      timerClass = "soon";
+      hint = "پخش بعد از استراحت ادامه می‌یابد";
+    }else{
+      label = "برنامه بعدی";
+      timerText = formatCountdown(st0.msToStart);
+      timerClass = "soon";
+      hint = "شروع در ساعت " + formatClockOnly(first.startAt);
+    }
+
+    card.innerHTML =
+      `<div class="cinemaSchedFeaturedRow">${coverHtml}
+        <div class="cinemaSchedFeaturedBody">
+          <div class="cinemaSchedFeaturedLabel">${label}</div>
+          <div class="cinemaSchedFeaturedTitle">${escapeHtml(cinemaProgramTitle(first))}</div>
+          <div class="cinemaSchedFeaturedMeta">${escapeHtml(meta)}</div>
+        </div>
+      </div>
+      <div class="cinemaSchedFeaturedTimer ${timerClass}">${timerText}</div>
+      <div class="cinemaSchedFeaturedHint">${escapeHtml(hint)}</div>`;
+
+    card.addEventListener("click", ()=>{
+      const st = getCinemaTimelineState(first, cinemaNow());
+      if(st.phase === "intro" || st.phase === "playing" || st.phase === "break") enterCinemaLive(first.id);
+      else showToast("شروع در " + formatCountdown(st.msToStart) + " — ساعت " + formatClockOnly(first.startAt));
+    });
+    featBox.appendChild(card);
+  }
+
+  /* ---- بقیه برنامه‌ها: ردیف افقی با جلد کوچک شبیه لیست انیمه ---- */
+  if(listHead){
+    listHead.style.display = rest.length ? "" : "none";
+    const h = listHead.querySelector("h3");
+    if(h) h.textContent = "سایر برنامه‌ها";
+  }
+  if(listBox){
+    if(!rest.length) return;
+    const row = document.createElement("div");
+    row.className = "cinemaSchedListRow";
+    rest.forEach(p => {
+      const st = getCinemaTimelineState(p, now);
+      const el = document.createElement("div");
+      el.className = "cinemaSchedItem" + ((st.phase === "intro" || st.phase === "playing" || st.phase === "break") ? " live" : "");
+      const coverUrl = cinemaProgramCover(p);
+      const coverInner = coverUrl
+        ? `<img src="${escapeHtml(coverUrl)}" alt="">`
+        : "";
+      const timeStr = formatClockOnly(p.startAt);
+      el.innerHTML =
+        `<div class="cinemaSchedCover">${coverInner}</div>
+         <div class="cinemaSchedBody">
+           <div class="cinemaSchedTitle">${escapeHtml(cinemaProgramTitle(p))}</div>
+           <div class="cinemaSchedTime">${escapeHtml(timeStr)}</div>
+         </div>`;
+      el.addEventListener("click", ()=>{
+        const st2 = getCinemaTimelineState(p, cinemaNow());
+        if(st2.phase === "intro" || st2.phase === "playing" || st2.phase === "break") enterCinemaLive(p.id);
+        else showToast("ساعت پخش: " + formatClockOnly(p.startAt) + " — " + formatCountdown(st2.msToStart) + " مانده");
+      });
+      row.appendChild(el);
+    });
+    listBox.appendChild(row);
+  }
+}
+$("cinemaScheduleBack")?.addEventListener("click", ()=> showPage("homePage"));
+
+async function removeCinemaProgramById(programId){
+  if(!programId) return;
+  cinemaPrograms = (cinemaPrograms || []).filter(x => x.id !== programId);
+  try{ await persistCinemaPrograms(); }catch(e){ saveCinemaProgramsLocal(cinemaPrograms); }
+  try{ await deleteAllCinemaChatMessages(programId); }catch(e){
+    try{ clearCinemaChat(programId); }catch(e2){}
+  }
+  try{ updateCinemaHomeBanner(); }catch(e){}
+  try{
+    if($("cinemaSchedulePage")?.classList.contains("active")) renderCinemaSchedulePage();
+  }catch(e){}
+  try{ if(typeof renderAdminCinemaList === "function") renderAdminCinemaList(); }catch(e){}
+}
+
+function startCinemaTicker(){
+  if(cinemaTicker) clearInterval(cinemaTicker);
+  cinemaTicker = setInterval(()=>{
+    try{
+      /* برنامه‌های تمام‌شده را خودکار حذف کن */
+      const now = cinemaNow();
+      const ended = (cinemaPrograms || []).filter(p => getCinemaTimelineState(p, now).phase === "ended");
+      if(ended.length){
+        ended.forEach(p => {
+          if(cinemaLiveProgramId === p.id) return; /* syncCinemaLivePlayback خودش حذف می‌کند */
+          removeCinemaProgramById(p.id);
+        });
+      }
+    }catch(e){}
+    try{ updateCinemaHomeBanner(); }catch(e){}
+    try{
+      if($("cinemaLivePage")?.classList.contains("active")) syncCinemaLivePlayback();
+    }catch(e){}
+    try{
+      if($("cinemaSchedulePage")?.classList.contains("active")) renderCinemaSchedulePage();
+    }catch(e){}
+  }, 1000);
+}
+
+/* ----- ورود و پخش زنده ----- */
+function getCinemaPlayUrl(program, work){
+  if(program && program.playLink && isValidUrl(program.playLink)) return program.playLink.trim();
+  if(!work) work = program ? cinemaWorkForProgram(program) : null;
+  if(!work) return "";
+  const eps = work.episodes || [];
+  for(const ep of eps){
+    const u = (typeof episodePlayUrl === "function") ? episodePlayUrl(ep) : (ep.playLink || ep.link || "");
+    if(u && isValidUrl(u)) return u;
+  }
+  if(eps[0] && eps[0].link && isValidUrl(eps[0].link)) return eps[0].link;
+  return "";
+}
+
+let cinemaEnterLock = false;
+/* تایمر ۳۰ ثانیه‌ای دیگر سمت هر کاربر نیست؛ از getCinemaTimelineState (فاز intro) می‌آید */
+
+/* پخش با fallback برای محدودیت autoplay مرورگر */
+function cinemaTryPlay(player, announce){
+  if(!player) return;
+  player.play().then(()=>{
+    if(announce) showToast("پخش سینما شروع شد");
+  }).catch(err=>{
+    console.warn("cinema autoplay", err);
+    try{
+      player.muted = true;
+      player.play().then(()=>{
+        if(announce) showToast("پخش شروع شد (صدا را از تنظیمات دستگاه روشن کنید)");
+        setTimeout(()=>{ try{ player.muted = false; }catch(e){} }, 500);
+      }).catch(()=>{ if(announce) showToast("برای پخش یک‌بار روی تصویر فیلم ضربه بزنید"); });
+    }catch(e2){
+      if(announce) showToast("برای پخش یک‌بار روی تصویر فیلم ضربه بزنید");
+    }
+  });
+}
+
+async function enterCinemaLive(programId){
+  if(cinemaEnterLock) return;
+  cinemaEnterLock = true;
+  try{
+    const p = (cinemaPrograms || []).find(x => x.id === programId);
+    if(!p){ showToast("برنامه پیدا نشد"); return; }
+    const st = getCinemaTimelineState(p, cinemaNow());
+    if(st.phase !== "intro" && st.phase !== "playing" && st.phase !== "break"){
+      showToast("این برنامه هنوز شروع نشده یا تمام شده");
+      return;
+    }
+
+    const cost = Math.max(0, Math.floor(Number(p.ticketCost) || 0));
+
+    /* بلیت پولی — اول محلی، بعد سرور در پس‌زمینه */
+    if(cost > 0 && !hasCinemaTicket(p.id)){
+      if(!currentUser || !currentUser.email){
+        showToast("برای خرید بلیت وارد شوید");
+        openLoginModal();
+        return;
+      }
+      if(!hasActiveUnlimited(currentUser)){
+        const have = toInt(currentUser.coins, 0);
+        if(have < cost){
+          showToast("سکه کافی نیست (نیاز: " + cost + " — موجودی: " + have + ")");
+          return;
+        }
+        if(!confirm("بلیت این اکران " + cost + " سکه است. تأیید می‌کنید؟")) return;
+        const left = Math.max(0, have - cost);
+        currentUser.coins = left;
+        try{ updateCoinUI(); }catch(e){}
+        if(currentUser.id && appwriteReady){
+          updateUserDoc(currentUser.id, { coins: left }).then(updated => {
+            if(updated) applyUserToSession(updated);
+            try{ updateCoinUI(); }catch(e){}
+          }).catch(e => {
+            console.error("cinema ticket coin sync", e);
+            showToast("وارد شدید؛ همگام‌سازی سکه بعداً تکرار می‌شود");
+          });
+        }
+      }
+      grantCinemaTicket(p.id);
+    }else if(cost === 0){
+      grantCinemaTicket(p.id);
+    }
+
+    /* همیشه بنر خاموش‌کردن VPN — با/بدون پرداخت سکه */
+    const proceed = () => {
+      try{ startCinemaLiveSession(p); }catch(e){
+        console.error(e);
+        showToast("خطا در ورود به سینما");
+      }
+    };
+    showVpnDownloadBannerThen(proceed, {
+      title: "قبل از ورود به سینما",
+      html: "برای کیفیت بهتر پخش، لطفاً <b>VPN / فیلترشکن</b> را خاموش کنید، سپس تأیید کنید.",
+      btn: "تأیید — VPN خاموش است"
+    });
+  }finally{
+    setTimeout(()=>{ cinemaEnterLock = false; }, 600);
+  }
+}
+
+function startCinemaLiveSession(p){
+  if(!p) return;
+  const work = cinemaWorkForProgram(p);
+  if($("cinemaLiveTitle")) $("cinemaLiveTitle").textContent = cinemaProgramTitle(p);
+
+  const player = $("cinemaLivePlayer");
+  const url = getCinemaPlayUrl(p, work);
+
+  cinemaLiveProgramId = p.id;
+  showPage("cinemaLivePage");
+  try{ loadCinemaChat(p.id); }catch(e){ console.error(e); }
+
+  if(!player){
+    showToast("پلیر پیدا نشد");
+    return;
+  }
+  if(!url){
+    showToast("لینک پخش این فیلم موجود نیست — در پنل لینک پخش را وارد کنید");
+    return;
+  }
+  try{
+    player.pause();
+    player.removeAttribute("src");
+    while(player.firstChild) player.removeChild(player.firstChild);
+    player.src = url;
+    player.setAttribute("playsinline", "");
+    player.setAttribute("webkit-playsinline", "");
+    player.muted = false;
+    player.load();
+  }catch(e){ console.error(e); }
+
+  /* آماده‌سازی ویدیو؛ شروع پخش را تایمر مشترک تعیین می‌کند */
+  const onReady = ()=>{
+    try{ player.removeEventListener("loadedmetadata", onReady); }catch(e){}
+    if(cinemaLiveProgramId !== p.id) return;
+    /* فقط seek اولیه برای همگام‌سازی؛ پخش بعد از شمارش */
+    try{
+      const st = getCinemaTimelineState(p, cinemaNow());
+      if(st.phase === "playing" && Number.isFinite(st.filmTimeSec)){
+        const target = Math.max(0, st.filmTimeSec || 0);
+        const dur = player.duration;
+        const safeTarget = (dur && isFinite(dur)) ? Math.min(target, Math.max(0, dur - 0.5)) : target;
+        player.currentTime = safeTarget;
+      }
+    }catch(e){}
+  };
+  if(player.readyState >= 1) onReady();
+  else player.addEventListener("loadedmetadata", onReady);
+  player.addEventListener("error", ()=>{
+    if(cinemaLiveProgramId === p.id) showToast("خطا در بارگذاری ویدیو — لینک پخش را بررسی کنید");
+  }, { once: true });
+
+  player.onclick = ()=>{
+    if(!cinemaLiveProgramId) return;
+    const st2 = getCinemaTimelineState(p, cinemaNow());
+    if(st2.phase === "playing" && player.paused){
+      player.play().catch(()=>{});
+    }
+  };
+
+  /* وضعیت (intro / break / playing) کاملاً از ساعت مشترک محاسبه و اعمال می‌شود */
+  syncCinemaLivePlayback(true);
+}
+
+function stopCinemaLive(){
+  const player = $("cinemaLivePlayer");
+  if(player){
+    try{ player.pause(); }catch(e){}
+    try{ player.removeAttribute("src"); player.load(); }catch(e){}
+  }
+  cinemaLiveProgramId = null;
+  $("cinemaLiveOverlay")?.classList.remove("active");
+}
+
+function syncCinemaLivePlayback(forceSeek){
+  if(!cinemaLiveProgramId) return;
+  const p = (cinemaPrograms || []).find(x => x.id === cinemaLiveProgramId);
+  if(!p){ stopCinemaLive(); return; }
+  const st = getCinemaTimelineState(p, cinemaNow());
+  const player = $("cinemaLivePlayer");
+  const overlay = $("cinemaLiveOverlay");
+
+  if(st.phase === "upcoming"){ return; }
+
+  if(st.phase === "ended"){
+    if(overlay){
+      overlay.classList.add("active");
+      if($("cinemaOverlayTitle")) $("cinemaOverlayTitle").textContent = "پایان فیلم";
+      if($("cinemaOverlayTimer")) $("cinemaOverlayTimer").textContent = "—";
+      if($("cinemaOverlayHint")) $("cinemaOverlayHint").textContent = "اکران تمام شد و از برنامه حذف می‌شود";
+    }
+    try{ player?.pause(); }catch(e){}
+    const endedId = p.id;
+    /* جلوگیری از چندبار حذف */
+    if(!window.__cinemaEndingIds) window.__cinemaEndingIds = {};
+    if(!window.__cinemaEndingIds[endedId]){
+      window.__cinemaEndingIds[endedId] = true;
+      (async ()=>{
+        try{ await removeCinemaProgramById(endedId); }catch(e){ console.error(e); }
+        setTimeout(()=>{
+          if(cinemaLiveProgramId === endedId){
+            stopCinemaLive();
+            showPage("homePage");
+            updateCinemaHomeBanner();
+            showToast("اکران به پایان رسید و حذف شد");
+          }
+          try{ delete window.__cinemaEndingIds[endedId]; }catch(e){}
+        }, 2200);
+      })();
+    }
+    return;
+  }
+
+  if(st.phase === "break"){
+    /* ویدیو متوقف — چت ادامه دارد */
+    if(overlay){
+      overlay.classList.add("active");
+      if($("cinemaOverlayTitle")) $("cinemaOverlayTitle").textContent = "زمان استراحت";
+      if($("cinemaOverlayTimer")) $("cinemaOverlayTimer").textContent = formatCountdown((st.breakLeftSec || 0) * 1000);
+      if($("cinemaOverlayHint")) $("cinemaOverlayHint").textContent = "چت فعال است · پخش از دقیقه " + Math.floor((p.breakAtMin || 0)) + " ادامه می‌یابد";
+    }
+    try{ player?.pause(); }catch(e){}
+    return;
+  }
+
+  /* پیش‌شمارش مشترک ۳۰ ثانیه‌ای — همه کاربران یک عدد را می‌بینند */
+  if(st.phase === "intro"){
+    if(overlay){
+      overlay.classList.add("active");
+      if($("cinemaOverlayTitle")) $("cinemaOverlayTitle").textContent = "شروع پخش";
+      if($("cinemaOverlayTimer")) $("cinemaOverlayTimer").textContent = formatCountdown(Math.ceil(st.introLeftSec) * 1000);
+      if($("cinemaOverlayHint")) $("cinemaOverlayHint").textContent = "پخش برای همه هم‌زمان شروع می‌شود";
+    }
+    try{ player?.pause(); }catch(e){}
+    return;
+  }
+
+  /* playing */
+  const wasOverlayActive = !!(overlay && overlay.classList.contains("active"));
+  if(overlay) overlay.classList.remove("active");
+  if(!player) return;
+  if(!player.src && !player.currentSrc){
+    const url = getCinemaPlayUrl(p, cinemaWorkForProgram(p));
+    if(url){ player.src = url; player.load(); }
+    return;
+  }
+  if(player.readyState < 1) return; /* هنوز متادیتا نیامده */
+  const target = Math.max(0, st.filmTimeSec || 0);
+  const dur = player.duration;
+  const safeTarget = (dur && isFinite(dur)) ? Math.min(target, Math.max(0, dur - 0.5)) : target;
+  const drift = Math.abs((player.currentTime || 0) - safeTarget);
+  if(forceSeek || drift > 2.5){
+    try{ player.currentTime = safeTarget; }catch(e){}
+  }
+  if(player.paused){
+    cinemaTryPlay(player, wasOverlayActive);
+  }
+}
+
+/* جلوگیری از seek/pause توسط کاربر */
+(function bindCinemaPlayerLock(){
+  const player = $("cinemaLivePlayer");
+  if(!player || player.dataset.cinemaLock === "1") return;
+  player.dataset.cinemaLock = "1";
+  player.addEventListener("pause", ()=>{
+    if(!cinemaLiveProgramId) return;
+    const p = (cinemaPrograms || []).find(x => x.id === cinemaLiveProgramId);
+    if(!p) return;
+    const st = getCinemaTimelineState(p, cinemaNow());
+    if(st.phase === "playing" && player.readyState >= 2){
+      setTimeout(()=>{
+        if(cinemaLiveProgramId && player.paused){
+          player.play().catch(()=>{});
+        }
+      }, 200);
+    }
+  });
+  player.addEventListener("seeked", ()=>{
+    if(!cinemaLiveProgramId) return;
+    /* جلوگیری از حلقه seek — فقط اگر خیلی منحرف شده */
+    const p = (cinemaPrograms || []).find(x => x.id === cinemaLiveProgramId);
+    if(!p) return;
+    const st = getCinemaTimelineState(p, cinemaNow());
+    if(st.phase !== "playing") return;
+    const drift = Math.abs((player.currentTime || 0) - (st.filmTimeSec || 0));
+    if(drift > 3){
+      try{ player.currentTime = st.filmTimeSec || 0; }catch(e){}
+    }
+  });
+  player.addEventListener("ratechange", ()=>{
+    if(player.playbackRate !== 1) player.playbackRate = 1;
+  });
+})();
+
+$("cinemaLiveBack")?.addEventListener("click", ()=>{
+  try{ unsubscribeCinemaChatRealtime(); }catch(e){}
+  stopCinemaLive();
+  showPage("homePage");
+  updateCinemaHomeBanner();
+});
+
+/* ----- چت زنده (Appwrite Realtime + کالکشن cinema_messages) ----- */
+/* چت سینما — منبع اصلی Appwrite؛ localStorage فقط کش موقت سمت کلاینت */
+const CINEMA_CHAT_KEEP = 50;
+const CINEMA_CHAT_PRUNE_AT = 100;
+const CINEMA_CHAT_FETCH_LIMIT = 100;
+
+let cinemaChatNearBottom = true;
+let cinemaChatCtxMsg = null;
+let cinemaChatLongPressTimer = null;
+let cinemaChatCache = {};
+let cinemaChatRealtimeUnsub = null;
+let cinemaChatSubscribedProgramId = null;
+let cinemaChatSendLock = false;
+let cinemaChatPruneLock = {};
+let cinemaChatDeleteAllLock = {};
+
+function cinemaChatKey(programId){
+  return STORAGE_CINEMA_CHAT_PREFIX + programId;
+}
+function getCinemaChatCache(programId){
+  if(!programId) return [];
+  if(!Array.isArray(cinemaChatCache[programId])) cinemaChatCache[programId] = [];
+  return cinemaChatCache[programId];
+}
+function setCinemaChatCache(programId, list){
+  if(!programId) return;
+  cinemaChatCache[programId] = Array.isArray(list) ? list : [];
+  try{ saveJSON(cinemaChatKey(programId), cinemaChatCache[programId]); }catch(e){}
+}
+function clearCinemaChatLocal(programId){
+  if(!programId) return;
+  try{ localStorage.removeItem(cinemaChatKey(programId)); }catch(e){}
+  delete cinemaChatCache[programId];
+}
+function mapCinemaChatDoc(doc){
+  if(!doc) return null;
+  return {
+    id: doc.$id,
+    programId: String(doc.programId || ""),
+    userId: doc.userId ? String(doc.userId) : null,
+    name: String(doc.name || "کاربر"),
+    text: String(doc.text || ""),
+    at: Number(doc.at) || 0,
+    replyToId: doc.replyToId ? String(doc.replyToId) : null,
+    replyToName: doc.replyToName ? String(doc.replyToName) : null,
+    replyToText: doc.replyToText ? String(doc.replyToText) : null,
+    edited: !!(doc.edited === true || doc.edited === 1 || doc.edited === "true")
+  };
+}
+function cinemaChatPayload(msg){
+  const p = {
+    programId: String(msg.programId || ""),
+    name: String(msg.name || "کاربر").slice(0, 120),
+    text: String(msg.text || "").slice(0, 500),
+    at: Math.floor(Number(msg.at) || Date.now()),
+    edited: !!msg.edited
+  };
+  p.userId = msg.userId ? String(msg.userId) : "";
+  p.replyToId = msg.replyToId ? String(msg.replyToId) : "";
+  p.replyToName = msg.replyToName ? String(msg.replyToName).slice(0, 120) : "";
+  p.replyToText = msg.replyToText ? String(msg.replyToText).slice(0, 200) : "";
+  return p;
+}
+function cinemaChatDocPermissions(){
+  return publicDocPermissions();
+}
+
+function unsubscribeCinemaChatRealtime(){
+  if(typeof cinemaChatRealtimeUnsub === "function"){
+    try{ cinemaChatRealtimeUnsub(); }catch(e){ console.warn("cinema chat unsub", e); }
+  }
+  cinemaChatRealtimeUnsub = null;
+  cinemaChatSubscribedProgramId = null;
+}
+
+function subscribeCinemaChatRealtime(programId){
+  unsubscribeCinemaChatRealtime();
+  if(!programId || !appwriteReady || !client) return;
+  const channel = "databases." + DATABASE_ID + ".collections." + COLLECTION_CINEMA_MESSAGES + ".documents";
+  try{
+    cinemaChatRealtimeUnsub = client.subscribe(channel, (response) => {
+      try{
+        if(!response || !cinemaLiveProgramId || cinemaLiveProgramId !== programId) return;
+        const events = response.events || [];
+        const payload = response.payload;
+        if(!payload) return;
+        const pid = String(payload.programId || "");
+        if(pid && pid !== String(programId)) return;
+        const isCreate = events.some(e => String(e).includes(".create"));
+        const isUpdate = events.some(e => String(e).includes(".update"));
+        const isDelete = events.some(e => String(e).includes(".delete"));
+        let list = getCinemaChatCache(programId).slice();
+        if(isDelete){
+          const delId = payload.$id;
+          const next = list.filter(m => m.id !== delId);
+          if(next.length !== list.length){
+            setCinemaChatCache(programId, next);
+            if($("cinemaLivePage")?.classList.contains("active") && cinemaLiveProgramId === programId){
+              renderCinemaChat(programId, false);
+            }
+          }
+          return;
+        }
+        const msg = mapCinemaChatDoc(payload);
+        if(!msg || (msg.programId && msg.programId !== String(programId))) return;
+        if(!msg.programId) msg.programId = String(programId);
+        const idx = list.findIndex(m => m.id === msg.id);
+        if(isCreate || idx < 0){
+          if(idx >= 0) list[idx] = msg;
+          else list.push(msg);
+        }else if(isUpdate){
+          list[idx] = msg;
+        }else{
+          if(idx >= 0) list[idx] = msg;
+          else list.push(msg);
+        }
+        list.sort((a,b)=> (a.at||0) - (b.at||0) || String(a.id).localeCompare(String(b.id)));
+        const seen = new Set();
+        list = list.filter(m => {
+          if(seen.has(m.id)) return false;
+          seen.add(m.id);
+          return true;
+        });
+        setCinemaChatCache(programId, list);
+        if($("cinemaLivePage")?.classList.contains("active") && cinemaLiveProgramId === programId){
+          renderCinemaChat(programId, cinemaChatNearBottom);
+        }
+        if(list.length >= CINEMA_CHAT_PRUNE_AT){
+          pruneCinemaChatOnServer(programId).catch(e => console.warn("cinema prune", e));
+        }
+      }catch(err){
+        console.error("cinema chat realtime handler", err);
+      }
+    });
+    cinemaChatSubscribedProgramId = programId;
+  }catch(e){
+    console.error("cinema chat subscribe", e);
+    showToast("اتصال زنده چت برقرار نشد");
+  }
+}
+
+async function fetchCinemaChatFromServer(programId){
+  if(!programId) return [];
+  if(!appwriteReady || !databases || !appwriteQuery){
+    showToast("اتصال به سرور برقرار نیست");
+    return getCinemaChatCache(programId);
+  }
+  try{
+    const res = await databases.listDocuments(DATABASE_ID, COLLECTION_CINEMA_MESSAGES, [
+      appwriteQuery.equal("programId", String(programId)),
+      appwriteQuery.orderAsc("at"),
+      appwriteQuery.limit(CINEMA_CHAT_FETCH_LIMIT)
+    ]);
+    const docs = (res && res.documents) || [];
+    let list = docs.map(mapCinemaChatDoc).filter(Boolean);
+    list.sort((a,b)=> (a.at||0) - (b.at||0) || String(a.id).localeCompare(String(b.id)));
+    const seen = new Set();
+    list = list.filter(m => {
+      if(seen.has(m.id)) return false;
+      seen.add(m.id);
+      return true;
+    });
+    setCinemaChatCache(programId, list);
+    if(list.length >= CINEMA_CHAT_PRUNE_AT){
+      await pruneCinemaChatOnServer(programId);
+      list = getCinemaChatCache(programId);
+    }
+    return list;
+  }catch(e){
+    console.error("fetchCinemaChatFromServer", e);
+    const msg = (e && e.message) ? String(e.message) : "خطا در دریافت پیام‌ها";
+    if(/collection|not found|unknown/i.test(msg)){
+      showToast("کالکشن چت سینما در دسترس نیست");
+    }else if(/permission|unauthorized|forbidden/i.test(msg)){
+      showToast("مجوز خواندن پیام‌های چت وجود ندارد");
+    }else{
+      showToast("دریافت پیام‌های چت ناموفق بود");
+    }
+    return getCinemaChatCache(programId);
+  }
+}
+
+async function pruneCinemaChatOnServer(programId){
+  if(!programId || !appwriteReady || !databases) return;
+  if(cinemaChatPruneLock[programId]) return;
+  cinemaChatPruneLock[programId] = true;
+  try{
+    let list = getCinemaChatCache(programId).slice();
+    if(list.length < CINEMA_CHAT_PRUNE_AT){
+      try{
+        const res = await databases.listDocuments(DATABASE_ID, COLLECTION_CINEMA_MESSAGES, [
+          appwriteQuery.equal("programId", String(programId)),
+          appwriteQuery.orderAsc("at"),
+          appwriteQuery.limit(CINEMA_CHAT_FETCH_LIMIT)
+        ]);
+        list = ((res && res.documents) || []).map(mapCinemaChatDoc).filter(Boolean);
+        list.sort((a,b)=> (a.at||0) - (b.at||0));
+      }catch(e){ return; }
+    }
+    if(list.length < CINEMA_CHAT_PRUNE_AT){
+      setCinemaChatCache(programId, list);
+      return;
+    }
+    const dropCount = list.length - CINEMA_CHAT_KEEP;
+    if(dropCount <= 0) return;
+    const toDelete = list.slice(0, dropCount);
+    const keep = list.slice(dropCount);
+    for(const m of toDelete){
+      try{
+        await databases.deleteDocument(DATABASE_ID, COLLECTION_CINEMA_MESSAGES, m.id);
+      }catch(err){
+        console.warn("prune delete msg", m.id, err);
+      }
+    }
+    setCinemaChatCache(programId, keep);
+    if($("cinemaLivePage")?.classList.contains("active") && cinemaLiveProgramId === programId){
+      renderCinemaChat(programId, false);
+    }
+  }catch(e){
+    console.error("pruneCinemaChatOnServer", e);
+  }finally{
+    cinemaChatPruneLock[programId] = false;
+  }
+}
+
+async function deleteAllCinemaChatMessages(programId){
+  if(!programId) return;
+  if(cinemaChatDeleteAllLock[programId]) return;
+  cinemaChatDeleteAllLock[programId] = true;
+  try{
+    clearCinemaChatLocal(programId);
+    if(cinemaChatSubscribedProgramId === programId) unsubscribeCinemaChatRealtime();
+    if(!appwriteReady || !databases || !appwriteQuery) return;
+    let guard = 0;
+    while(guard < 30){
+      guard++;
+      let docs = [];
+      try{
+        const res = await databases.listDocuments(DATABASE_ID, COLLECTION_CINEMA_MESSAGES, [
+          appwriteQuery.equal("programId", String(programId)),
+          appwriteQuery.limit(100)
+        ]);
+        docs = (res && res.documents) || [];
+      }catch(e){
+        console.error("list cinema msgs for delete", e);
+        break;
+      }
+      if(!docs.length) break;
+      for(const d of docs){
+        try{
+          await databases.deleteDocument(DATABASE_ID, COLLECTION_CINEMA_MESSAGES, d.$id);
+        }catch(err){
+          console.warn("delete cinema msg", d.$id, err);
+        }
+      }
+      if(docs.length < 100) break;
+    }
+  }catch(e){
+    console.error("deleteAllCinemaChatMessages", e);
+  }finally{
+    cinemaChatDeleteAllLock[programId] = false;
+  }
+}
+
+function clearCinemaChat(programId){
+  if(programId){
+    clearCinemaChatLocal(programId);
+    if(cinemaChatSubscribedProgramId === programId) unsubscribeCinemaChatRealtime();
+    deleteAllCinemaChatMessages(programId).catch(e => console.warn(e));
+  }
+  const box = $("cinemaChatList");
+  if(box) box.innerHTML = "";
+  hideCinemaChatCtx();
+}
+
+async function loadCinemaChat(programId){
+  cinemaChatReplyTo = null;
+  updateCinemaChatReplyBar();
+  cinemaChatNearBottom = true;
+  updateCinemaChatComposerState();
+  if($("cinemaChatStatus")){
+    $("cinemaChatStatus").textContent = "در حال بارگذاری چت...";
+    $("cinemaChatStatus").classList.remove("idle");
+  }
+  const box = $("cinemaChatList");
+  if(box) box.innerHTML = `<div class="cinemaChatEmpty"><div class="ceIcon">💬</div><div>در حال بارگذاری پیام‌ها...</div></div>`;
+
+  if(cinemaChatSubscribedProgramId && cinemaChatSubscribedProgramId !== programId){
+    unsubscribeCinemaChatRealtime();
+  }
+
+  try{
+    await fetchCinemaChatFromServer(programId);
+  }catch(e){ console.error(e); }
+
+  if(cinemaLiveProgramId !== programId) return;
+
+  renderCinemaChat(programId, true);
+  subscribeCinemaChatRealtime(programId);
+  if($("cinemaChatStatus")){
+    $("cinemaChatStatus").textContent = "چت زنده · همزمان با اکران";
+    $("cinemaChatStatus").classList.remove("idle");
+  }
+}
+
+function cinemaChatIsMine(m){
+  if(!m) return false;
+  if(currentUser && currentUser.id && m.userId && String(m.userId) === String(currentUser.id)) return true;
+  if(currentUser && currentUser.id && m.userId) return false;
+  const myName = cinemaDisplayName();
+  return !!(m.name === myName);
+}
+function cinemaChatDayKey(ts){
+  try{
+    const d = new Date(ts || 0);
+    return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+  }catch(e){ return ""; }
+}
+function cinemaChatDateLabel(ts){
+  try{
+    const d = new Date(ts || 0);
+    const now = new Date();
+    const oneDay = 24 * 3600 * 1000;
+    const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const startMsg = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    const diff = startToday - startMsg;
+    if(diff === 0) return "امروز";
+    if(diff === oneDay) return "دیروز";
+    return d.toLocaleDateString("fa-IR", { year: "numeric", month: "long", day: "numeric" });
+  }catch(e){ return ""; }
+}
+function cinemaChatTimeLabel(ts){
+  try{
+    return new Date(ts || 0).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" });
+  }catch(e){ return ""; }
+}
+function cinemaChatSameSender(a, b){
+  if(!a || !b) return false;
+  if(a.userId && b.userId) return String(a.userId) === String(b.userId);
+  return (a.name || "") === (b.name || "");
+}
+function cinemaChatCloseInTime(a, b){
+  if(!a || !b) return false;
+  return Math.abs((a.at || 0) - (b.at || 0)) < 5 * 60 * 1000;
+}
+function renderCinemaChat(programId, forceScrollBottom){
+  const box = $("cinemaChatList");
+  if(!box) return;
+  const prevScrollH = box.scrollHeight;
+  const prevTop = box.scrollTop;
+  const wasNear = cinemaChatNearBottom || forceScrollBottom;
+
+  let msgs = getCinemaChatCache(programId).slice();
+  msgs.sort((a,b)=> (a.at||0) - (b.at||0) || String(a.id).localeCompare(String(b.id)));
+  if(msgs.length > CINEMA_CHAT_KEEP){
+    msgs = msgs.slice(msgs.length - CINEMA_CHAT_KEEP);
+  }
+
+  box.innerHTML = "";
+  if($("cinemaChatCount")) $("cinemaChatCount").textContent = msgs.length ? (msgs.length + " پیام") : "";
+
+  if(!msgs.length){
+    box.innerHTML = `<div class="cinemaChatEmpty"><div class="ceIcon">💬</div><div>هنوز پیامی نیست</div><div style="font-size:11px;color:#7a6550">اولین پیام را بنویس و گفتگو را شروع کن</div></div>`;
+    return;
+  }
+
+  let lastDay = null;
+  msgs.forEach((m, i) => {
+    const day = cinemaChatDayKey(m.at);
+    if(day && day !== lastDay){
+      lastDay = day;
+      const sep = document.createElement("div");
+      sep.className = "cinemaDateSep";
+      sep.textContent = cinemaChatDateLabel(m.at);
+      box.appendChild(sep);
+    }
+    const prev = i > 0 ? msgs[i - 1] : null;
+    const mine = cinemaChatIsMine(m);
+    const samePrev = prev && cinemaChatSameSender(prev, m) && cinemaChatCloseInTime(prev, m) && cinemaChatDayKey(prev.at) === day;
+
+    const div = document.createElement("div");
+    div.className = "cinemaChatMsg " + (mine ? "mine" : "them")
+      + (samePrev ? " grouped" : " firstInGroup");
+    div.dataset.msgId = m.id;
+
+    let replyHtml = "";
+    if(m.replyToText){
+      replyHtml = `<div class="cmReply"><b>${escapeHtml(m.replyToName || "")}</b><br>${escapeHtml((m.replyToText||"").slice(0,100))}</div>`;
+    }
+    const showName = !mine && !samePrev;
+    const nameHtml = showName ? `<div class="cmName">${escapeHtml(m.name || "کاربر")}</div>` : "";
+    const edited = m.edited ? `<span class="cmEdited">ویرایش‌شده</span>` : "";
+    div.innerHTML = `
+      ${nameHtml}
+      ${replyHtml}
+      <div class="cmText">${escapeHtml(m.text || "")}</div>
+      <div class="cmMeta"><span>${cinemaChatTimeLabel(m.at)}</span>${edited}</div>
+    `;
+
+    const openCtx = (clientX, clientY, fromTouch)=>{
+      cinemaChatCtxMsg = { programId, msg: m, mine };
+      showCinemaChatCtx(clientX, clientY, fromTouch);
+    };
+    div.addEventListener("contextmenu", e=>{
+      e.preventDefault();
+      openCtx(e.clientX, e.clientY, false);
+    });
+
+    /* سوایپ ریپلای: همیشه به سمت چپ بکش تا پاسخ فعال شود */
+    const hint = document.createElement("span");
+    hint.className = "cmSwipeHint";
+    hint.textContent = "↩";
+    hint.setAttribute("aria-hidden", "true");
+    div.appendChild(hint);
+
+    let swipeSx = null, swipeSy = null, swipeMoved = false, swipeAxis = null;
+    const cancelLongPress = ()=>{
+      if(cinemaChatLongPressTimer){ clearTimeout(cinemaChatLongPressTimer); cinemaChatLongPressTimer = null; }
+    };
+    const resetSwipeVisual = ()=>{
+      div.classList.remove("cmSwipeActive", "cmSwipeShowHint");
+      div.style.transform = "";
+    };
+    const triggerReply = ()=>{
+      cinemaChatReplyTo = { id: m.id, name: m.name, text: m.text };
+      updateCinemaChatReplyBar();
+      try{
+        const input = $("cinemaChatInput");
+        if(input){ input.focus(); }
+      }catch(err){}
+      showToast("پاسخ به " + (m.name || "کاربر"));
+    };
+
+    div.addEventListener("touchstart", e=>{
+      if(e.touches?.length !== 1) return;
+      const t = e.touches[0];
+      swipeSx = t.clientX; swipeSy = t.clientY; swipeMoved = false; swipeAxis = null;
+      resetSwipeVisual();
+      cinemaChatLongPressTimer = setTimeout(()=>{
+        if(swipeMoved) return;
+        openCtx(t.clientX, t.clientY, true);
+      }, 420);
+    }, {passive:true});
+
+    div.addEventListener("touchmove", e=>{
+      if(swipeSx == null || !e.touches || e.touches.length !== 1) return;
+      const t = e.touches[0];
+      const dx = t.clientX - swipeSx;
+      const dy = t.clientY - swipeSy;
+      if(swipeAxis == null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)){
+        swipeAxis = Math.abs(dx) > Math.abs(dy) * 1.05 ? "x" : "y";
+        if(swipeAxis === "x") cancelLongPress();
+      }
+      if(swipeAxis !== "x") return;
+      swipeMoved = true;
+      cancelLongPress();
+      /* فقط حرکت به چپ مجاز است */
+      const allowed = Math.min(0, dx);
+      const clamped = Math.max(-88, allowed);
+      div.classList.add("cmSwipeActive");
+      div.style.transform = "translateX(" + clamped + "px)";
+      if(clamped < -30) div.classList.add("cmSwipeShowHint");
+      else div.classList.remove("cmSwipeShowHint");
+    }, {passive:true});
+
+    div.addEventListener("touchend", e=>{
+      cancelLongPress();
+      if(swipeSx == null) return;
+      const t = e.changedTouches && e.changedTouches[0];
+      const dx = t ? (t.clientX - swipeSx) : 0;
+      const dy = t ? (t.clientY - swipeSy) : 0;
+      const axis = swipeAxis;
+      swipeSx = null; swipeSy = null; swipeAxis = null;
+      resetSwipeVisual();
+      if(axis !== "x") return;
+      if(Math.abs(dx) < Math.abs(dy) * 0.9) return;
+      if(dx < -36) triggerReply();
+      swipeMoved = false;
+    }, {passive:true});
+
+    div.addEventListener("touchcancel", ()=>{
+      cancelLongPress();
+      swipeSx = null; swipeSy = null; swipeAxis = null;
+      resetSwipeVisual();
+    }, {passive:true});
+
+    /* دسکتاپ: درگ به چپ = ریپلای */
+    let mouseDown = false, mSx = 0, mSy = 0, mAxis = null;
+    div.addEventListener("mousedown", e=>{
+      if(e.button !== 0) return;
+      mouseDown = true; mSx = e.clientX; mSy = e.clientY; swipeMoved = false; mAxis = null;
+      resetSwipeVisual();
+    });
+    const onMouseMove = (e)=>{
+      if(!mouseDown) return;
+      const dx = e.clientX - mSx;
+      const dy = e.clientY - mSy;
+      if(mAxis == null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)){
+        mAxis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      }
+      if(mAxis !== "x") return;
+      swipeMoved = true;
+      const allowed = Math.min(0, dx);
+      const clamped = Math.max(-88, allowed);
+      div.classList.add("cmSwipeActive");
+      div.style.transform = "translateX(" + clamped + "px)";
+      if(clamped < -30) div.classList.add("cmSwipeShowHint");
+      else div.classList.remove("cmSwipeShowHint");
+    };
+    const onMouseUp = (e)=>{
+      if(!mouseDown) return;
+      mouseDown = false;
+      const dx = e.clientX - mSx;
+      const dy = e.clientY - mSy;
+      const axis = mAxis;
+      mAxis = null;
+      resetSwipeVisual();
+      if(axis !== "x" || !swipeMoved) return;
+      if(Math.abs(dx) < Math.abs(dy) * 0.9) return;
+      if(dx < -36) triggerReply();
+    };
+    div.addEventListener("mousemove", onMouseMove);
+    div.addEventListener("mouseup", onMouseUp);
+    div.addEventListener("mouseleave", ()=>{
+      if(!mouseDown) return;
+      mouseDown = false;
+      resetSwipeVisual();
+    });
+
+    box.appendChild(div);
+  });
+
+  if(wasNear || forceScrollBottom){
+    box.scrollTop = box.scrollHeight;
+    cinemaChatNearBottom = true;
+    hideCinemaChatNewBtn();
+  }else{
+    box.scrollTop = prevTop + (box.scrollHeight - prevScrollH);
+    showCinemaChatNewBtn();
+  }
+}
+function cinemaChatOnScroll(){
+  const box = $("cinemaChatList");
+  if(!box) return;
+  const dist = box.scrollHeight - box.scrollTop - box.clientHeight;
+  cinemaChatNearBottom = dist < 48;
+  if(cinemaChatNearBottom) hideCinemaChatNewBtn();
+}
+function showCinemaChatNewBtn(){
+  $("cinemaChatNewBtn")?.classList.add("show");
+}
+function hideCinemaChatNewBtn(){
+  $("cinemaChatNewBtn")?.classList.remove("show");
+}
+$("cinemaChatNewBtn")?.addEventListener("click", ()=>{
+  const box = $("cinemaChatList");
+  if(box) box.scrollTop = box.scrollHeight;
+  cinemaChatNearBottom = true;
+  hideCinemaChatNewBtn();
+});
+$("cinemaChatList")?.addEventListener("scroll", cinemaChatOnScroll, {passive:true});
+
+function hideCinemaChatCtx(){
+  $("cinemaCtxOverlay")?.classList.remove("active");
+  const root = $("cinemaCtxMenuRoot");
+  if(root) root.innerHTML = "";
+  cinemaChatCtxMsg = null;
+}
+function showCinemaChatCtx(x, y, fromTouch){
+  const overlay = $("cinemaCtxOverlay");
+  const root = $("cinemaCtxMenuRoot");
+  if(!overlay || !root || !cinemaChatCtxMsg) return;
+  const { programId, msg, mine } = cinemaChatCtxMsg;
+  overlay.classList.add("active");
+  root.innerHTML = "";
+
+  /* ریپلای فقط با سوایپ — منوی نگه‌داشتن: کپی / ویرایش / حذف */
+  const actions = [
+    { id: "copy", label: "کپی", icon: "📋" },
+  ];
+  if(mine){
+    actions.push({ id: "edit", label: "ویرایش", icon: "✏️" });
+    actions.push({ id: "del", label: "حذف", icon: "🗑", danger: true });
+  }
+
+  const run = async (id)=>{
+    hideCinemaChatCtx();
+    if(id === "copy"){
+      try{
+        await navigator.clipboard.writeText(msg.text || "");
+        showToast("کپی شد");
+      }catch(e){
+        try{
+          const ta = document.createElement("textarea");
+          ta.value = msg.text || "";
+          document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+          showToast("کپی شد");
+        }catch(e2){ showToast("کپی نشد"); }
+      }
+    }else if(id === "edit"){
+      if(!cinemaChatIsMine(msg)){ showToast("فقط پیام خودتان را می‌توانید ویرایش کنید"); return; }
+      const nt = prompt("ویرایش پیام:", msg.text || "");
+      if(nt == null) return;
+      const t = String(nt).trim();
+      if(!t) return;
+      if(!appwriteReady || !databases){ showToast("اتصال برقرار نیست"); return; }
+      try{
+        await databases.updateDocument(DATABASE_ID, COLLECTION_CINEMA_MESSAGES, msg.id, {
+          text: t.slice(0, 500),
+          edited: true
+        });
+        const list = getCinemaChatCache(programId).slice();
+        const idx = list.findIndex(x => x.id === msg.id);
+        if(idx >= 0){
+          list[idx].text = t.slice(0, 500);
+          list[idx].edited = true;
+          setCinemaChatCache(programId, list);
+          renderCinemaChat(programId, false);
+        }
+        showToast("پیام ویرایش شد");
+      }catch(e){
+        console.error(e);
+        const em = String(e && e.message || "");
+        if(/permission|unauthorized|forbidden/i.test(em)) showToast("مجوز ویرایش این پیام وجود ندارد");
+        else showToast("ویرایش پیام ناموفق بود");
+      }
+    }else if(id === "del"){
+      if(!cinemaChatIsMine(msg)){ showToast("فقط پیام خودتان را می‌توانید حذف کنید"); return; }
+      if(!confirm("پیام حذف شود؟")) return;
+      if(!appwriteReady || !databases){ showToast("اتصال برقرار نیست"); return; }
+      try{
+        await databases.deleteDocument(DATABASE_ID, COLLECTION_CINEMA_MESSAGES, msg.id);
+        let list = getCinemaChatCache(programId).filter(x => x.id !== msg.id);
+        setCinemaChatCache(programId, list);
+        renderCinemaChat(programId, false);
+        showToast("پیام حذف شد");
+      }catch(e){
+        console.error(e);
+        const em = String(e && e.message || "");
+        if(/permission|unauthorized|forbidden/i.test(em)) showToast("مجوز حذف این پیام وجود ندارد");
+        else showToast("حذف پیام ناموفق بود");
+      }
+    }
+  };
+
+  if(fromTouch || (typeof window !== "undefined" && window.innerWidth < 640)){
+    const sheet = document.createElement("div");
+    sheet.className = "cinemaCtxSheet";
+    sheet.innerHTML = `<div class="ctxHandle"></div>`;
+    actions.forEach(a => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      if(a.danger) btn.className = "danger";
+      btn.innerHTML = `<span>${a.icon}</span><span>${a.label}</span>`;
+      btn.addEventListener("click", ()=> run(a.id));
+      sheet.appendChild(btn);
+    });
+    root.appendChild(sheet);
+  }else{
+    const menu = document.createElement("div");
+    menu.className = "cinemaCtxMenu";
+    actions.forEach(a => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      if(a.danger) btn.className = "danger";
+      btn.innerHTML = `<span>${a.icon}</span><span>${a.label}</span>`;
+      btn.addEventListener("click", ()=> run(a.id));
+      menu.appendChild(btn);
+    });
+    root.appendChild(menu);
+    const mw = 200, mh = actions.length * 44 + 8;
+    let left = x, top = y;
+    if(left + mw > window.innerWidth - 8) left = window.innerWidth - mw - 8;
+    if(top + mh > window.innerHeight - 8) top = window.innerHeight - mh - 8;
+    if(left < 8) left = 8;
+    if(top < 8) top = 8;
+    menu.style.left = left + "px";
+    menu.style.top = top + "px";
+  }
+}
+$("cinemaCtxOverlay")?.addEventListener("click", hideCinemaChatCtx);
+
+function updateCinemaChatReplyBar(){
+  const bar = $("cinemaChatReplyBar");
+  if(!bar) return;
+  if(cinemaChatReplyTo){
+    bar.classList.add("active");
+    if($("cinemaChatReplyLabel")) $("cinemaChatReplyLabel").textContent = "پاسخ به " + (cinemaChatReplyTo.name || "کاربر");
+    if($("cinemaChatReplyText")) $("cinemaChatReplyText").textContent = String(cinemaChatReplyTo.text || "").slice(0, 80);
+  }else{
+    bar.classList.remove("active");
+  }
+}
+$("cinemaChatReplyCancel")?.addEventListener("click", ()=>{
+  cinemaChatReplyTo = null;
+  updateCinemaChatReplyBar();
+});
+
+function updateCinemaChatComposerState(){
+  const input = $("cinemaChatInput");
+  const btn = $("cinemaChatSendBtn");
+  if(!input || !btn) return;
+  const has = !!(input.value || "").trim();
+  btn.classList.toggle("active", has);
+  input.style.height = "auto";
+  input.style.height = Math.min(100, input.scrollHeight) + "px";
+}
+$("cinemaChatInput")?.addEventListener("input", updateCinemaChatComposerState);
+$("cinemaChatSendBtn")?.addEventListener("click", sendCinemaChat);
+$("cinemaChatInput")?.addEventListener("keydown", e => {
+  if(e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    sendCinemaChat();
+  }
+});
+
+async function sendCinemaChat(){
+  if(!cinemaLiveProgramId) return;
+  if(cinemaChatSendLock) return;
+  const input = $("cinemaChatInput");
+  const text = (input?.value || "").trim();
+  if(!text) return;
+  if(!appwriteReady || !databases || !appwriteID){
+    showToast("اتصال به سرور برقرار نیست");
+    return;
+  }
+  cinemaChatSendLock = true;
+  const programId = cinemaLiveProgramId;
+  const payload = cinemaChatPayload({
+    programId,
+    userId: currentUser && currentUser.id ? currentUser.id : "",
+    name: cinemaDisplayName(),
+    text: text.slice(0, 500),
+    at: Date.now(),
+    edited: false,
+    replyToId: cinemaChatReplyTo ? cinemaChatReplyTo.id : "",
+    replyToName: cinemaChatReplyTo ? cinemaChatReplyTo.name : "",
+    replyToText: cinemaChatReplyTo ? cinemaChatReplyTo.text : ""
+  });
+  const btn = $("cinemaChatSendBtn");
+  if(btn) btn.disabled = true;
+  try{
+    const perms = cinemaChatDocPermissions();
+    let doc;
+    if(perms){
+      doc = await databases.createDocument(DATABASE_ID, COLLECTION_CINEMA_MESSAGES, appwriteID.unique(), payload, perms);
+    }else{
+      doc = await databases.createDocument(DATABASE_ID, COLLECTION_CINEMA_MESSAGES, appwriteID.unique(), payload);
+    }
+    const msg = mapCinemaChatDoc(doc);
+    if(msg){
+      let list = getCinemaChatCache(programId).slice();
+      if(!list.some(m => m.id === msg.id)) list.push(msg);
+      list.sort((a,b)=> (a.at||0) - (b.at||0) || String(a.id).localeCompare(String(b.id)));
+      setCinemaChatCache(programId, list);
+    }
+    if(input){
+      input.value = "";
+      input.style.height = "auto";
+    }
+    cinemaChatReplyTo = null;
+    updateCinemaChatReplyBar();
+    updateCinemaChatComposerState();
+    cinemaChatNearBottom = true;
+    renderCinemaChat(programId, true);
+    if(getCinemaChatCache(programId).length >= CINEMA_CHAT_PRUNE_AT){
+      pruneCinemaChatOnServer(programId).catch(e => console.warn(e));
+    }
+  }catch(e){
+    console.error("sendCinemaChat", e);
+    const em = String(e && e.message || "");
+    if(/permission|unauthorized|forbidden/i.test(em)) showToast("مجوز ارسال پیام وجود ندارد");
+    else if(/network|fetch|Failed/i.test(em)) showToast("خطای شبکه — پیام ارسال نشد");
+    else showToast("ارسال پیام ناموفق بود");
+  }finally{
+    cinemaChatSendLock = false;
+    if(btn) btn.disabled = false;
+  }
+}
+
+
+/* پاکسازی برنامه‌های خیلی قدیمی (بیش از ۱۲ ساعت از پایان) */
+function pruneOldCinemaPrograms(){
+  const now = cinemaNow();
+  const keep = (cinemaPrograms || []).filter(p => {
+    const end = cinemaProgramEndAt(p);
+    return (now - end) < 12 * 3600 * 1000;
+  });
+  if(keep.length !== (cinemaPrograms || []).length){
+    cinemaPrograms = keep;
+    saveCinemaProgramsLocal(cinemaPrograms);
+  }
+}
+
+
 async function init(){
   fillGenreSelect();
   renderGenres();
@@ -9097,6 +11678,15 @@ async function init(){
 
       await loadWorks();
       try{ await loadStudios(); renderHomeStudios(); }catch(e){ console.error(e); }
+      try{
+        await syncCinemaClock();
+        setInterval(()=>{ syncCinemaClock(); }, 5 * 60 * 1000);
+        document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) syncCinemaClock(); });
+        await loadCinemaPrograms();
+        pruneOldCinemaPrograms();
+        updateCinemaHomeBanner();
+        startCinemaTicker();
+      }catch(e){ console.error(e); }
       if(currentUser && currentUser.email){
         try{ await refreshCurrentUserCoins(); }catch(e){ console.error(e); }
         updateProfile();
