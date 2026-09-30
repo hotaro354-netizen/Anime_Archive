@@ -9910,6 +9910,7 @@ const CINEMA_SETTINGS_DOC = "cinema_programs";
 
 let cinemaPrograms = [];
 let cinemaTicker = null;
+let cinemaFastTimer = null;
 let cinemaLiveProgramId = null;
 let cinemaLiveSyncTimer = null;
 let cinemaChatReplyTo = null;
@@ -9920,25 +9921,71 @@ const CINEMA_INTRO_SEC = 30;
 
 /* ساعت مشترک: اختلاف ساعت دستگاه با ساعت سرور، تا همه کاربران یک زمان واحد ببینند */
 let cinemaClockOffset = 0;
+let cinemaClockSynced = false;
+let cinemaClockErrMs = 1000; /* خطای تقریبی ساعت (میلی‌ثانیه) */
+let cinemaClockSyncing = false;
+const CINEMA_CLOCK_SAMPLES = 10;   /* حداکثر تعداد نمونه در هر بار همگام‌سازی */
+const CINEMA_CLOCK_GAP_MS = 110;   /* فاصله‌ی بین نمونه‌ها (نه مضرب ۱۰۰۰ تا فاز ثانیه‌ها فرق کند) */
 function cinemaNow(){ return Date.now() + cinemaClockOffset; }
+
+/*
+  هدر Date فقط دقت ۱ ثانیه دارد. اما اگر چند نمونه در لحظه‌های مختلف بگیریم،
+  هر نمونه بازه‌ای برای اختلاف ساعت می‌دهد و اشتراک این بازه‌ها خیلی باریک‌تر می‌شود
+  (معمولاً زیر ۱۰۰–۲۰۰ میلی‌ثانیه).
+*/
+function cinemaClockEstimate(samples){
+  const minRtt = Math.min.apply(null, samples.map(s => s.rtt));
+  const good = samples.filter(s => s.rtt <= minRtt + 80); /* نمونه‌های با تأخیر زیاد کنار می‌روند */
+  let lo = -Infinity, hi = Infinity;
+  good.forEach(s => { if(s.lo > lo) lo = s.lo; if(s.hi < hi) hi = s.hi; });
+  if(lo <= hi) return { offset: (lo + hi) / 2, err: (hi - lo) / 2 };
+  /* بازه‌ها با هم نمی‌خوانند (نوسان شبکه): میانه‌ی نقطه‌های وسط */
+  const mids = good.map(s => (s.lo + s.hi) / 2).sort((a,b)=> a - b);
+  return { offset: mids[Math.floor(mids.length / 2)], err: 500 };
+}
+
 async function syncCinemaClock(){
-  const sources = [];
-  if(/^https?:/i.test(location.protocol)) sources.push(location.href.split("#")[0]);
-  try{ sources.push(APPWRITE_ENDPOINT + "/health/time"); }catch(e){}
-  for(const url of sources){
-    try{
-      const t0 = Date.now();
-      const res = await fetch(url, { method: "HEAD", cache: "no-store" });
-      const t1 = Date.now();
-      const h = res.headers.get("Date");
-      const server = h ? new Date(h).getTime() : NaN;
-      if(!isFinite(server)) continue;
-      /* هدر Date دقت ۱ ثانیه دارد → ۵۰۰ms میانگین؛ نصف RTT هم جبران می‌شود */
-      cinemaClockOffset = (server + 500) + (t1 - t0) / 2 - t1;
-      return true;
-    }catch(e){}
+  if(cinemaClockSyncing) return cinemaClockSynced;
+  cinemaClockSyncing = true;
+  try{
+    const sources = [];
+    if(/^https?:/i.test(location.protocol)) sources.push(location.href.split("#")[0]);
+    try{ sources.push(APPWRITE_ENDPOINT + "/health/time"); }catch(e){}
+    for(const url of sources){
+      const samples = [];
+      let fails = 0;
+      for(let i = 0; i < CINEMA_CLOCK_SAMPLES; i++){
+        if(i > 0) await new Promise(r => setTimeout(r, CINEMA_CLOCK_GAP_MS));
+        try{
+          const p0 = performance.now();
+          const t0 = Date.now();
+          const res = await fetch(url, { method: "HEAD", cache: "no-store" });
+          const rtt = performance.now() - p0;
+          const h = res.headers.get("Date");
+          const age = Number(res.headers.get("Age") || 0);
+          const server = h ? new Date(h).getTime() : NaN;
+          /* پاسخ کش‌شده (Age>0) یا خیلی کند قابل اعتماد نیست */
+          if(!isFinite(server) || age > 0 || rtt > 1500){ fails++; if(fails >= 2 && !samples.length) break; continue; }
+          const mid = t0 + rtt / 2; /* لحظه‌ی تقریبی تولید پاسخ در سرور (به وقت دستگاه) */
+          samples.push({ lo: server - mid, hi: server + 1000 - mid, rtt });
+          if(samples.length >= 4 && cinemaClockEstimate(samples).err < 80) break; /* به اندازه‌ی کافی دقیق شد */
+        }catch(e){
+          fails++;
+          if(fails >= 2 && !samples.length) break;
+        }
+      }
+      if(samples.length){
+        const est = cinemaClockEstimate(samples);
+        cinemaClockOffset = est.offset;
+        cinemaClockErrMs = est.err;
+        cinemaClockSynced = true;
+        return true;
+      }
+    }
+    return false; /* در صورت شکست، ساعت دستگاه استفاده می‌شود */
+  }finally{
+    cinemaClockSyncing = false;
   }
-  return false; /* در صورت شکست، ساعت دستگاه استفاده می‌شود */
 }
 
 function loadCinemaProgramsLocal(){
@@ -10522,12 +10569,17 @@ function startCinemaTicker(){
     }catch(e){}
     try{ updateCinemaHomeBanner(); }catch(e){}
     try{
-      if($("cinemaLivePage")?.classList.contains("active")) syncCinemaLivePlayback();
-    }catch(e){}
-    try{
       if($("cinemaSchedulePage")?.classList.contains("active")) renderCinemaSchedulePage();
     }catch(e){}
   }, 1000);
+
+  /* همگام‌سازی پخش هر ۲۵۰ میلی‌ثانیه (دقیق‌تر از تایمر ۱ ثانیه‌ای) */
+  if(cinemaFastTimer) clearInterval(cinemaFastTimer);
+  cinemaFastTimer = setInterval(()=>{
+    try{
+      if(cinemaLiveProgramId && $("cinemaLivePage")?.classList.contains("active")) syncCinemaLivePlayback();
+    }catch(e){}
+  }, 250);
 }
 
 /* ----- ورود و پخش زنده ----- */
@@ -10703,6 +10755,29 @@ function stopCinemaLive(){
   $("cinemaLiveOverlay")?.classList.remove("active");
 }
 
+/* تنظیمات همگام‌سازی دقیق پخش */
+const CINEMA_HARD_SEEK_SEC = 1.0;    /* اختلاف بیشتر از این → پرش مستقیم */
+const CINEMA_DEADBAND_SEC = 0.08;    /* اختلاف کمتر از این → نادیده (همگام است) */
+const CINEMA_SEEK_LEAD_SEC = 0.2;    /* جبران تأخیر seek */
+const CINEMA_MAX_RATE_ADJ = 0.06;    /* حداکثر تند/کند کردن ملایم (±۶٪) */
+let cinemaLastHardSeekAt = 0;
+let cinemaStartTimerFor = null;
+
+function cinemaSafeTarget(player, t){
+  const dur = player && player.duration;
+  return (dur && isFinite(dur)) ? Math.min(t, Math.max(0, dur - 0.5)) : t;
+}
+function cinemaResetRate(player){
+  try{ if(player && player.playbackRate !== 1) player.playbackRate = 1; }catch(e){}
+}
+/* ویدیو را روی نقطه‌ی مورد نظر آماده نگه می‌دارد تا لحظه‌ی شروع بدون تأخیر پخش شود */
+function cinemaParkAt(player, sec){
+  try{
+    if(!player || player.readyState < 1 || player.seeking) return;
+    if(Math.abs((player.currentTime || 0) - sec) > 0.5) player.currentTime = cinemaSafeTarget(player, sec);
+  }catch(e){}
+}
+
 function syncCinemaLivePlayback(forceSeek){
   if(!cinemaLiveProgramId) return;
   const p = (cinemaPrograms || []).find(x => x.id === cinemaLiveProgramId);
@@ -10751,6 +10826,8 @@ function syncCinemaLivePlayback(forceSeek){
       if($("cinemaOverlayHint")) $("cinemaOverlayHint").textContent = "چت فعال است · پخش از دقیقه " + Math.floor((p.breakAtMin || 0)) + " ادامه می‌یابد";
     }
     try{ player?.pause(); }catch(e){}
+    cinemaResetRate(player);
+    cinemaParkAt(player, st.filmTimeSec || 0); /* آماده برای ادامه‌ی هم‌زمان */
     return;
   }
 
@@ -10763,6 +10840,16 @@ function syncCinemaLivePlayback(forceSeek){
       if($("cinemaOverlayHint")) $("cinemaOverlayHint").textContent = "پخش برای همه هم‌زمان شروع می‌شود";
     }
     try{ player?.pause(); }catch(e){}
+    cinemaResetRate(player);
+    cinemaParkAt(player, 0); /* ویدیو روی ثانیه‌ی صفر آماده بماند */
+    /* یک تایمر دقیق برای لحظه‌ی صفر (بدون انتظار برای تیک بعدی) */
+    if(st.introLeftSec < 1.2 && cinemaStartTimerFor !== p.id){
+      cinemaStartTimerFor = p.id;
+      setTimeout(()=>{
+        cinemaStartTimerFor = null;
+        if(cinemaLiveProgramId === p.id) syncCinemaLivePlayback(false);
+      }, Math.max(0, st.introLeftSec * 1000) + 10);
+    }
     return;
   }
 
@@ -10776,13 +10863,31 @@ function syncCinemaLivePlayback(forceSeek){
     return;
   }
   if(player.readyState < 1) return; /* هنوز متادیتا نیامده */
+  if(player.seeking) return;        /* منتظر پایان seek قبلی */
+
   const target = Math.max(0, st.filmTimeSec || 0);
-  const dur = player.duration;
-  const safeTarget = (dur && isFinite(dur)) ? Math.min(target, Math.max(0, dur - 0.5)) : target;
-  const drift = Math.abs((player.currentTime || 0) - safeTarget);
-  if(forceSeek || drift > 2.5){
-    try{ player.currentTime = safeTarget; }catch(e){}
+  const safeTarget = cinemaSafeTarget(player, target);
+  const drift = (player.currentTime || 0) - safeTarget; /* مثبت = این دستگاه جلوتر است */
+  const ad = Math.abs(drift);
+  const nowMs = Date.now();
+
+  if(forceSeek || ad > CINEMA_HARD_SEEK_SEC){
+    /* اختلاف زیاد: پرش مستقیم (با جبران تأخیر seek) */
+    if(forceSeek || nowMs - cinemaLastHardSeekAt > 1500){
+      cinemaLastHardSeekAt = nowMs;
+      try{ player.currentTime = cinemaSafeTarget(player, target + CINEMA_SEEK_LEAD_SEC); }catch(e){}
+      cinemaResetRate(player);
+    }
+  }else if(!player.paused && player.readyState >= 3){
+    /* اختلاف کم: تند/کند کردن خیلی ملایم به‌جای پرش */
+    let rate = 1;
+    if(ad > CINEMA_DEADBAND_SEC){
+      const adj = Math.max(-CINEMA_MAX_RATE_ADJ, Math.min(CINEMA_MAX_RATE_ADJ, -drift * 0.6));
+      rate = 1 + adj;
+    }
+    try{ if(Math.abs(player.playbackRate - rate) > 0.004) player.playbackRate = rate; }catch(e){}
   }
+
   if(player.paused){
     cinemaTryPlay(player, wasOverlayActive);
   }
@@ -10813,13 +10918,17 @@ function syncCinemaLivePlayback(forceSeek){
     if(!p) return;
     const st = getCinemaTimelineState(p, cinemaNow());
     if(st.phase !== "playing") return;
-    const drift = Math.abs((player.currentTime || 0) - (st.filmTimeSec || 0));
-    if(drift > 3){
-      try{ player.currentTime = st.filmTimeSec || 0; }catch(e){}
-    }
+    syncCinemaLivePlayback(false);
   });
+  /* بعد از بافر/آماده‌شدن، فوراً دوباره هماهنگ شو (نه با تیک بعدی) */
+  ["playing","canplay"].forEach(ev => {
+    player.addEventListener(ev, ()=>{
+      if(cinemaLiveProgramId) syncCinemaLivePlayback(false);
+    });
+  });
+  /* کاربر نباید سرعت را دستی عوض کند؛ فقط تنظیم ملایم خود سیستم مجاز است */
   player.addEventListener("ratechange", ()=>{
-    if(player.playbackRate !== 1) player.playbackRate = 1;
+    if(player.playbackRate < 0.9 || player.playbackRate > 1.1) player.playbackRate = 1;
   });
 })();
 
@@ -11681,7 +11790,12 @@ async function init(){
       try{
         await syncCinemaClock();
         setInterval(()=>{ syncCinemaClock(); }, 5 * 60 * 1000);
-        document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) syncCinemaClock(); });
+        document.addEventListener("visibilitychange", ()=>{
+          if(!document.hidden){
+            syncCinemaClock();
+            try{ if(cinemaLiveProgramId) syncCinemaLivePlayback(false); }catch(e){}
+          }
+        });
         await loadCinemaPrograms();
         pruneOldCinemaPrograms();
         updateCinemaHomeBanner();
