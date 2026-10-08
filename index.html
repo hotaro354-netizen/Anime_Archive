@@ -340,6 +340,35 @@ button{cursor:pointer}
 .playerOnlyHint{
   margin-top:12px;font-size:10px;color:var(--muted);line-height:1.8;text-align:center
 }
+.playerTrackBar{
+  margin-top:12px;padding:12px;border-radius:14px;background:var(--card,#16161a);
+  border:1px solid var(--line,#2a2a30);display:flex;flex-direction:column;gap:10px
+}
+.playerTrackRow{display:flex;align-items:center;gap:10px;direction:rtl}
+.playerTrackLabel{font-size:11px;color:var(--muted);white-space:nowrap;min-width:64px}
+.playerTrackSelect{
+  flex:1;min-width:0;height:40px;border-radius:10px;border:1px solid var(--line,#2a2a30);
+  background:var(--card2,#1c1c22);color:var(--text,#e8dcc8);padding:0 10px;font-size:12px;outline:0
+}
+.downloadProgressBox{
+  margin-top:14px;padding:14px;border-radius:14px;background:var(--card,#16161a);
+  border:1px solid rgba(245,166,35,.35);text-align:center
+}
+.downloadProgressBox .dpTitle{font-size:12px;font-weight:700;color:#f5a623;margin-bottom:10px}
+.downloadProgressBox .dpBar{
+  height:8px;border-radius:6px;background:#2a2a32;overflow:hidden;direction:ltr
+}
+.downloadProgressBox .dpFill{
+  height:100%;width:0%;background:linear-gradient(90deg,#f5a623,#ff8c00);
+  border-radius:6px;transition:width .2s ease
+}
+.downloadProgressBox .dpMeta{font-size:11px;color:var(--muted);margin-top:8px;font-variant-numeric:tabular-nums}
+html.theme-light .playerTrackSelect,html.theme-light .downloadProgressBox{
+  background:#fff !important;border-color:var(--line) !important;color:var(--text) !important
+}
+html.theme-brown .playerTrackSelect,html.theme-brown .downloadProgressBox{
+  background:#2c1c12 !important;border-color:#6b4a2a !important;color:#f5ebe0 !important
+}
 .playerOnlyControls{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
 .playerOnlyControls .outlineBtn{margin-top:0}
 .playerOnlyControls .navEpBtn{font-size:10.5px;padding:9px 12px;white-space:nowrap}
@@ -924,27 +953,73 @@ html.theme-brown .profileClaimCard.isWaiting .pcClaimBadge{
 /* ===== Detail hero (screenshot style) ===== */
 .detailHero{
   position:relative;margin:-22px -16px 0;overflow:visible;
-  height:min(78vw, 440px);min-height:320px;max-height:460px;
+  /* ارتفاع بیشتر برای بنر جزئیات */
+  height:min(96vw, 560px);min-height:400px;max-height:580px;
   border-radius:0;padding-bottom:0;
 }
 .detailHeroBg{
   position:absolute;inset:0;z-index:0;overflow:hidden;
-  background:#121216;
+  background:#0c0c10;
 }
 .detailHeroBg img{
   width:100%;height:100%;object-fit:cover;
-  object-position:center 28%;
-  filter:brightness(.6) saturate(1.06);
-  transform:scale(1.03);
+  object-position:center 30%;
+  /* تم تیره پیش‌فرض: واضح، کمی تاریک سینمایی — نه تار */
+  filter:brightness(.84) saturate(1.1) contrast(1.04);
+  transform:scale(1.02);
 }
 .detailHeroBg::after{
   content:"";position:absolute;inset:0;
+  /* تاریکی فقط در پایین برای اتصال به محتوا؛ بالای تصویر روشن بماند */
   background:linear-gradient(180deg,
-    rgba(5,5,8,.05) 0%,
-    rgba(5,5,8,.15) 30%,
-    rgba(5,5,8,.4) 55%,
-    rgba(5,5,8,.82) 82%,
-    rgba(5,5,8,.97) 100%);
+    rgba(5,5,8,.02) 0%,
+    rgba(5,5,8,.06) 28%,
+    rgba(5,5,8,.18) 52%,
+    rgba(5,5,8,.42) 72%,
+    rgba(5,5,8,.72) 88%,
+    rgba(5,5,8,.92) 100%);
+}
+/* —— تم روشن: محو خیلی ملایم و دیر — نصف تصویر سفید نشود —— */
+html.theme-light .detailHeroBg{
+  background:#f4f2ef;
+}
+html.theme-light .detailHeroBg img{
+  filter:brightness(1.02) saturate(1.06) contrast(1.03);
+}
+html.theme-light .detailHeroBg::after{
+  background:linear-gradient(180deg,
+    rgba(244,242,239,0) 0%,
+    rgba(244,242,239,0) 55%,
+    rgba(244,242,239,.12) 72%,
+    rgba(244,242,239,.38) 86%,
+    rgba(244,242,239,.72) 94%,
+    rgba(244,242,239,1) 100%);
+}
+/* —— تم قهوه‌ای: محو با رنگ گرم خود تم (نه سیاه) —— */
+html.theme-brown .detailHeroBg{
+  background:#241810;
+}
+html.theme-brown .detailHeroBg img{
+  /* کمی روشن‌تر + اشباع گرم تا حس قهوه‌ای بماند، نه خاکستری/سیاه */
+  filter:brightness(.9) saturate(1.18) contrast(1.04) sepia(.12);
+}
+html.theme-brown .detailHeroBg::after{
+  /* لایه قهوه‌ای گرم: #2c1c12 / #3a2818 / #1e140c — نه سیاه خالص */
+  background:linear-gradient(180deg,
+    rgba(44,28,18,0) 0%,
+    rgba(44,28,18,.08) 32%,
+    rgba(58,40,24,.18) 52%,
+    rgba(58,40,24,.4) 70%,
+    rgba(36,24,16,.72) 86%,
+    rgba(30,20,12,.92) 94%,
+    #1e140c 100%);
+}
+html.theme-brown #detailPage.page,
+html.theme-brown .page#detailPage{
+  background: #1e140c !important;
+}
+html.theme-brown .detailPageInner{
+  background: transparent;
 }
 .detailHeroTop{
   position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;
@@ -959,7 +1034,7 @@ html.theme-brown .profileClaimCard.isWaiting .pcClaimBadge{
 .detailHeroTopBtn.starOn{color:#f5a623}
 /* فقط پوستر روی لبه — نصف داخل / نصف بیرون پس‌زمینه */
 .detailHeroBody{
-  position:absolute;left:0;right:0;bottom:-108px;z-index:3;
+  position:absolute;left:0;right:0;bottom:-100px;z-index:3;
   display:flex;flex-direction:row;align-items:flex-end;gap:14px;
   padding:0 16px;direction:rtl;
   pointer-events:none;
@@ -979,15 +1054,15 @@ html.theme-brown .profileClaimCard.isWaiting .pcClaimBadge{
   padding-bottom:4px; /* روی ناحیهٔ زیر هیرو، نه روی تصویر */
 }
 .detailHeroTitle{
-  font-size:21px;font-weight:800;color:var(--text,#f5f0e6);line-height:1.35;margin:0 0 6px;
+  font-size:21px;font-weight:800;color:#f5f0e6;line-height:1.35;margin:0 0 6px;
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;
   word-break:break-word;
-  text-shadow:none;
+  text-shadow:0 1px 3px rgba(0,0,0,.45);
 }
 .detailHeroStudio{
-  font-size:12px;color:var(--muted,#9a9088);line-height:1.5;margin-bottom:10px;
+  font-size:12px;color:#c8b8a0;line-height:1.5;margin-bottom:10px;
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
-  text-shadow:none;
+  text-shadow:0 1px 2px rgba(0,0,0,.35);
 }
 .detailHeroMeta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:0;direction:rtl}
 .detailImdbBadge{
@@ -999,14 +1074,40 @@ html.theme-brown .profileClaimCard.isWaiting .pcClaimBadge{
 .detailImdbBadge .imdbLbl{font-size:10px;font-weight:700;opacity:.9}
 .detailYearBadge{
   display:inline-flex;align-items:center;
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);
-  border-radius:8px;padding:5px 10px;font-size:12px;color:#c8b8a0;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);
+  border-radius:8px;padding:5px 10px;font-size:12px;color:#e8dcc8;
   font-variant-numeric:tabular-nums;direction:ltr;
 }
-html.theme-light .detailHeroTitle{color:#1c1916 !important}
-html.theme-light .detailHeroStudio{color:#6b6560 !important}
+/* تم روشن: عنوان روی پس‌زمینه سفید — باید تیره و خوانا باشد */
+html.theme-light .detailHeroTitle{
+  color:#141210 !important;
+  text-shadow:none !important;
+  font-weight:800;
+}
+html.theme-light .detailHeroStudio,
+html.theme-light .detailAuthorName{
+  color:#5a5550 !important;
+  text-shadow:none !important;
+}
 html.theme-light .detailYearBadge{
-  background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.08);color:#5a5550;
+  background:#f0eeea !important;
+  border-color:#ddd8d0 !important;
+  color:#3a3530 !important;
+}
+/* تم قهوه‌ای: عنوان روشن و خوانا روی پس‌زمینه قهوه‌ای */
+html.theme-brown .detailHeroTitle{
+  color:#faf3e8 !important;
+  text-shadow:0 1px 4px rgba(0,0,0,.5) !important;
+}
+html.theme-brown .detailHeroStudio,
+html.theme-brown .detailAuthorName{
+  color:#e0c8a8 !important;
+  text-shadow:0 1px 3px rgba(0,0,0,.4) !important;
+}
+html.theme-brown .detailYearBadge{
+  background:rgba(255,220,170,.12) !important;
+  border-color:rgba(255,220,170,.22) !important;
+  color:#f0e0c8 !important;
 }
 
 .detailUnpubBox{
@@ -1033,7 +1134,7 @@ html.theme-brown .detailUnpubBox{
 .adminDraftItem small{font-size:10px;color:var(--muted);display:block;margin-top:4px;line-height:1.7}
 .adminDraftActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .detailActionsWrap{
-  margin:140px 0 18px;display:flex;flex-direction:column;align-items:center;gap:10px;direction:rtl;
+  margin:132px 0 18px;display:flex;flex-direction:column;align-items:center;gap:10px;direction:rtl;
 }
 .detailActionsRow{
   display:flex;gap:10px;width:100%;justify-content:center;align-items:stretch;
@@ -1430,7 +1531,18 @@ html[class*="theme-"] .detailImdbBadge{background:var(--orange);color:#1a1008}
 html[class*="theme-"] .detailStoryBox{
   background:var(--card) !important;border-color:var(--line) !important;
 }
-html[class*="theme-"] .detailHeroTopBtn{background:rgba(0,0,0,.45);color:var(--text)}
+html[class*="theme-"] .detailHeroTopBtn{background:rgba(0,0,0,.45);color:#f5f0e6}
+html.theme-light .detailHeroTopBtn{
+  background:rgba(255,255,255,.85) !important;
+  color:#1c1916 !important;
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow:0 2px 10px rgba(0,0,0,.12);
+}
+html.theme-light .detailHeroTopBtn.starOn{color:#e8952e !important}
+html.theme-brown .detailHeroTopBtn{
+  background:rgba(30,20,12,.55) !important;
+  color:#f5ebe0 !important;
+}
 html[class*="theme-"] .page{background:transparent}
 html[class*="theme-"] .copyBannerBox,
 html[class*="theme-"] .importantBannerBox,
@@ -1791,10 +1903,7 @@ html.theme-light .top h2{
 html.theme-light .arrow{
   color:#8a7a6a !important;
 }
-html.theme-light .detailHeroStudio,
-html.theme-light .detailAuthorName{
-  color:#c8b8a0 !important;
-}
+/* detailHeroStudio contrast handled above */
 html.theme-light .ahTitle{
   color:#f5f0e6 !important;
 }
@@ -4050,18 +4159,38 @@ html.theme-brown .animeHeroDots span.on{
         class="standaloneMediaPlayer"
         controls
         playsinline
-        preload="metadata"
-        controlslist="nodownload"
+        webkit-playsinline
+        x5-playsinline
+        x5-video-player-type="h5"
+        x5-video-player-fullscreen="true"
+        preload="auto"
+        controlslist="nodownload noremoteplayback"
       >
         مرورگر شما از پخش این رسانه پشتیبانی نمی‌کند.
       </video>
+    </div>
+    <div class="playerTrackBar" id="playerTrackBar" style="display:none">
+      <div class="playerTrackRow" id="playerAudioRow" style="display:none">
+        <span class="playerTrackLabel">🔊 صدا</span>
+        <select id="playerAudioSelect" class="playerTrackSelect" aria-label="انتخاب ترک صدا"></select>
+      </div>
+      <div class="playerTrackRow" id="playerSubRow" style="display:none">
+        <span class="playerTrackLabel">🅢 زیرنویس</span>
+        <select id="playerSubSelect" class="playerTrackSelect" aria-label="انتخاب زیرنویس"></select>
+      </div>
     </div>
     <div class="playerOnlyControls">
       <button type="button" id="playerNextBtn" class="outlineBtn navEpBtn" style="display:none">قسمت بعدی ‹</button>
       <button type="button" id="standaloneFullscreenBtn" class="outlineBtn">⛶ تمام صفحه</button>
       <button type="button" id="playerPrevBtn" class="outlineBtn navEpBtn" style="display:none">› قسمت قبلی</button>
     </div>
-    <p class="playerOnlyHint">پخش مستقیم در مرورگر — برای ذخیره فایل از دکمه «دانلود» در لیست قسمت‌ها استفاده کنید.</p>
+    <div id="downloadProgressBox" class="downloadProgressBox" style="display:none" aria-live="polite">
+      <div class="dpTitle" id="downloadProgressTitle">در حال دانلود...</div>
+      <div class="dpBar"><div class="dpFill" id="downloadProgressFill"></div></div>
+      <div class="dpMeta" id="downloadProgressMeta">۰٪</div>
+      <button type="button" class="outlineBtn" id="downloadProgressCancel" style="margin-top:8px;width:100%">لغو</button>
+    </div>
+    <p class="playerOnlyHint">پخش مستقیم — برای ذخیره فایل از دکمه «دانلود» در لیست قسمت‌ها استفاده کنید. در اپ اندروید دانلود با نوار پیشرفت انجام می‌شود.</p>
   </div>
 </section>
 
@@ -6606,17 +6735,17 @@ function pushHistory(id){
 }
 
 function showPage(id, fromPop){
+  if(!id) id = "homePage";
   const previousPage = appPageStack[appPageStack.length - 1] || "homePage";
+
   if(previousPage === "searchPage" && id !== "searchPage"){
     if($("searchInput")) $("searchInput").value = "";
     try{ renderSearch(); }catch(e){}
   }
   if(id === "homePage" && !fromPop && previousPage !== "homePage" && previousPage !== "adminPage"){
-    /* هر بار از جستجو/ژانر/ذخیره‌ها/پروفایل به خانه برگردیم، بنر به حالت خودکار برگردد. */
-    resetHeroToAutomatic();
+    try{ resetHeroToAutomatic(); }catch(e){}
   }
   if(id === "homePage"){
-    /* با برگشت به خانه، هر سه ردیف همیشه از ابتدای لیست شروع شوند. */
     ["latestBooks","newBooks","forYou","serialSectionBooks","movieSectionBooks"].forEach(boxId => {
       const el = $(boxId);
       if(el) el.scrollLeft = 0;
@@ -6624,13 +6753,12 @@ function showPage(id, fromPop){
     try{ startHeroAuto(); }catch(e){}
   } else {
     try{ stopHeroAuto(); }catch(e){}
-    if(heroAnimationTimer){
+    if(typeof heroAnimationTimer !== "undefined" && heroAnimationTimer){
       clearTimeout(heroAnimationTimer);
       heroAnimationTimer = null;
       heroAnimating = false;
     }
   }
-  /* ترک صفحه پخش → توقف ویدیو */
   if(previousPage === "playerPage" && id !== "playerPage"){
     try{ stopStandalonePlayer(); }catch(e){}
   }
@@ -6646,11 +6774,10 @@ function showPage(id, fromPop){
     btn.classList.toggle("active", btn.dataset.page === id);
   });
 
-  /* صفحه پخش: نوار پایین مخفی تا فقط ویدیو دیده شود */
   const nav = $("mainNav");
   if(nav) nav.style.display = (id === "playerPage" || id === "cinemaLivePage" || id === "planetPage" || id === "planetCategoryPage") ? "none" : "";
 
-  window.scrollTo(0, 0);
+  try{ window.scrollTo(0, 0); }catch(e){}
 
   if(id === "savedPage"){
     if($("savedHistoryTab")?.classList.contains("active")) renderHistory();
@@ -6658,7 +6785,14 @@ function showPage(id, fromPop){
   }
   if(id === "genresPage"){
     renderGenres();
-    loadGenresFromServer().then(()=>{ fillGenreSelect(); renderGenres(); }).catch(()=>{});
+    /* ژانرها را فقط اگر خالی/کهنه بودند از سرور بگیر — نه هر بار (کاهش لگ) */
+    try{
+      if(typeof __lastGenresFetchTs === "undefined") window.__lastGenresFetchTs = 0;
+      if(Date.now() - __lastGenresFetchTs > 60000){
+        __lastGenresFetchTs = Date.now();
+        loadGenresFromServer().then(()=>{ fillGenreSelect(); renderGenres(); }).catch(()=>{});
+      }
+    }catch(e){}
   }
   if(id === "profilePage"){
     updateCoinUI();
@@ -6666,7 +6800,6 @@ function showPage(id, fromPop){
       refreshCurrentUserCoins().catch(()=>{});
     }
   }
-  /* اعلان در هر صفحه‌ای، نه فقط پروفایل */
   try{ checkUserNotifications(); }catch(e){}
   if(id === "adminPage"){
     if(!isAdminMode || !canSeeAdminButton()){
@@ -6680,116 +6813,177 @@ function showPage(id, fromPop){
     renderPublishedWorks();
   }
 
+  /* —— تاریخچه مرورگر —— */
   if(!fromPop){
     const mainPages = ["homePage","searchPage","genresPage","savedPage","explorePage","profilePage"];
     const top = appPageStack[appPageStack.length - 1];
     if(top !== id){
       if(mainPages.includes(id)){
-        /* تب‌های اصلی: استک را ریست کن */
+        /* تب اصلی: استک تازه — همیشه از خانه یک لایه buffer برای جلوگیری از خروج از سایت */
         appPageStack = [id];
-        try{ history.pushState({ page: id, stack: appPageStack.slice() }, ""); }catch(e){
-          try{ history.replaceState({ page: id, stack: appPageStack.slice() }, ""); }catch(_){}
+        try{
+          history.pushState({ page: id, stack: [id], seasonIdx: -1 }, "");
+        }catch(e){
+          try{ history.replaceState({ page: id, stack: [id], seasonIdx: -1 }, ""); }catch(_){}
         }
       }else{
         appPageStack.push(id);
-        /* جلوگیری از رشد بی‌نهایت */
-        if(appPageStack.length > 30) appPageStack = appPageStack.slice(-20);
-        try{ history.pushState({ page: id, stack: appPageStack.slice() }, ""); }catch(e){}
+        if(appPageStack.length > 24) appPageStack = appPageStack.slice(-16);
+        try{
+          history.pushState({
+            page: id,
+            stack: appPageStack.slice(),
+            seasonIdx: (id === "watchPage" ? selectedDetailSeasonIdx : -1)
+          }, "");
+        }catch(e){}
       }
     }else{
-      try{ history.replaceState({ page: id, stack: appPageStack.slice() }, ""); }catch(e){}
+      try{
+        history.replaceState({
+          page: id,
+          stack: appPageStack.slice(),
+          seasonIdx: (id === "watchPage" ? selectedDetailSeasonIdx : -1)
+        }, "");
+      }catch(e){}
     }
+  }else{
+    /* همگام‌سازی state بدون push اضافه */
+    try{
+      history.replaceState({
+        page: id,
+        stack: appPageStack.slice(),
+        seasonIdx: (id === "watchPage" ? selectedDetailSeasonIdx : -1)
+      }, "");
+    }catch(e){}
   }
 }
 
-/** بازگشت یکپارچه: دکمه داخل اپ + دکمه پیش‌فرض گوشی */
+/** باز کردن فصل با یک ورودی تاریخچه جدا — دکمه برگشت گوشی درست کار کند */
+function enterSeasonView(seasonIndex){
+  selectedDetailSeasonIdx = seasonIndex;
+  if($("episodeSearchInput")) $("episodeSearchInput").value = "";
+  if(currentWork) renderDetailEpisodesUI(currentWork);
+  try{
+    history.pushState({
+      page: "watchPage",
+      stack: appPageStack.slice(),
+      seasonIdx: seasonIndex
+    }, "");
+  }catch(e){}
+}
+
+/** خروج از فصل به لیست فصل‌ها بدون خروج از صفحه watch */
+function exitSeasonView(fromPop){
+  selectedDetailSeasonIdx = -1;
+  if($("episodeSearchInput")) $("episodeSearchInput").value = "";
+  if(currentWork) renderDetailEpisodesUI(currentWork);
+  if(!fromPop){
+    try{
+      history.replaceState({
+        page: "watchPage",
+        stack: appPageStack.slice(),
+        seasonIdx: -1
+      }, "");
+    }catch(e){}
+  }
+}
+
+/**
+ * بازگشت سریع (دکمه داخل اپ) — بدون قفل و بدون history.back کند
+ * دکمه گوشی از popstate جداگانه هندل می‌شود
+ */
 function navigateBack(){
   try{ closeDetailPlayer(); }catch(e){}
-  /* داخل لیست فصل انتخاب‌شده روی watchPage */
+
+  /* ۱) داخل فصل → لیست فصل‌ها (فوری) */
   if(
     $("watchPage")?.classList.contains("active") &&
     currentWork &&
-    currentWork.type === "serial" &&
     currentWork.seasons &&
     currentWork.seasons.length &&
     selectedDetailSeasonIdx >= 0
   ){
-    selectedDetailSeasonIdx = -1;
-    if($("episodeSearchInput")) $("episodeSearchInput").value = "";
-    renderDetailEpisodesUI(currentWork);
+    exitSeasonView(false);
+    /* یک پله تاریخچه فصل را هم مصرف کن تا دکمه گوشی قاطی نشود */
+    try{
+      if(history.state && typeof history.state.seasonIdx === "number" && history.state.seasonIdx >= 0){
+        history.replaceState({
+          page: "watchPage",
+          stack: appPageStack.slice(),
+          seasonIdx: -1
+        }, "");
+      }
+    }catch(e){}
     return;
   }
-  /* player → watch یا detail */
+
+  /* ۲) صفحه پخش */
   if($("playerPage")?.classList.contains("active")){
-    try{ stopStandalonePlayer(); }catch(e){}
-    if(playerReturnWorkId){
-      const w = (typeof allWorks !== "undefined" ? allWorks : []).find(x => x.id === playerReturnWorkId)
-        || currentWork;
-      playerReturnWorkId = null;
-      if(w){
-        /* اگر از تماشا آمده بودیم به watch برگرد */
-        if(appPageStack.includes("watchPage")){
-          while(appPageStack.length > 1 && appPageStack[appPageStack.length-1] !== "watchPage"){
-            appPageStack.pop();
-          }
-          openWatchPage(w);
-          return;
-        }
-        openDetail(w);
-        return;
-      }
-    }
+    leavePlayerPage();
+    return;
   }
+
+  /* ۳) پله قبلی در استک — فوری مثل نسخه اصلی */
   if(appPageStack.length > 1){
     appPageStack.pop();
     const prev = appPageStack[appPageStack.length - 1] || "homePage";
-    /* اگر prev همان detail بود و currentWork هست، openDetail نکن — فقط show */
     showPage(prev, true);
     return;
   }
+
   showPage("homePage", true);
-  try{ history.pushState({ page: "homePage", stack: ["homePage"] }, ""); }catch(e){}
+  try{ history.pushState({ page: "homePage", stack: ["homePage"], seasonIdx: -1 }, ""); }catch(e){}
 }
 
 window.addEventListener("popstate", (ev)=>{
-  /* داخل فصل انتخاب‌شده: اول به لیست فصل‌ها برگرد، از صفحه خارج نشو */
-  if(
-    $("watchPage")?.classList.contains("active") &&
-    currentWork &&
-    currentWork.type === "serial" &&
-    currentWork.seasons &&
-    currentWork.seasons.length &&
-    selectedDetailSeasonIdx >= 0
-  ){
+  let state = null;
+  try{ state = ev && ev.state ? ev.state : null; }catch(e){}
+
+  /* جلوگیری از خروج از سایت وقتی تاریخچه خالی/خارجی است */
+  if(!state || !state.page){
+    appPageStack = ["homePage"];
     selectedDetailSeasonIdx = -1;
-    if($("episodeSearchInput")) $("episodeSearchInput").value = "";
-    renderDetailEpisodesUI(currentWork);
-    try{ history.pushState({ page: "watchPage", stack: appPageStack.slice() }, ""); }catch(e){}
+    showPage("homePage", true);
+    try{ history.pushState({ page: "homePage", stack: ["homePage"], seasonIdx: -1 }, ""); }catch(e){}
     return;
   }
-  /* state مرورگر خودش استک صفحهٔ قبلی است — دوباره pop نکن */
-  let stack = null;
-  try{
-    if(ev && ev.state && Array.isArray(ev.state.stack) && ev.state.stack.length){
-      stack = ev.state.stack.slice();
+
+  /* همگام‌سازی استک از state مرورگر */
+  if(Array.isArray(state.stack) && state.stack.length){
+    appPageStack = state.stack.slice();
+  }else{
+    appPageStack = [state.page || "homePage"];
+  }
+
+  const pageId = appPageStack[appPageStack.length - 1] || state.page || "homePage";
+
+  /* فصل: فقط seasonIdx را اعمال کن */
+  if(pageId === "watchPage"){
+    const sIdx = (typeof state.seasonIdx === "number") ? state.seasonIdx : -1;
+    selectedDetailSeasonIdx = sIdx;
+    showPage("watchPage", true);
+    if(currentWork){
+      try{ renderDetailEpisodesUI(currentWork); }catch(e){}
     }
-  }catch(e){}
-  if(stack){
-    appPageStack = stack;
-    const prev = appPageStack[appPageStack.length - 1] || "homePage";
-    showPage(prev, true);
     return;
   }
-  if(appPageStack.length > 1){
-    appPageStack.pop();
-    const prev = appPageStack[appPageStack.length - 1] || "homePage";
-    showPage(prev, true);
-    return;
+
+  /* خروج از player با back گوشی */
+  if(pageId !== "playerPage"){
+    try{
+      if($("playerPage")?.classList.contains("active")) stopStandalonePlayer();
+    }catch(e){}
   }
-  /* ریشه: از سایت خارج نشو */
-  appPageStack = ["homePage"];
-  showPage("homePage", true);
-  try{ history.pushState({ page: "homePage", stack: ["homePage"] }, ""); }catch(e){}
+
+  selectedDetailSeasonIdx = -1;
+  showPage(pageId, true);
+
+  /* اگر detail/watch است و currentWork هست، UI را تازه کن بدون push دوباره */
+  if((pageId === "detailPage" || pageId === "watchPage" || pageId === "mangaPage") && currentWork){
+    try{
+      if(pageId === "watchPage") renderDetailEpisodesUI(currentWork);
+    }catch(e){}
+  }
 });
 
 document.querySelectorAll("#mainNav button").forEach(btn => {
@@ -7368,7 +7562,7 @@ function openListPage(title, list){
   fillBooksBox("listBooks", list, "موردی نیست.");
   showPage("listPage");
 }
-$("listBack")?.addEventListener("click", ()=> showPage("homePage"));
+$("listBack")?.addEventListener("click", ()=> navigateBack());
 
 $("latestArrow")?.addEventListener("click", ()=>{
   /* همیشه جدیدترین بالاتر */
@@ -7659,6 +7853,11 @@ function setSecondaryBack(pageId, backId){
   if(pageId) secondaryPageBack[pageId] = backId || "homePage";
 }
 function goSecondaryBack(pageId){
+  /* ترجیح: تاریخچه واقعی تا دکمه گوشی هم درست بماند */
+  if(appPageStack.length > 1 && appPageStack[appPageStack.length - 1] === pageId){
+    navigateBack();
+    return;
+  }
   const target = secondaryPageBack[pageId] || "profilePage";
   showPage(target);
 }
@@ -7949,7 +8148,7 @@ function openGenreDetail(genre){
   fillBooksBox("genreDetailBooks", list, "در این ژانر اثری نیست.");
   showPage("genreDetailPage");
 }
-$("genreDetailBack")?.addEventListener("click", ()=> showPage("genresPage"));
+$("genreDetailBack")?.addEventListener("click", ()=> navigateBack());
 
 function renderSaved(){
   const box = $("savedBooks");
@@ -8534,25 +8733,103 @@ function applyAnimePlayCost(work){
 }
 
 let currentSubtitleBlobUrl = null;
+let currentSubtitleBlobUrls = [];
+let __playerSeeking = false;
+let __playerSeekTarget = null;
+let __downloadAbort = null;
 
 function clearPlayerSubtitle(){
   const player = $("standaloneMediaPlayer");
   if(player){
-    const oldTrack = player.querySelector("track");
-    if(oldTrack) oldTrack.remove();
+    player.querySelectorAll("track").forEach(t => { try{ t.remove(); }catch(e){} });
+    try{
+      if(player.textTracks){
+        for(let i = 0; i < player.textTracks.length; i++){
+          try{ player.textTracks[i].mode = "disabled"; }catch(e){}
+        }
+      }
+    }catch(e){}
   }
   if(currentSubtitleBlobUrl){
     try{ URL.revokeObjectURL(currentSubtitleBlobUrl); }catch(e){}
     currentSubtitleBlobUrl = null;
   }
+  (currentSubtitleBlobUrls || []).forEach(u => { try{ URL.revokeObjectURL(u); }catch(e){} });
+  currentSubtitleBlobUrls = [];
+  const bar = $("playerTrackBar");
+  const subRow = $("playerSubRow");
+  const subSel = $("playerSubSelect");
+  if(subSel) subSel.innerHTML = "";
+  if(subRow) subRow.style.display = "none";
+  if(bar && $("playerAudioRow") && $("playerAudioRow").style.display === "none"){
+    bar.style.display = "none";
+  }
 }
 
-/* تبدیل فرمت srt به vtt (فقط تعویض کاما با نقطه در زمان‌ها و افزودن هدر) */
 function srtTextToVtt(srtText){
-  const body = String(srtText || "")
-    .replace(/\r/g, "")
-    .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, "$1.$2");
-  return "WEBVTT\n\n" + body;
+  let body = String(srtText || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  if(body.charCodeAt(0) === 0xFEFF) body = body.slice(1);
+  body = body.replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, "$1.$2");
+  if(/^\s*WEBVTT/i.test(body)) return body.trim() + "\n";
+  return "WEBVTT\n\n" + body.trim() + "\n";
+}
+
+async function fetchSubtitleAsVttUrl(url){
+  const u = String(url || "").trim();
+  if(!u) return "";
+  const isSrt = /\.srt(\?|#|$)/i.test(u);
+  const isVtt = /\.vtt(\?|#|$)/i.test(u);
+  if(isVtt && !isSrt){
+    try{
+      const res = await fetch(u, { mode: "cors", credentials: "omit" });
+      if(res.ok){
+        const text = await res.text();
+        const blob = new Blob([text.indexOf("WEBVTT") === 0 ? text : ("WEBVTT\n\n" + text)], { type: "text/vtt" });
+        const blobUrl = URL.createObjectURL(blob);
+        currentSubtitleBlobUrls.push(blobUrl);
+        return blobUrl;
+      }
+    }catch(e){}
+    return u;
+  }
+  try{
+    const res = await fetch(u, { mode: "cors", credentials: "omit" });
+    if(!res.ok) throw new Error("subtitle fetch failed: " + res.status);
+    let text = await res.text();
+    if(isSrt || /,\d{3}\s*-->/.test(text) || /\d{2}:\d{2}:\d{2},\d{3}/.test(text)){
+      text = srtTextToVtt(text);
+    }else if(text.indexOf("WEBVTT") !== 0){
+      text = "WEBVTT\n\n" + text;
+    }
+    const blob = new Blob([text], { type: "text/vtt" });
+    const blobUrl = URL.createObjectURL(blob);
+    currentSubtitleBlobUrls.push(blobUrl);
+    currentSubtitleBlobUrl = blobUrl;
+    return blobUrl;
+  }catch(e){
+    console.warn("subtitle fetch", e);
+    return isSrt ? "" : u;
+  }
+}
+
+function collectEpisodeSubtitleList(ep){
+  const list = [];
+  if(!ep) return list;
+  const push = (url, label) => {
+    const u = String(url || "").trim();
+    if(!u || !isValidUrl(u)) return;
+    if(list.some(x => x.url === u)) return;
+    list.push({ url: u, label: label || ("زیرنویس " + (list.length + 1)) });
+  };
+  push(ep.subtitleLink, "فارسی");
+  push(ep.subtitleUrl, "فارسی");
+  if(Array.isArray(ep.subtitles)){
+    ep.subtitles.forEach((s, i) => {
+      if(typeof s === "string") push(s, "زیرنویس " + (i + 1));
+      else if(s && typeof s === "object") push(s.url || s.link || s.src, s.label || s.lang || s.language || ("زیرنویس " + (i + 1)));
+    });
+  }
+  return list;
 }
 
 async function setPlayerSubtitle(url){
@@ -8560,15 +8837,10 @@ async function setPlayerSubtitle(url){
   const player = $("standaloneMediaPlayer");
   if(!player || !url) return;
   try{
-    const isSrt = /\.srt(\?|#|$)/i.test(url);
-    let vttUrl = url;
-    if(isSrt){
-      const res = await fetch(url);
-      if(!res.ok) throw new Error("subtitle fetch failed: " + res.status);
-      const text = await res.text();
-      const blob = new Blob([srtTextToVtt(text)], { type: "text/vtt" });
-      vttUrl = URL.createObjectURL(blob);
-      currentSubtitleBlobUrl = vttUrl;
+    const vttUrl = await fetchSubtitleAsVttUrl(url);
+    if(!vttUrl){
+      showToast("زیرنویس بارگذاری نشد (CORS یا لینک)");
+      return;
     }
     const track = document.createElement("track");
     track.kind = "subtitles";
@@ -8577,16 +8849,121 @@ async function setPlayerSubtitle(url){
     track.default = true;
     track.src = vttUrl;
     player.appendChild(track);
-    setTimeout(()=>{
+    const enable = ()=>{
       try{
         if(player.textTracks && player.textTracks.length){
-          player.textTracks[0].mode = "showing";
+          for(let i = 0; i < player.textTracks.length; i++){
+            player.textTracks[i].mode = (i === player.textTracks.length - 1) ? "showing" : "disabled";
+          }
         }
       }catch(e){}
-    }, 200);
+    };
+    track.addEventListener("load", enable);
+    setTimeout(enable, 300);
+    setTimeout(enable, 1000);
   }catch(e){
     console.error("subtitle load error", e);
     showToast("خطا در بارگذاری زیرنویس — لینک را بررسی کنید");
+  }
+}
+
+async function setupPlayerTracks(ep){
+  const player = $("standaloneMediaPlayer");
+  const bar = $("playerTrackBar");
+  const audioRow = $("playerAudioRow");
+  const subRow = $("playerSubRow");
+  const audioSel = $("playerAudioSelect");
+  const subSel = $("playerSubSelect");
+  if(!player || !bar) return;
+
+  const subs = collectEpisodeSubtitleList(ep);
+  if(subSel){
+    subSel.innerHTML = "";
+    const optOff = document.createElement("option");
+    optOff.value = "";
+    optOff.textContent = "خاموش";
+    subSel.appendChild(optOff);
+    for(let i = 0; i < subs.length; i++){
+      const s = subs[i];
+      const opt = document.createElement("option");
+      opt.value = s.url;
+      opt.textContent = s.label;
+      if(i === 0) opt.selected = true;
+      subSel.appendChild(opt);
+    }
+    subSel.onchange = async ()=>{
+      const v = subSel.value;
+      if(!v){ clearPlayerSubtitle(); if(subs.length && subRow) subRow.style.display = "flex"; return; }
+      await setPlayerSubtitle(v);
+      if(subRow) subRow.style.display = "flex";
+      if(bar) bar.style.display = "flex";
+    };
+  }
+  if(subRow) subRow.style.display = subs.length ? "flex" : "none";
+  if(subs.length){
+    await setPlayerSubtitle(subs[0].url);
+  }else{
+    clearPlayerSubtitle();
+  }
+
+  const refreshAudio = ()=>{
+    if(!audioSel || !audioRow) return;
+    let tracks = [];
+    try{ tracks = player.audioTracks ? Array.from(player.audioTracks) : []; }catch(e){ tracks = []; }
+    audioSel.innerHTML = "";
+    if(tracks.length > 1){
+      tracks.forEach((t, i) => {
+        const opt = document.createElement("option");
+        opt.value = String(i);
+        opt.textContent = t.label || t.language || ("صدا " + (i + 1));
+        if(t.enabled) opt.selected = true;
+        audioSel.appendChild(opt);
+      });
+      audioSel.onchange = ()=>{
+        const idx = parseInt(audioSel.value, 10);
+        try{
+          for(let i = 0; i < player.audioTracks.length; i++){
+            player.audioTracks[i].enabled = (i === idx);
+          }
+          showToast("ترک صدا عوض شد");
+        }catch(e){
+          showToast("تغییر ترک صدا در این پخش‌کننده پشتیبانی نمی‌شود");
+        }
+      };
+      audioRow.style.display = "flex";
+    }else{
+      audioRow.style.display = "none";
+    }
+    bar.style.display = (audioRow.style.display !== "none" || subRow.style.display !== "none") ? "flex" : "none";
+  };
+  player.addEventListener("loadedmetadata", refreshAudio, { once: true });
+  setTimeout(refreshAudio, 600);
+}
+
+function safeSeekPlayer(seconds){
+  const p = $("standaloneMediaPlayer");
+  if(!p || !isFinite(seconds)) return;
+  __playerWasPlayingBeforeSeek = !p.paused;
+  __playerSeeking = true;
+  __playerSeekTarget = seconds;
+  try{
+    const d = p.duration;
+    let t = Number(seconds) || 0;
+    if(isFinite(d) && d > 0) t = Math.max(0, Math.min(d - 0.25, t));
+    /* اگر هنوز seekable نیست، کمی صبر کن */
+    if(p.readyState < 1){
+      const once = ()=>{
+        p.removeEventListener("loadedmetadata", once);
+        safeSeekPlayer(seconds);
+      };
+      p.addEventListener("loadedmetadata", once);
+      setTimeout(()=>{ try{ p.removeEventListener("loadedmetadata", once); }catch(e){} }, 5000);
+      return;
+    }
+    p.currentTime = t;
+  }catch(e){
+    console.warn("safeSeekPlayer", e);
+    __playerSeeking = false;
   }
 }
 
@@ -8814,21 +9191,25 @@ function openPlayerPage(work, ep, idx){
   }
 
   const player = $("standaloneMediaPlayer");
+  const playUrl = episodePlayUrl(ep) || ep.link || "";
   if(player){
-    const audio = isProbablyAudioUrl(episodePlayUrl(ep) || ep.link);
+    const audio = isProbablyAudioUrl(playUrl);
     player.classList.toggle("audioOnly", audio);
-    player.src = episodePlayUrl(ep) || ep.link;
-    player.load();
-    if(ep.subtitleLink){
-      setPlayerSubtitle(ep.subtitleLink);
-    }else{
-      clearPlayerSubtitle();
-    }
+    try{ player.pause(); }catch(e){}
+    try{ player.removeAttribute("src"); player.load(); }catch(e){}
+    clearPlayerSubtitle();
+    player.setAttribute("playsinline", "");
+    player.setAttribute("webkit-playsinline", "");
+    player.playsInline = true;
+    try{ player.removeAttribute("crossorigin"); }catch(e){}
+    player.preload = "auto";
+    player.src = playUrl;
+    try{ player.load(); }catch(e){}
+    setupPlayerTracks(ep).catch(e => console.warn("setupPlayerTracks", e));
   }
 
   showPage("playerPage");
 
-  /* بعد از نمایش صفحه، پخش را شروع کن */
   setTimeout(()=>{
     const p = $("standaloneMediaPlayer");
     if(!p) return;
@@ -8838,41 +9219,27 @@ function openPlayerPage(work, ep, idx){
       console.warn("play error", err);
       showToast("پخش خودکار ممکن نشد — دکمه پخش روی پلیر را بزنید");
     });
-  }, 80);
+  }, 120);
 }
 
 function leavePlayerPage(){
-  stopStandalonePlayer();
-  const rid = playerReturnWorkId;
+  try{ stopStandalonePlayer(); }catch(e){}
   playerReturnWorkId = null;
-  /* اگر از watch آمده باشیم به watch برگرد */
-  if(appPageStack.includes("watchPage") || appPageStack.includes("mangaPage")){
-    while(appPageStack.length > 1 && appPageStack[appPageStack.length-1] === "playerPage"){
-      appPageStack.pop();
-    }
-    const top = appPageStack[appPageStack.length - 1];
-    if(top === "watchPage" && currentWork){
-      openWatchPage(currentWork);
-      return;
-    }
-    if(top === "mangaPage" && currentWork){
-      openMangaPage(currentWork);
-      return;
-    }
+  while(appPageStack.length > 1 && appPageStack[appPageStack.length - 1] === "playerPage"){
+    appPageStack.pop();
   }
-  if(rid && currentWork && currentWork.id === rid){
-    /* به صفحه تماشا برو اگر اپیزود بود */
-    openWatchPage(currentWork);
-    return;
+  const top = appPageStack[appPageStack.length - 1] || "homePage";
+  showPage(top, true);
+  if(top === "watchPage" && currentWork){
+    try{ renderDetailEpisodesUI(currentWork); }catch(e){}
   }
-  if(rid){
-    const w = (typeof allWorks !== "undefined" ? allWorks : []).find(x => x.id === rid);
-    if(w){ openDetail(w); return; }
-  }
-  navigateBack();
 }
 
 $("playerBack")?.addEventListener("click", leavePlayerPage);
+let __playerWasPlayingBeforeSeek = false;
+let __playerResumeAfterSeek = false;
+let __playerErrorToastTs = 0;
+
 $("standaloneMediaPlayer")?.addEventListener("ended", ()=>{
   showToast("پایان قسمت");
   if(currentPlayerEpisodeCtx){
@@ -8880,7 +9247,17 @@ $("standaloneMediaPlayer")?.addEventListener("ended", ()=>{
   }
 });
 $("standaloneMediaPlayer")?.addEventListener("error", ()=>{
-  showToast("خطا در بارگذاری فایل — لینک یا فرمت را بررسی کنید");
+  const p = $("standaloneMediaPlayer");
+  /* هنگام seek یا اگر src عمداً پاک شده، خطا را نادیده بگیر */
+  if(__playerSeeking || !p || !p.getAttribute("src") && !p.currentSrc) return;
+  const code = p.error && p.error.code;
+  /* MEDIA_ERR_ABORTED=1 اغلب بعد از عوض کردن src است */
+  if(code === 1) return;
+  const now = Date.now();
+  if(now - __playerErrorToastTs > 2500){
+    __playerErrorToastTs = now;
+    showToast("خطا در بارگذاری فایل — لینک یا فرمت را بررسی کنید");
+  }
   try{
     if(currentPlayerEpisodeCtx && currentPlayerEpisodeCtx.work && currentPlayerEpisodeCtx.ep){
       markEpisodeLinkBroken(
@@ -8892,8 +9269,13 @@ $("standaloneMediaPlayer")?.addEventListener("error", ()=>{
     }
   }catch(e){}
 });
-$("standaloneMediaPlayer")?.addEventListener("pause", saveCurrentPlayerPosition);
+$("standaloneMediaPlayer")?.addEventListener("pause", ()=>{
+  /* فقط موقعیت را ذخیره کن — هرگز src را پاک نکن (seek روی موبایل pause می‌فرستد) */
+  if(__playerSeeking) return;
+  saveCurrentPlayerPosition();
+});
 $("standaloneMediaPlayer")?.addEventListener("timeupdate", ()=>{
+  if(typeof __playerSeeking !== "undefined" && __playerSeeking) return;
   const now = Date.now();
   if(now - __lastWatchSaveTs > 4000){
     __lastWatchSaveTs = now;
@@ -8905,33 +9287,60 @@ $("standaloneMediaPlayer")?.addEventListener("loadedmetadata", ()=>{
   if(!p || !currentPlayerEpisodeCtx) return;
   const saved = getWatchPosition(currentPlayerEpisodeCtx.work, currentPlayerEpisodeCtx.ep, currentPlayerEpisodeCtx.idx);
   if(saved > 3 && (!p.duration || saved < p.duration - 5)){
-    try{ p.currentTime = saved; }catch(e){}
+    __playerResumeAfterSeek = true;
+    safeSeekPlayer(saved);
     showToast("ادامه از دقیقه " + formatClock(saved));
   }
 });
-document.addEventListener("visibilitychange", ()=>{
-  if(document.hidden){
-    const onPlayer = $("playerPage")?.classList.contains("active");
-    if(onPlayer){
-      saveCurrentPlayerPosition();
-      try{ stopStandalonePlayer(); }catch(e){
-        try{ $("standaloneMediaPlayer")?.pause(); }catch(_){}
-      }
+$("standaloneMediaPlayer")?.addEventListener("seeking", ()=>{
+  const p = $("standaloneMediaPlayer");
+  if(p && !__playerSeeking){
+    __playerWasPlayingBeforeSeek = !p.paused;
+  }
+  __playerSeeking = true;
+});
+$("standaloneMediaPlayer")?.addEventListener("seeked", ()=>{
+  const p = $("standaloneMediaPlayer");
+  const shouldResume = __playerResumeAfterSeek || __playerWasPlayingBeforeSeek;
+  __playerResumeAfterSeek = false;
+  __playerWasPlayingBeforeSeek = false;
+  setTimeout(()=>{
+    __playerSeeking = false;
+    __playerSeekTarget = null;
+    /* بعد از seek اگر قبلش در حال پخش بود، دوباره پخش کن (موبایل گاهی روی pause می‌ماند) */
+    if(shouldResume && p && p.paused && $("playerPage")?.classList.contains("active")){
+      p.play().catch(()=>{});
     }
+  }, 60);
+});
+$("standaloneMediaPlayer")?.addEventListener("ratechange", ()=>{
+  const p = $("standaloneMediaPlayer");
+  if(p && (p.playbackRate < 0.5 || p.playbackRate > 2.5)){
+    try{ p.playbackRate = 1; }catch(e){}
   }
 });
-/* خروج از تب / بک‌گراند مرورگر موبایل — توقف کامل پخش */
+/* فقط وقتی تب مخفی می‌شود pause کن — src را پاک نکن تا با برگشت پخش ادامه یابد */
+document.addEventListener("visibilitychange", ()=>{
+  const p = $("standaloneMediaPlayer");
+  const onPlayer = $("playerPage")?.classList.contains("active");
+  if(!onPlayer || !p) return;
+  if(document.hidden){
+    saveCurrentPlayerPosition();
+    try{ p.pause(); }catch(e){}
+  }
+});
+/* خروج واقعی از صفحه — ذخیره موقعیت؛ src فقط در leavePlayerPage پاک می‌شود */
 window.addEventListener("pagehide", ()=>{
-  try{ stopStandalonePlayer(); }catch(e){}
+  try{ saveCurrentPlayerPosition(); }catch(e){}
 });
 window.addEventListener("freeze", ()=>{
-  try{ stopStandalonePlayer(); }catch(e){}
-});
-document.addEventListener("pause", ()=>{
   try{
-    if($("playerPage")?.classList.contains("active")) stopStandalonePlayer();
+    saveCurrentPlayerPosition();
+    $("standaloneMediaPlayer")?.pause();
   }catch(e){}
-}, true);
+});
+/* نکته: listener روی document برای event با نام pause حذف شد —
+   چون pause ویدیو هنگام seek حباب می‌شود و قبلاً کل پلیر را می‌کشت */
 
 $("detailPlayTrailerBtn")?.addEventListener("click", ()=>{
   const work = currentWork;
@@ -9089,10 +9498,7 @@ function renderSeasonsAsList(work){
     const epN = (s.episodes || []).length;
     btn.innerHTML = `<span>${escapeHtml(s.title || ("فصل " + (i+1)))}</span><span>${epN} قسمت ‹</span>`;
     btn.addEventListener("click", ()=>{
-      selectedDetailSeasonIdx = i;
-      if($("episodeSearchInput")) $("episodeSearchInput").value = "";
-      try{ history.pushState({ page: "detailPage", season: i }, ""); }catch(e){}
-      renderDetailEpisodesUI(work);
+      enterSeasonView(i);
     });
     box.appendChild(btn);
   });
@@ -9351,12 +9757,77 @@ $("downloadBtn")?.addEventListener("click", ()=>{
   }catch(e){}
 });
 
+function showDownloadProgress(show, pct, title, meta){
+  const box = $("downloadProgressBox");
+  if(!box) return;
+  box.style.display = show ? "block" : "none";
+  if(title != null && $("downloadProgressTitle")) $("downloadProgressTitle").textContent = title;
+  if($("downloadProgressFill")) $("downloadProgressFill").style.width = Math.max(0, Math.min(100, pct || 0)) + "%";
+  if(meta != null && $("downloadProgressMeta")) $("downloadProgressMeta").textContent = meta;
+}
+$("downloadProgressCancel")?.addEventListener("click", ()=>{
+  try{ if(__downloadAbort) __downloadAbort.abort(); }catch(e){}
+  __downloadAbort = null;
+  showDownloadProgress(false, 0, "", "");
+  showToast("دانلود لغو شد");
+});
+
+function guessExtFromUrl(url){
+  try{
+    const path = new URL(url).pathname;
+    const m = path.match(/\.(mp4|mkv|webm|avi|mov|m4v|mp3|m4a|aac|ogg|flac|zip|rar|7z|pdf)(\/|$)/i);
+    if(m) return "." + m[1].toLowerCase();
+  }catch(e){}
+  return "";
+}
+
+function formatBytes(n){
+  n = Number(n) || 0;
+  if(n < 1024) return n + " B";
+  if(n < 1048576) return (n/1024).toFixed(1) + " KB";
+  if(n < 1073741824) return (n/1048576).toFixed(1) + " MB";
+  return (n/1073741824).toFixed(2) + " GB";
+}
+
+function tryNativeDownload(url, filename){
+  try{
+    if(window.AndroidDownloader && typeof window.AndroidDownloader.download === "function"){
+      window.AndroidDownloader.download(url, filename);
+      return true;
+    }
+  }catch(e){}
+  try{
+    if(window.Android && typeof window.Android.downloadFile === "function"){
+      window.Android.downloadFile(url, filename);
+      return true;
+    }
+  }catch(e){}
+  try{
+    if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.download){
+      window.webkit.messageHandlers.download.postMessage({ url, filename });
+      return true;
+    }
+  }catch(e){}
+  try{
+    if(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser){
+      const B = window.Capacitor.Plugins.Browser;
+      if(B.open){ B.open({ url }); return true; }
+    }
+  }catch(e){}
+  try{
+    if(window.cordova && window.cordova.InAppBrowser){
+      window.cordova.InAppBrowser.open(url, "_system");
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
 async function forceDownload(url, filename){
   if(!isValidUrl(url)){
     showToast("لینک معتبر نیست");
     return;
   }
-  /* فقط http/https — جلوگیری از javascript: و مشابه */
   try{
     const proto = new URL(String(url).trim()).protocol;
     if(proto !== "http:" && proto !== "https:"){
@@ -9368,14 +9839,20 @@ async function forceDownload(url, filename){
     return;
   }
 
-  const safeName = sanitizeFilename(filename);
+  let safeName = sanitizeFilename(filename);
+  const ext = guessExtFromUrl(url);
+  if(ext && !/\.[a-z0-9]{2,5}$/i.test(safeName)) safeName += ext;
 
-  /*
-     دانلود سریع:
-     اول همان لحظه با لینک مستقیم شروع می‌شود
-     (بدون منتظر ماندن برای fetch کامل فایل).
-     اگر مرورگر/WebView اجازه داد، فایل دانلود می‌شود.
-  */
+  if(tryNativeDownload(url, safeName)){
+    showToast("دانلود از طریق اپ شروع شد");
+    return;
+  }
+
+  /* فایل‌های ویدیویی/آرشیو بزرگ: هرگز کل فایل را در حافظه fetch نکن (علت اصلی لگ) */
+  const isHeavyMedia = /\.(mp4|mkv|webm|avi|mov|m4v|ts|m3u8|zip|rar|7z)(\?|#|$)/i.test(url)
+    || /\.(mp4|mkv|webm|avi|mov|m4v)$/i.test(safeName);
+
+  /* دانلود مستقیم سریع — مثل نسخه اصلی */
   try{
     const a = document.createElement("a");
     a.href = url;
@@ -9387,14 +9864,54 @@ async function forceDownload(url, filename){
     a.click();
     setTimeout(() => { try{ a.remove(); }catch(_){} }, 1500);
     showToast("دانلود شروع شد");
-    return;
+    if(isHeavyMedia) return;
   }catch(e){
     console.warn("Direct download failed:", e);
   }
 
-  /* fallback: باز کردن مستقیم لینک */
+  /* فقط برای فایل‌های کوچک (زیرنویس و مشابه) در صورت نیاز blob */
+  if(!isHeavyMedia){
+    const canShowProg = !!$("downloadProgressBox");
+    try{
+      if(__downloadAbort){ try{ __downloadAbort.abort(); }catch(e){} }
+      __downloadAbort = (typeof AbortController !== "undefined") ? new AbortController() : null;
+      if(canShowProg) showDownloadProgress(true, 0, "در حال دانلود: " + safeName, "اتصال...");
+      const res = await fetch(url, {
+        method: "GET",
+        mode: "cors",
+        credentials: "omit",
+        signal: __downloadAbort ? __downloadAbort.signal : undefined
+      });
+      if(!res.ok) throw new Error("HTTP " + res.status);
+      const blob = await res.blob();
+      if(blob.size > 30 * 1024 * 1024) throw new Error("too large");
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = safeName;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ try{ a.remove(); URL.revokeObjectURL(objectUrl); }catch(_){} }, 3000);
+      showDownloadProgress(false, 0, "", "");
+      showToast("دانلود ذخیره شد");
+      __downloadAbort = null;
+      return;
+    }catch(e){
+      if(e && e.name === "AbortError"){ showDownloadProgress(false, 0, "", ""); return; }
+      showDownloadProgress(false, 0, "", "");
+    }
+  }
+
   try{
-    window.open(url, "_blank", "noopener,noreferrer");
+    const w = window.open(url, "_blank", "noopener,noreferrer");
+    if(!w){
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = url;
+      document.body.appendChild(iframe);
+      setTimeout(()=>{ try{ iframe.remove(); }catch(_){} }, 60000);
+    }
     showToast("در حال باز کردن لینک دانلود...");
   }catch(fallbackError){
     try{
@@ -9402,7 +9919,7 @@ async function forceDownload(url, filename){
       showToast("در حال باز کردن لینک دانلود...");
     }catch(e2){
       console.error("Download fallback failed:", e2);
-      showToast("دانلود در این WebView پشتیبانی نمی‌شود");
+      showToast("دانلود در این WebView پشتیبانی نمی‌شود — لینک را در مرورگر باز کنید");
     }
   }
 }
@@ -15725,9 +16242,10 @@ document.addEventListener("visibilitychange", ()=>{
   try{ refreshAdminBadges(true); }catch(e){}
 });
 setInterval(()=>{
+  if(document.hidden) return; /* وقتی تب مخفی است polling نکن — کمتر لگ و باتری */
   try{ checkUserNotifications(); }catch(e){}
-  try{ refreshAdminBadges(true); }catch(e){}
-}, 20 * 1000);
+  try{ refreshAdminBadges(false); }catch(e){}
+}, 45 * 1000);
 
 
 async function init(){
@@ -15765,8 +16283,8 @@ async function init(){
 
   try{
     appPageStack = ["homePage"];
-    history.replaceState({ page: "homePage", stack: ["homePage"] }, "");
-    history.pushState({ page: "homePage", stack: ["homePage"] }, "");
+    history.replaceState({ page: "homePage", stack: ["homePage"], seasonIdx: -1 }, "");
+    history.pushState({ page: "homePage", stack: ["homePage"], seasonIdx: -1 }, "");
   }catch(e){}
 
   /* بنر هشدار مهم */
