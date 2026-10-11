@@ -462,7 +462,7 @@ body.playerFullscreenActive .nav{display:none}
 .adminItem{background:#1a1a20;border-radius:12px;padding:12px;margin-bottom:10px}
 .adminItemInfo b{font-size:12px;display:block}
 .adminItemInfo small{display:block;color:#8a8580;font-size:9px;margin-top:5px}
-.adminActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.adminActions{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px;margin-top:10px}
 .editBtn,.delete{border:0;border-radius:8px;padding:9px;font-size:10px}
 .editBtn{background:#3a3a28;color:#e8dcc8}
 .delete{background:#4a3030;color:#e0b0a0}
@@ -1163,7 +1163,7 @@ html.theme-brown .detailUnpubBox{
 .adminDraftItem{background:var(--card,#1a1a20);border:1px solid var(--line,#2a2a32);border-radius:12px;padding:12px;margin-bottom:10px}
 .adminDraftItem b{font-size:12px;color:var(--text);display:block}
 .adminDraftItem small{font-size:10px;color:var(--muted);display:block;margin-top:4px;line-height:1.7}
-.adminDraftActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.adminDraftActions{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px;margin-top:10px}
 .detailActionsWrap{
   margin:132px 0 18px;display:flex;flex-direction:column;align-items:center;gap:10px;direction:rtl;
 }
@@ -5285,7 +5285,7 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
     </div>
 
     <div id="adminDrafts" class="adminSection">
-      <p class="keywordHint" style="margin-bottom:12px">انیمه‌هایی که به‌صورت پیش‌نویس ذخیره شده‌اند. می‌توانید منتشر یا حذف کنید.</p>
+      <p class="keywordHint" style="margin-bottom:12px">انیمه‌هایی که به‌صورت پیش‌نویس ذخیره شده‌اند. می‌توانید ویرایش، منتشر یا حذف کنید. انیمه‌ی منتقل‌شده از منتشرشده‌ها بعد از انتشار، همان جایگاه قبلی‌اش را برمی‌گیرد.</p>
       <div id="adminDraftsList"></div>
     </div>
     <div id="adminPublished" class="adminSection">
@@ -5499,7 +5499,7 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
 <!-- Edit Work -->
 <div id="editWorkModal" class="modal">
   <div class="modalContent">
-    <h3>ویرایش انیمه</h3>
+    <h3 id="editWorkModalTitle">ویرایش انیمه</h3>
     <div class="form">
       <label>نوع انیمه</label>
       <select id="editType">
@@ -5975,6 +5975,9 @@ let appPageStack = ["homePage"];
 let recentRandomIds = [];
 let __authInFlight = false;
 let __publishInFlight = false;
+let editingDraftRow = null;            /* ردیف پیش‌نویسِ در حال ویرایش (null = ویرایش انیمه‌ی منتشرشده) */
+const KEY_WORK_ORDER = "work_order";   /* جایگاه اصلی انیمه برای حفظ ترتیب بعد از انتقال به پیش‌نویس */
+let workOrderMap = {};                 /* workId -> زمان ثبت اصلی (ms) */
 let __downloadInFlight = false;
 
 /* وضعیت بنر: همیشه از بین ۱۵ انیمهٔ جدیدتر، جدیدترین اثر مرکز است. */
@@ -7489,7 +7492,12 @@ function mapWorkDoc(doc){
     episodes: legacyManga && !hasAnime
       ? []
       : (type === "movie" ? (norm.flatEpisodes.length ? norm.flatEpisodes : flattenSeasonsEpisodes(norm.seasons)) : flattenSeasonsEpisodes(norm.seasons)),
-    createdAt: doc.$createdAt ? new Date(doc.$createdAt).getTime() : Date.now(),
+    createdAt: (function(){
+      /* اگر انیمه قبلاً به پیش‌نویس رفته و برگشته، همان جایگاه قبلی‌اش را داشته باشد */
+      const o = Number(workOrderMap[String(doc.$id)]);
+      if(o > 0) return o;
+      return doc.$createdAt ? new Date(doc.$createdAt).getTime() : Date.now();
+    })(),
     rating: Number(doc.imdb) || Number(doc.rating ?? doc.score ?? 0) || 0,
     imdb: Number(doc.imdb) || 0,
     year: Number(doc.airYear) || 0,
@@ -7630,6 +7638,7 @@ async function loadWorks(){
     return;
   }
   const seq = ++__loadWorksSeq;
+  const orderPromise = loadWorkOrderMap(); /* موازی با دریافت آثار؛ هرگز throw نمی‌کند */
   try{
     /* دریافت کامل آثار با صفحه‌بندی داخلی (قبلاً فقط ۱۰۰ اثر اول لود می‌شد) */
     const PAGE_SIZE = 100;
@@ -7651,6 +7660,7 @@ async function loadWorks(){
       cursor = batch[batch.length - 1].$id;
       pages++;
     }
+    await orderPromise;
     if(seq !== __loadWorksSeq) return; /* پاسخ قدیمی نادیده گرفته شود */
     allWorks = docs.map(mapWorkDoc);
     renderHome();
@@ -13183,70 +13193,58 @@ async function renderAdminDrafts(){
       const item = document.createElement("div");
       item.className = "adminDraftItem";
       const when = d.at ? formatDateFa(d.at) : "";
+      const fromPub = !!d.origId;
       item.innerHTML = `<b>${escapeHtml(d.title || d.draftTitle || "بدون عنوان")}</b>
-        <small>${escapeHtml(d.Author || "—")} · ${d.type === "movie" ? "سینمایی" : "سریالی"}${d.unpublished ? " · انتشار نشده" : ""}${when ? " · " + escapeHtml(when) : ""}</small>
+        <small>${escapeHtml(d.Author || "—")} · ${d.type === "movie" ? "سینمایی" : "سریالی"}${d.unpublished ? " · انتشار نشده" : ""}${when ? " · " + escapeHtml(when) : ""}${fromPub ? " · از منتشرشده‌ها (جایگاه قبلی حفظ می‌شود)" : ""}</small>
         <div class="adminDraftActions">
-          <button type="button" class="editBtn draftPub">🚀 انتشار انیمه</button>
+          <button type="button" class="editBtn draftEdit">✏️ ویرایش</button>
+          <button type="button" class="editBtn draftPub">🚀 انتشار</button>
           <button type="button" class="delete draftDel">حذف</button>
         </div>`;
-      item.querySelector(".draftPub")?.addEventListener("click", async ()=>{
+      item.querySelector(".draftEdit")?.addEventListener("click", ()=>{
+        if(!isAdminMode){ showToast("وارد پنل مدیریت شوید"); return; }
+        try{
+          const w = mapWorkDoc(Object.assign({}, d, { $id: "draft_" + r.id }));
+          openEditWork(w, r);
+        }catch(e){
+          console.error(e);
+          showToast("باز کردن پیش‌نویس ناموفق بود");
+        }
+      });
+      item.querySelector(".draftPub")?.addEventListener("click", async (ev)=>{
+        if(__draftBusy) return;
         if(!(await requireAdminAction())) return;
         if(!(await appConfirm("این پیش‌نویس منتشر شود؟"))) return;
+        if(__draftBusy) return;
+        __draftBusy = true;
+        const btn = ev.currentTarget;
+        if(btn) btn.disabled = true;
         try{
-          const payload = {
-            title: d.title || "",
-            Author: d.Author || "",
-            genre: d.genre || "",
-            description: d.description || "",
-            keywords: d.keywords || "",
-            type: d.type === "movie" ? "movie" : "serial",
-            coverUrl: d.coverUrl || "",
-            trailerUrl: d.trailerUrl || "",
-            unpublished: !!d.unpublished,
-            episodes: d.episodes || "[]",
-            mangaItems: d.mangaItems || "[]",
-            contentKind: d.contentKind || "anime",
-            mangaNumbering: d.mangaNumbering || "chapter"
-          };
-          if(d.imdb != null && d.imdb !== "") payload.imdb = Number(d.imdb);
-          if(d.airYear != null && d.airYear !== "") payload.airYear = Number(d.airYear);
-          try{
-            await databases.createDocument(DATABASE_ID, COLLECTION_WORKS, appwriteID.unique(), payload);
-          }catch(ce){
-            const msg = String(ce && ce.message || "");
-            if(/attribute|unknown/i.test(msg)){
-              /* اختیاری‌ها را مرحله‌ای حذف کن؛ تریلر را تا جای ممکن نگه دار */
-              ["contentKind","mangaNumbering","mangaItems","imdb","airYear","coverFocusX","coverFocusY"].forEach(k => delete payload[k]);
-              if(/trailerUrl/i.test(msg)) delete payload.trailerUrl;
-              if(/unpublished/i.test(msg)) delete payload.unpublished;
-              try{
-                await databases.createDocument(DATABASE_ID, COLLECTION_WORKS, appwriteID.unique(), payload);
-              }catch(ce2){
-                delete payload.trailerUrl;
-                delete payload.unpublished;
-                delete payload.mangaItems;
-                await databases.createDocument(DATABASE_ID, COLLECTION_WORKS, appwriteID.unique(), payload);
-              }
-            }else throw ce;
-          }
-          await srvDelete(r.id);
+          await publishDraftRow(r);
           showToast("منتشر شد");
           await loadWorks();
           renderAdminDrafts();
           try{ renderPublishedWorks(); }catch(e){}
         }catch(e){
           console.error(e);
+          if(btn) btn.disabled = false;
           showToast("خطا در انتشار پیش‌نویس");
+        }finally{
+          __draftBusy = false;
         }
       });
       item.querySelector(".draftDel")?.addEventListener("click", async ()=>{
+        if(__draftBusy) return;
         if(!(await requireAdminAction())) return;
-        if(!(await appConfirm("این پیش‌نویس حذف شود؟"))) return;
+        if(!(await appConfirm("این پیش‌نویس حذف شود؟" + (fromPub ? "\nاین پیش‌نویس قبلاً منتشر بوده؛ با حذف آن انیمه برای همیشه پاک می‌شود." : "")))) return;
+        __draftBusy = true;
         try{
           await srvDelete(r.id);
+          if(d.origId) await clearWorkOrder(d.origId);
           showToast("حذف شد");
           renderAdminDrafts();
         }catch(e){ console.error(e); showToast("خطا در حذف"); }
+        finally{ __draftBusy = false; }
       });
       box.appendChild(item);
     });
@@ -13285,10 +13283,12 @@ function renderPublishedWorks(){
       </div>
       <div class="adminActions">
         <button class="editBtn" type="button">✏️ ویرایش</button>
+        <button class="editBtn moveDraftBtn" type="button">📝 به پیش‌نویس</button>
         <button class="delete" type="button">🗑 حذف</button>
       </div>
     `;
-    item.querySelector(".editBtn")?.addEventListener("click", ()=> openEditWork(work));
+    item.querySelector(".editBtn:not(.moveDraftBtn)")?.addEventListener("click", ()=> openEditWork(work));
+    item.querySelector(".moveDraftBtn")?.addEventListener("click", ()=> moveWorkToDraft(work));
     item.querySelector(".delete")?.addEventListener("click", async ()=>{
       if(!(await appConfirm("«" + (work.title||"") + "» حذف شود؟\nاین کار فقط با تأیید شما انجام می‌شود."))) return;
       if(!(await requireAdminAction())) return;
@@ -13296,6 +13296,7 @@ function renderPublishedWorks(){
       try{
         await databases.deleteDocument(DATABASE_ID, COLLECTION_WORKS, work.id);
         if(currentWork && currentWork.id === work.id) currentWork = null;
+        if(workOrderMap[String(work.id)]) clearWorkOrder(work.id);
         await loadWorks();
         showToast("حذف شد");
       }catch(error){
@@ -13312,7 +13313,8 @@ $("clearPublishedSearch")?.addEventListener("click", ()=>{
   renderPublishedWorks();
 });
 
-function openEditWork(work){
+function openEditWork(work, draftRow){
+  editingDraftRow = draftRow || null;
   editingWork = work;
   const isMovie = work.type === "movie";
   $("editType").value = isMovie ? "movie" : "serial";
@@ -13382,6 +13384,10 @@ function openEditWork(work){
     selectedEditSeasonIdx = editingSeasons.length ? 0 : -1;
   }
   updateEditTypeUI();
+  const mt = $("editWorkModalTitle");
+  if(mt) mt.textContent = editingDraftRow ? "ویرایش پیش‌نویس" : "ویرایش انیمه";
+  const sb = $("saveEditWorkBtn");
+  if(sb) sb.textContent = editingDraftRow ? "ذخیره پیش‌نویس" : "ذخیره ویرایش";
   $("editWorkModal").classList.add("active");
 }
 
@@ -13781,6 +13787,7 @@ $("editAddSeasonEpBtn")?.addEventListener("click", ()=>{
 
 $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   if(!editingWork) return;
+  const draftRow = editingDraftRow; /* null = اثر منتشرشده */
   if(!(await requireAdminAction())) return;
   if(!appwriteReady || !databases){ showToast("اتصال برقرار نیست"); return; }
   const title = ($("editTitle").value || "").trim();
@@ -13847,7 +13854,7 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     ? episodesPayload.length > 0
     : episodesPayload.some(s => (s.episodes || []).length > 0);
   const hasManga = mangaPayload.length > 0;
-  if(!isUnpublished && !hasAnime && !hasManga){
+  if(!draftRow && !isUnpublished && !hasAnime && !hasManga){
     showToast("حداقل یک قسمت انیمه یا چپتر/جلد مانگا لازم است (یا تیک انتشار نشده را بزنید)");
     return;
   }
@@ -13888,6 +13895,26 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   if(button){ button.disabled = true; button.textContent = "در حال ذخیره..."; }
 
   try{
+    /* ویرایش پیش‌نویس: فقط همان رکورد پیش‌نویس به‌روز می‌شود (بدون هیچ اثری روی سایت) */
+    if(draftRow){
+      const nd = Object.assign({}, draftRow.data || {});
+      Object.keys(payload).forEach(k => {
+        if(payload[k] === null || payload[k] === undefined) delete nd[k];
+        else nd[k] = payload[k];
+      });
+      nd.draftTitle = title;
+      nd.updatedAt = Date.now();
+      await srvUpdate(draftRow.id, nd);
+      try{
+        if(nd.origId && nd.coverFocusX != null && nd.coverFocusY != null) saveCoverFocusForWork(nd.origId, nd.coverFocusY, nd.coverFocusX);
+      }catch(e){}
+      $("editWorkModal").classList.remove("active");
+      editingWork = null;
+      editingDraftRow = null;
+      showToast("تغییرات پیش‌نویس ذخیره شد");
+      try{ renderAdminDrafts(); }catch(e){}
+      return;
+    }
     /* حذف فیلدهای null که بعضی اسکیماها قبول نمی‌کنند */
     Object.keys(payload).forEach(k => { if(payload[k] === null || payload[k] === undefined) delete payload[k]; });
     try{
@@ -13945,7 +13972,8 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     showToast("ویرایش ذخیره شد");
   }catch(error){
     console.error(error);
-    if(/imdb|airYear/i.test(String(error && error.message || ""))) showToast("در Appwrite روی works دو ستون imdb و airYear را بسازید");
+    if(draftRow) showToast("خطا در ذخیره پیش‌نویس");
+    else if(/imdb|airYear/i.test(String(error && error.message || ""))) showToast("در Appwrite روی works دو ستون imdb و airYear را بسازید");
     else showToast("خطا در ذخیره ویرایش");
   }finally{
     if(button){ button.disabled = false; button.textContent = oldText || "ذخیره ویرایش"; }
@@ -13954,6 +13982,7 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
 $("closeEditWorkModal")?.addEventListener("click", ()=>{
   $("editWorkModal").classList.remove("active");
   editingWork = null;
+  editingDraftRow = null;
 });
 
 
@@ -17843,6 +17872,197 @@ async function srvListByKey(key){
   try{ docs = await pull(true); }
   catch(e){ docs = (await pull(false)).filter(d => d.key === key); } /* اگر روی key ایندکس نبود */
   return docs.map(toRow);
+}
+
+
+/* =========================================================
+   پیش‌نویس‌ها: ویرایش، انتقال از منتشرشده، بازگشت با همان جایگاه
+   - پیش‌نویس‌ها در settings (key=work_draft) ذخیره می‌شوند.
+   - هنگام انتقال به پیش‌نویس: شناسه‌ی اصلی، زمان ثبت اصلی و فیلدهای اضافه ذخیره می‌شود.
+   - هنگام انتشار دوباره: با همان شناسه ساخته می‌شود و زمان اصلی در key=work_order
+     نگه‌داری می‌شود تا در بنر، جدیدترین‌ها و جست‌وجو دقیقاً همان جایگاه قبلی را بگیرد.
+   ========================================================= */
+const DRAFT_CORE_FIELDS = ["title","Author","genre","description","keywords","type","coverUrl","trailerUrl","unpublished","contentKind","mangaNumbering","mangaItems","episodes","imdb","airYear","coverFocusX","coverFocusY"];
+let __draftBusy = false;
+
+async function srvUpdate(id, valueObj){
+  return databases.updateDocument(DATABASE_ID, COLLECTION_SETTINGS, id, { value: JSON.stringify(valueObj) });
+}
+
+function isConflictError(e){
+  const msg = String(e && e.message || "");
+  return !!(e && (e.code === 409 || /already exists|document_already_exists/i.test(msg) || e.type === "document_already_exists"));
+}
+
+async function loadWorkOrderMap(){
+  try{
+    if(!srvOk()) return;
+    const rows = await srvListByKey(KEY_WORK_ORDER);
+    const m = {};
+    rows.forEach(r => {
+      const id = r && r.data && r.data.workId;
+      const at = Number(r && r.data && r.data.at);
+      if(id && at > 0) m[String(id)] = at;
+    });
+    workOrderMap = m;
+  }catch(e){
+    console.warn("loadWorkOrderMap", e); /* آخرین نقشه‌ی سالم نگه داشته می‌شود */
+  }
+}
+
+async function setWorkOrder(workId, at){
+  const wid = String(workId || "");
+  const ts = Number(at);
+  if(!wid || !(ts > 0)) return;
+  const val = { workId: wid, at: ts };
+  const docId = "ord_" + wid;
+  if(docId.length <= 36){
+    try{
+      await srvCreate(KEY_WORK_ORDER, val, "", docId);
+    }catch(e){
+      if(isConflictError(e)) await srvUpdate(docId, val);
+      else throw e;
+    }
+  }else{
+    await srvCreate(KEY_WORK_ORDER, val, "ord_");
+  }
+  workOrderMap[wid] = ts;
+}
+
+async function clearWorkOrder(workId){
+  const wid = String(workId || "");
+  if(!wid) return;
+  delete workOrderMap[wid];
+  try{ await srvDelete("ord_" + wid); }catch(e){ /* ممکن است وجود نداشته باشد */ }
+}
+
+/* ساخت سند اثر با تحمل اسکیمای ناقص: فقط ستونی که Appwrite نمی‌شناسد حذف می‌شود */
+async function createWorkDocSafe(id, payload){
+  const p = Object.assign({}, payload);
+  const KEEP = ["title","type","episodes","coverUrl"];
+  let droppedOptional = false;
+  for(let i = 0; i < 16; i++){
+    try{
+      return await databases.createDocument(DATABASE_ID, COLLECTION_WORKS, id, p);
+    }catch(err){
+      if(isConflictError(err)) throw err;
+      const msg = String(err && err.message || "");
+      if(!/attribute|structure|unknown/i.test(msg)) throw err;
+      const m = msg.match(/Unknown attribute:?\s*"?([A-Za-z0-9_]+)"?/i);
+      let key = m ? m[1] : "";
+      if(key && key in p && KEEP.indexOf(key) < 0){
+        if(key === "mangaItems" && p.contentKind === "manga" && (p.episodes === "[]" || !p.episodes)){
+          p.episodes = p.mangaItems; /* سازگاری با اسکیمای قدیمی: مانگا داخل episodes */
+        }
+        delete p[key];
+        continue;
+      }
+      if(!droppedOptional){
+        droppedOptional = true;
+        ["contentKind","mangaNumbering","mangaItems","imdb","airYear","coverFocusX","coverFocusY"].forEach(k => delete p[k]);
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error("ساخت سند ناموفق بود");
+}
+
+function buildDraftDataFromRawDoc(raw, work){
+  const d = {};
+  DRAFT_CORE_FIELDS.forEach(k => {
+    if(raw[k] !== undefined && raw[k] !== null) d[k] = raw[k];
+  });
+  if(work){
+    if(work.coverFocusX != null) d.coverFocusX = Number(work.coverFocusX);
+    if(work.coverFocusY != null) d.coverFocusY = Number(work.coverFocusY);
+  }
+  const extra = {};
+  Object.keys(raw).forEach(k => {
+    if(k.charAt(0) === "$" || DRAFT_CORE_FIELDS.indexOf(k) >= 0) return;
+    if(raw[k] === undefined || raw[k] === null) return;
+    extra[k] = raw[k];
+  });
+  d.extra = extra;
+  d.origId = String(raw.$id || (work && work.id) || "");
+  d.origCreatedAt = Number(work && work.createdAt) || (raw.$createdAt ? new Date(raw.$createdAt).getTime() : Date.now());
+  d.draftTitle = d.title || "";
+  d.at = Date.now();
+  return d;
+}
+
+/* منتشرشده → پیش‌نویس (ایمن: اول پیش‌نویس ساخته می‌شود، بعد اثر حذف می‌شود) */
+async function moveWorkToDraft(work){
+  if(__draftBusy || __publishInFlight || !work) return;
+  if(!(await appConfirm("«" + (work.title || "") + "» از سایت و صفحه اصلی برداشته شود و به پیش‌نویس‌ها برود؟\nبعد از انتشار دوباره، همان جایگاه قبلی را در بنر، جدیدترین‌ها و جست‌وجو خواهد داشت.", { title: "انتقال به پیش‌نویس", okText: "انتقال" }))) return;
+  if(!(await requireAdminAction())) return;
+  if(!srvOk()){ showToast("اتصال برقرار نیست"); return; }
+  __draftBusy = true;
+  let draftDocId = null;
+  try{
+    const raw = await databases.getDocument(DATABASE_ID, COLLECTION_WORKS, work.id);
+    const data = buildDraftDataFromRawDoc(raw, work);
+    const created = await srvCreate("work_draft", data, "draft_");
+    draftDocId = created && created.$id;
+    await setWorkOrder(work.id, data.origCreatedAt);
+    await databases.deleteDocument(DATABASE_ID, COLLECTION_WORKS, work.id);
+    draftDocId = null; /* موفق؛ دیگر نیازی به بازگردانی نیست */
+    if(currentWork && currentWork.id === work.id) currentWork = null;
+    await loadWorks();
+    try{ if($("adminDrafts")?.classList.contains("active")) renderAdminDrafts(); }catch(e){}
+    showToast("به پیش‌نویس‌ها منتقل شد");
+  }catch(e){
+    console.error("moveWorkToDraft", e);
+    /* اگر اثر حذف نشد، پیش‌نویسِ ناقص را پاک کن تا تکراری نشود */
+    if(draftDocId){ try{ await srvDelete(draftDocId); }catch(_){} }
+    showToast("انتقال به پیش‌نویس ناموفق بود؛ اثر دست‌نخورده ماند");
+  }finally{
+    __draftBusy = false;
+  }
+}
+
+/* پیش‌نویس → منتشرشده (با همان شناسه و همان جایگاه قبلی اگر از منتشرشده‌ها آمده باشد) */
+async function publishDraftRow(row){
+  const d = (row && row.data) || {};
+  const payload = Object.assign({}, (d.extra && typeof d.extra === "object") ? d.extra : {});
+  payload.title = d.title || "";
+  payload.Author = d.Author || "";
+  payload.genre = d.genre || "";
+  payload.description = d.description || "";
+  payload.keywords = d.keywords || "";
+  payload.type = d.type === "movie" ? "movie" : "serial";
+  payload.coverUrl = d.coverUrl || "";
+  payload.trailerUrl = d.trailerUrl || "";
+  payload.unpublished = !!d.unpublished;
+  payload.episodes = d.episodes || "[]";
+  payload.mangaItems = d.mangaItems || "[]";
+  payload.contentKind = d.contentKind || "anime";
+  payload.mangaNumbering = d.mangaNumbering || "chapter";
+  if(d.imdb != null && d.imdb !== "") payload.imdb = Number(d.imdb);
+  if(d.airYear != null && d.airYear !== "") payload.airYear = Number(d.airYear);
+  if(d.coverFocusX != null && d.coverFocusX !== "") payload.coverFocusX = Number(d.coverFocusX);
+  if(d.coverFocusY != null && d.coverFocusY !== "") payload.coverFocusY = Number(d.coverFocusY);
+
+  const wantId = d.origId ? String(d.origId) : appwriteID.unique();
+  let doc;
+  try{
+    doc = await createWorkDocSafe(wantId, payload);
+  }catch(e){
+    if(d.origId && isConflictError(e)) doc = await createWorkDocSafe(appwriteID.unique(), payload);
+    else throw e;
+  }
+  const newId = doc && doc.$id;
+  if(newId && d.origCreatedAt){
+    try{ await setWorkOrder(newId, d.origCreatedAt); }
+    catch(e){ console.warn("setWorkOrder", e); showToast("منتشر شد؛ ولی ثبت جایگاه قبلی ناموفق بود"); }
+  }
+  try{
+    if(newId && (payload.coverFocusX != null || payload.coverFocusY != null)){
+      saveCoverFocusForWork(newId, payload.coverFocusY != null ? payload.coverFocusY : 28, payload.coverFocusX != null ? payload.coverFocusX : 50);
+    }
+  }catch(e){}
+  await srvDelete(row.id);
+  return doc;
 }
 
 /* ----- دایره نارنجی ----- */
