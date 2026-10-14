@@ -5097,6 +5097,7 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
       <button data-admin-tab="requests" type="button">درخواست‌ها<span class="dotBadge" id="dotReqTab" hidden></span></button>
       <button data-admin-tab="accounts" type="button">اکانت‌ها<span class="dotBadge" id="dotAccountsTab" hidden></span></button>
       <button data-admin-tab="planets" type="button">سیاره‌ها</button>
+      <button data-admin-tab="bulkLinks" type="button">ورود گروهی</button>
     </div>
 
     <div id="adminAdd" class="adminSection active">
@@ -5422,6 +5423,69 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
           </div>
           <div class="planetAdminEditorActions"><button type="button" class="addBtn" id="planetSaveBtn">ذخیره سیاره</button><button type="button" class="delete" id="planetCancelBtn">انصراف</button></div>
         </div>
+      </div>
+    </div>
+
+    <div id="adminBulkLinks" class="adminSection">
+      <div class="form">
+        <p class="keywordHint" style="margin-bottom:12px;line-height:1.9">لینک‌های دانلود را یک‌جا وارد کنید. سیستم آن‌ها را استخراج، مرتب و به قسمت‌های انیمهٔ انتخاب‌شده وصل می‌کند. به‌صورت پیش‌فرض قسمت‌های موجود بازنویسی نمی‌شوند.</p>
+
+        <label>انتخاب انیمه</label>
+        <div class="searchBox" style="margin-bottom:8px">
+          <span>🔍</span>
+          <input id="bulkWorkSearch" placeholder="جستجوی عنوان انیمه..." autocomplete="off">
+        </div>
+        <select id="bulkWorkSelect" style="margin-bottom:11px">
+          <option value="">— انتخاب انیمه —</option>
+        </select>
+        <div id="bulkWorkMeta" class="keywordHint" style="margin-top:-4px;margin-bottom:12px"></div>
+
+        <div id="bulkSeasonWrap" style="display:none">
+          <label>فصل</label>
+          <select id="bulkSeasonSelect">
+            <option value="0">فصل ۱</option>
+          </select>
+          <div class="keywordHint">برای آثار سریالی با چند فصل، فصل مقصد را انتخاب کنید.</div>
+        </div>
+
+        <label>شمارهٔ اولین قسمت (در صورت نبود شماره در لینک)</label>
+        <input id="bulkStartEp" type="number" min="1" max="9999" value="1" style="margin-bottom:11px">
+
+        <label>لینک‌ها (هر خط یک لینک، یا چند لینک با فاصله)</label>
+        <textarea id="bulkLinksText" rows="10" placeholder="https://example.com/E001.mkv&#10;https://example.com/E002.mkv&#10;..." style="min-height:160px;direction:ltr;text-align:left;font-size:11px;line-height:1.7"></textarea>
+
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 12px">
+          <button class="addBtn" id="bulkParseBtn" type="button" style="width:auto;flex:1;min-width:120px;height:42px;margin:0">بررسی لینک‌ها</button>
+          <button class="addBtn" id="bulkApplyBtn" type="button" style="width:auto;flex:1;min-width:120px;height:42px;margin:0;background:#2e5c3a">ثبت گروهی لینک‌ها</button>
+          <button class="delete" id="bulkClearBtn" type="button" style="width:auto;flex:1;min-width:100px;height:42px;margin:0">پاک‌کردن کادر</button>
+        </div>
+
+        <div id="bulkStatsBox" class="adminBox" style="display:none;margin-bottom:12px;padding:12px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;line-height:1.8">
+            <div>شناسایی‌شده: <b id="bulkStatTotal" style="color:var(--orange)">0</b></div>
+            <div>معتبر: <b id="bulkStatValid" style="color:#7fbf78">0</b></div>
+            <div>تکراری در لیست: <b id="bulkStatDup" style="color:#f5a623">0</b></div>
+            <div>نامعتبر: <b id="bulkStatInvalid" style="color:#e0b0a0">0</b></div>
+          </div>
+          <div id="bulkWarnBox" style="display:none;margin-top:10px;padding:10px;border-radius:10px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.35);font-size:10.5px;line-height:1.8;color:#e8dcc8"></div>
+        </div>
+
+        <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;margin:8px 0 12px">
+          <input type="checkbox" id="bulkOverwriteChk" checked style="width:18px;height:18px;accent-color:var(--orange);margin-top:2px;flex-shrink:0">
+          <span style="font-size:11px;color:var(--muted);line-height:1.7">جایگزینی کامل: لینک‌های قبلی این فصل/اثر حذف می‌شوند و فقط لینک‌های جدید ثبت می‌گردند. اگر خاموش باشد فقط قسمت‌های بدون لینک پر می‌شوند و بقیه دست‌نخورده می‌مانند.</span>
+        </label>
+
+        <div id="bulkPreviewBox" style="display:none;margin-bottom:12px">
+          <div class="sectionHead" style="margin:0 0 10px"><h3 style="font-size:13px">پیش‌نمایش اتصال</h3></div>
+          <div id="bulkPreviewList" style="max-height:280px;overflow:auto;border:1px solid var(--line,#2a2a30);border-radius:12px;background:var(--card2,#1a1a20);padding:8px"></div>
+        </div>
+
+        <div id="bulkProgressBox" class="downloadProgressBox" style="display:none;margin-top:8px">
+          <div class="dpTitle" id="bulkProgressTitle">در حال ثبت...</div>
+          <div class="dpBar"><div class="dpFill" id="bulkProgressFill" style="width:0%"></div></div>
+          <div class="dpMeta" id="bulkProgressMeta">۰ از ۰</div>
+        </div>
+        <div id="bulkResultBox" style="display:none;margin-top:12px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:11px;line-height:1.9"></div>
       </div>
     </div>
 
@@ -12400,6 +12464,7 @@ document.querySelectorAll("[data-admin-tab]").forEach(btn => {
     if(tab === "studios"){ $("adminStudios").classList.add("active"); renderAdminStudios(); }
     if(tab === "accounts"){ $("adminAccounts").classList.add("active"); renderAdminAccounts(); try{ updateAdminFpUI(); }catch(e){} }
     if(tab === "planets"){ $("adminPlanets")?.classList.add("active"); try{ planetAdminLoad(); }catch(e){ console.error(e); } }
+    if(tab === "bulkLinks"){ $("adminBulkLinks")?.classList.add("active"); try{ initBulkLinksPanel(); }catch(e){ console.error(e); } }
   });
 });
 
@@ -13021,65 +13086,17 @@ async function createWorkFromAdmin(asDraft){
     }
 
     let createdWorkDoc;
+    /* ساخت امن: فقط attribute ناشناخته حذف می‌شود — mangaItems بی‌دلیل دور ریخته نمی‌شود */
     try{
-      createdWorkDoc = await databases.createDocument(
-        DATABASE_ID,
-        COLLECTION_WORKS,
-        appwriteID.unique(),
-        createPayload
-      );
+      createdWorkDoc = await createWorkDocSafe(appwriteID.unique(), createPayload);
     }catch(createErr){
+      /* سازگاری مانگای قدیمی: اگر فقط مانگا بود و mangaItems در اسکیما نبود داخل episodes */
       const msg = String(createErr && createErr.message || "");
-      if(/contentKind|mangaNumbering|mangaItems|trailerUrl|unpublished|coverFocusX|coverFocusY|imdb|airYear|attribute|unknown/i.test(msg)){
-        /* فیلدهای اختیاری که ممکن است در اسکیمای Appwrite نباشند — فقط همان‌هایی که در خطا آمده‌اند حذف شوند */
-        const dropIf = (key, always) => {
-          if(always || new RegExp(key, "i").test(msg) || /unknown attribute/i.test(msg)){
-            try{ delete createPayload[key]; }catch(e){}
-          }
-        };
-        dropIf("contentKind", true);
-        dropIf("mangaNumbering", true);
-        dropIf("mangaItems", true);
-        dropIf("coverFocusX", /coverFocusX/i.test(msg));
-        dropIf("coverFocusY", /coverFocusY/i.test(msg));
-        dropIf("trailerUrl", /trailerUrl/i.test(msg));
-        dropIf("unpublished", /unpublished/i.test(msg) || /unknown attribute/i.test(msg));
-        dropIf("imdb", /imdb/i.test(msg));
-        dropIf("airYear", /airYear/i.test(msg));
-        if(contentKind === "manga" && mangaPayload.length && !hasAnime){
-          createPayload.episodes = JSON.stringify(mangaPayload);
-          createPayload.contentKind = "manga";
-        }
-        try{
-          createdWorkDoc = await databases.createDocument(
-            DATABASE_ID,
-            COLLECTION_WORKS,
-            appwriteID.unique(),
-            createPayload
-          );
-        }catch(retryErr){
-          /* آخرین تلاش: فقط فیلدهای اصلی */
-          const core = {
-            title: createPayload.title,
-            Author: createPayload.Author || "",
-            genre: createPayload.genre || "",
-            description: createPayload.description || "",
-            keywords: createPayload.keywords || "",
-            type: createPayload.type,
-            coverUrl: createPayload.coverUrl || "",
-            episodes: createPayload.episodes || "[]"
-          };
-          if(createPayload.trailerUrl) core.trailerUrl = createPayload.trailerUrl;
-          if(createPayload.unpublished != null) core.unpublished = createPayload.unpublished;
-          try{
-            createdWorkDoc = await databases.createDocument(DATABASE_ID, COLLECTION_WORKS, appwriteID.unique(), core);
-          }catch(coreErr){
-            delete core.trailerUrl;
-            delete core.unpublished;
-            createdWorkDoc = await databases.createDocument(DATABASE_ID, COLLECTION_WORKS, appwriteID.unique(), core);
-            showToast("ثبت شد؛ فیلد تریلر/انتشارنشده در اسکیما نیست — در Appwrite اضافه کنید");
-          }
-        }
+      if(contentKind === "manga" && mangaPayload.length && !hasAnime && /mangaItems|contentKind|attribute|unknown/i.test(msg)){
+        const p2 = Object.assign({}, createPayload);
+        p2.episodes = JSON.stringify(mangaPayload);
+        try{ delete p2.mangaItems; }catch(_){}
+        createdWorkDoc = await createWorkDocSafe(appwriteID.unique(), p2);
       }else{
         throw createErr;
       }
@@ -13204,7 +13221,15 @@ async function renderAdminDrafts(){
       item.querySelector(".draftEdit")?.addEventListener("click", ()=>{
         if(!isAdminMode){ showToast("وارد پنل مدیریت شوید"); return; }
         try{
-          const w = mapWorkDoc(Object.assign({}, d, { $id: "draft_" + r.id }));
+          const raw = Object.assign({}, d, { $id: "draft_" + r.id });
+          /* episodes/mangaItems ممکن است رشته یا آرایه باشند */
+          if(raw.episodes != null && typeof raw.episodes !== "string" && !Array.isArray(raw.episodes)){
+            try{ raw.episodes = JSON.stringify(raw.episodes); }catch(_){ raw.episodes = "[]"; }
+          }
+          if(raw.mangaItems != null && typeof raw.mangaItems !== "string" && !Array.isArray(raw.mangaItems)){
+            try{ raw.mangaItems = JSON.stringify(raw.mangaItems); }catch(_){ raw.mangaItems = "[]"; }
+          }
+          const w = mapWorkDoc(raw);
           openEditWork(w, r);
         }catch(e){
           console.error(e);
@@ -13785,8 +13810,10 @@ $("editAddSeasonEpBtn")?.addEventListener("click", ()=>{
   renderEditSeasonsUI();
 });
 
+let __editSaveInFlight = false;
 $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   if(!editingWork) return;
+  if(__editSaveInFlight) return;
   const draftRow = editingDraftRow; /* null = اثر منتشرشده */
   if(!(await requireAdminAction())) return;
   if(!appwriteReady || !databases){ showToast("اتصال برقرار نیست"); return; }
@@ -13820,30 +13847,35 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   if(isUnpublished){
     episodesPayload = [];
   }else if(type === "movie"){
-    for(const ch of editingChapters){
-      if(!(ch.title||"").trim()){ showToast("عنوان یکی از قسمت‌ها خالی است"); return; }
+    for(let i = 0; i < editingChapters.length; i++){
+      const ch = editingChapters[i];
+      if(!(ch.title||"").trim()) ch.title = "فایل " + (i + 1);
       if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از قسمت‌ها نامعتبر است"); return; }
       if(ch.subtitleLink && !isValidUrl(ch.subtitleLink)){ showToast("لینک زیرنویس یکی از قسمت‌ها نامعتبر است"); return; }
+      if(ch.playLink && !isValidUrl(ch.playLink)){ showToast("لینک پخش یکی از قسمت‌ها نامعتبر است"); return; }
     }
-    episodesPayload = editingChapters.map(c => {
-      const o = { id: c.id || uid(), title: (c.title||"").trim(), link: (c.link||"").trim(), onlineEnabled: isOnlinePlaybackEnabled(c) };
+    episodesPayload = editingChapters.map((c, i) => {
+      const o = { id: c.id || uid(), title: (c.title||"").trim() || ("فایل " + (i + 1)), link: (c.link||"").trim(), onlineEnabled: isOnlinePlaybackEnabled(c) };
       if((c.playLink||"").trim()) o.playLink = c.playLink.trim();
       if((c.subtitleLink||"").trim()) o.subtitleLink = c.subtitleLink.trim();
       return o;
     });
   }else{
     for(const s of editingSeasons){
+      (s.episodes || []).forEach((ch, i) => {
+        if(!(ch.title||"").trim()) ch.title = "قسمت " + (i + 1);
+      });
       for(const ch of (s.episodes || [])){
-        if(!(ch.title||"").trim()){ showToast("عنوان یکی از قسمت‌ها خالی است"); return; }
         if(ch.link && !isValidUrl(ch.link)){ showToast("لینک یکی از قسمت‌ها نامعتبر است"); return; }
         if(ch.subtitleLink && !isValidUrl(ch.subtitleLink)){ showToast("لینک زیرنویس یکی از قسمت‌ها نامعتبر است"); return; }
+        if(ch.playLink && !isValidUrl(ch.playLink)){ showToast("لینک پخش یکی از قسمت‌ها نامعتبر است"); return; }
       }
     }
     episodesPayload = editingSeasons.map(s => ({
       id: s.id || uid(),
-      title: s.title,
-      episodes: (s.episodes || []).map(e => {
-        const o = { id: e.id || uid(), title: (e.title||"").trim(), link: (e.link||"").trim(), onlineEnabled: isOnlinePlaybackEnabled(e) };
+      title: s.title || "فصل",
+      episodes: (s.episodes || []).map((e, i) => {
+        const o = { id: e.id || uid(), title: (e.title||"").trim() || ("قسمت " + (i + 1)), link: (e.link||"").trim(), onlineEnabled: isOnlinePlaybackEnabled(e) };
         if((e.playLink||"").trim()) o.playLink = e.playLink.trim();
         if((e.subtitleLink||"").trim()) o.subtitleLink = e.subtitleLink.trim();
         return o;
@@ -13893,68 +13925,55 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
   const button = $("saveEditWorkBtn");
   const oldText = button ? button.textContent : "";
   if(button){ button.disabled = true; button.textContent = "در حال ذخیره..."; }
+  __editSaveInFlight = true;
 
   try{
     /* ویرایش پیش‌نویس: فقط همان رکورد پیش‌نویس به‌روز می‌شود (بدون هیچ اثری روی سایت) */
     if(draftRow){
-      const nd = Object.assign({}, draftRow.data || {});
+      const prev = draftRow.data || {};
+      const nd = Object.assign({}, prev);
+      /* فیلدهای هسته از فرم؛ شناسه و متادیتای قبلی حفظ می‌شوند */
       Object.keys(payload).forEach(k => {
         if(payload[k] === null || payload[k] === undefined) delete nd[k];
         else nd[k] = payload[k];
       });
       nd.draftTitle = title;
       nd.updatedAt = Date.now();
+      if(prev.origId) nd.origId = prev.origId;
+      if(prev.origCreatedAt) nd.origCreatedAt = prev.origCreatedAt;
+      if(prev.at) nd.at = prev.at;
+      if(prev.extra && typeof prev.extra === "object") nd.extra = prev.extra;
+      if(!draftRow.id){
+        throw new Error("شناسهٔ سند پیش‌نویس نامعتبر است");
+      }
       await srvUpdate(draftRow.id, nd);
       try{
-        if(nd.origId && nd.coverFocusX != null && nd.coverFocusY != null) saveCoverFocusForWork(nd.origId, nd.coverFocusY, nd.coverFocusX);
+        if(nd.origId && nd.coverFocusX != null && nd.coverFocusY != null){
+          saveCoverFocusForWork(nd.origId, nd.coverFocusY, nd.coverFocusX);
+        }
       }catch(e){}
       $("editWorkModal").classList.remove("active");
       editingWork = null;
       editingDraftRow = null;
       showToast("تغییرات پیش‌نویس ذخیره شد");
-      try{ renderAdminDrafts(); }catch(e){}
+      try{ await renderAdminDrafts(); }catch(e){}
       return;
     }
     /* حذف فیلدهای null که بعضی اسکیماها قبول نمی‌کنند */
     Object.keys(payload).forEach(k => { if(payload[k] === null || payload[k] === undefined) delete payload[k]; });
-    try{
-      await databases.updateDocument(
-        DATABASE_ID,
-        COLLECTION_WORKS,
-        editingWork.id,
-        payload
-      );
-    }catch(upErr){
-      const msg = String(upErr && upErr.message || "");
-      if(/contentKind|mangaNumbering|mangaItems|trailerUrl|coverFocusX|coverFocusY|imdb|airYear|attribute|unknown/i.test(msg)){
-        const p2 = Object.assign({}, payload);
-        delete p2.contentKind;
-        delete p2.mangaNumbering;
-        delete p2.mangaItems;
-        delete p2.coverFocusX;
-        delete p2.coverFocusY;
-        if(/trailerUrl/i.test(msg)) delete p2.trailerUrl;
-        if(/imdb/i.test(msg)) delete p2.imdb;
-        if(/airYear/i.test(msg)) delete p2.airYear;
-        if(contentKind === "manga" && mangaPayload.length && !hasAnime){
-          p2.episodes = JSON.stringify(mangaPayload);
-        }
-        try{
-          await databases.updateDocument(DATABASE_ID, COLLECTION_WORKS, editingWork.id, p2);
-        }catch(upErr2){
-          /* آخرین تلاش: فقط فیلدهای پایه */
-          const msg2 = String(upErr2 && upErr2.message || "");
-          const p3 = Object.assign({}, p2);
-          ["contentKind","mangaNumbering","mangaItems","trailerUrl","coverFocusX","coverFocusY","imdb","airYear","studios","keywords"].forEach(k => delete p3[k]);
-          await databases.updateDocument(DATABASE_ID, COLLECTION_WORKS, editingWork.id, p3);
-          if(/imdb|airYear|coverFocusX|coverFocusY/i.test(msg2)){
-            showToast("ذخیره شد (بعضی فیلدهای اختیاری در Appwrite نیست)");
-          }
-        }
-      }else{
-        throw upErr;
-      }
+
+    /* اگر شناسهٔ ویرایش پیش‌نویس به‌اشتباه به works برود، جلوگیری کن */
+    if(String(editingWork.id || "").indexOf("draft_") === 0){
+      throw new Error("شناسهٔ پیش‌نویس برای جدول works معتبر نیست — صفحه را تازه کنید");
     }
+
+    await updateDocumentStripUnknown(
+      COLLECTION_WORKS,
+      editingWork.id,
+      payload,
+      ["title","type","episodes","coverUrl","Author","genre","description"]
+    );
+
     try{ await clearBrokenLinksForWork(editingWork.id); }catch(e){ console.warn(e); }
     const keepId = editingWork.id;
     try{
@@ -13964,6 +13983,7 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     }catch(e){}
     $("editWorkModal").classList.remove("active");
     editingWork = null;
+    editingDraftRow = null;
     await loadWorks();
     if(currentWork && currentWork.id === keepId){
       const fresh = allWorks.find(w => w.id === keepId);
@@ -13971,11 +13991,23 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     }
     showToast("ویرایش ذخیره شد");
   }catch(error){
-    console.error(error);
-    if(draftRow) showToast("خطا در ذخیره پیش‌نویس");
-    else if(/imdb|airYear/i.test(String(error && error.message || ""))) showToast("در Appwrite روی works دو ستون imdb و airYear را بسازید");
-    else showToast("خطا در ذخیره ویرایش");
+    console.error("saveEditWork", error);
+    const em = String(error && error.message || "");
+    if(draftRow){
+      showToast("خطا در ذخیره پیش‌نویس: " + em.slice(0, 120));
+    }else if(/permission|unauthorized|forbidden/i.test(em)){
+      showToast("مجوز ویرایش این اثر وجود ندارد");
+    }else if(/network|fetch|Failed to fetch/i.test(em)){
+      showToast("خطای شبکه — تغییرات ذخیره نشد");
+    }else if(/imdb|airYear/i.test(em) && /attribute|unknown|structure/i.test(em)){
+      showToast("در Appwrite روی works ستون‌های imdb و airYear را بسازید (یا خالی بگذارید)");
+    }else if(/mangaItems|contentKind/i.test(em) && /attribute|unknown|structure/i.test(em)){
+      showToast("فیلد مانگا در اسکیمای works نیست — در کنسول Appwrite attribute بسازید");
+    }else{
+      showToast("خطا در ذخیره ویرایش: " + em.slice(0, 100));
+    }
   }finally{
+    __editSaveInFlight = false;
     if(button){ button.disabled = false; button.textContent = oldText || "ذخیره ویرایش"; }
   }
 });
@@ -17968,6 +18000,56 @@ async function createWorkDocSafe(id, payload){
   throw new Error("ساخت سند ناموفق بود");
 }
 
+
+/** به‌روزرسانی سند با حذف تدریجی فقط attributeهای ناشناخته — بدون دور ریختن mangaItems و بقیه */
+async function updateDocumentStripUnknown(collectionId, docId, payload, keepKeys){
+  const KEEP = new Set(keepKeys || ["title","type","episodes","coverUrl"]);
+  const p = Object.assign({}, payload);
+  Object.keys(p).forEach(k => {
+    if(p[k] === null || p[k] === undefined) delete p[k];
+  });
+  let lastErr = null;
+  for(let i = 0; i < 20; i++){
+    try{
+      return await databases.updateDocument(DATABASE_ID, collectionId, docId, p);
+    }catch(err){
+      lastErr = err;
+      const msg = String(err && err.message || "");
+      const code = err && (err.code || err.status);
+      /* مجوز / شبکه را دوباره امتحان نکن */
+      if(code === 401 || code === 403 || /permission|unauthorized|forbidden|network|fetch|Failed to fetch/i.test(msg)){
+        throw err;
+      }
+      if(!/attribute|structure|unknown|Invalid document structure/i.test(msg)){
+        throw err;
+      }
+      const m = msg.match(/Unknown attribute:?\s*"?([A-Za-z0-9_]+)"?/i)
+        || msg.match(/Invalid document structure:\s*"?([A-Za-z0-9_]+)"?/i)
+        || msg.match(/attribute\s+"([A-Za-z0-9_]+)"/i);
+      let key = m ? m[1] : "";
+      if(key && key in p && !KEEP.has(key)){
+        console.warn("updateDocumentStripUnknown: dropping", key, "from", docId);
+        delete p[key];
+        continue;
+      }
+      /* اگر نام attribute مشخص نبود، فیلدهای کاملاً اختیاری را یکی‌یکی حذف کن */
+      const OPTIONAL_ORDER = ["coverFocusX","coverFocusY","imdb","airYear","trailerUrl","contentKind","mangaNumbering","mangaItems","unpublished","keywords","studios"];
+      let dropped = false;
+      for(const k of OPTIONAL_ORDER){
+        if(k in p && !KEEP.has(k)){
+          console.warn("updateDocumentStripUnknown: dropping optional", k);
+          delete p[k];
+          dropped = true;
+          break;
+        }
+      }
+      if(dropped) continue;
+      throw err;
+    }
+  }
+  throw lastErr || new Error("به‌روزرسانی ناموفق بود");
+}
+
 function buildDraftDataFromRawDoc(raw, work){
   const d = {};
   DRAFT_CORE_FIELDS.forEach(k => {
@@ -18629,6 +18711,522 @@ $("confirmSendNotifBtn")?.addEventListener("click", async ()=>{
     if(btn) btn.disabled = false;
   }
 });
+
+
+/* =========================================================
+   ورود گروهی لینک قسمت‌ها (پنل مدیریت)
+   - لینک‌ها در فیلد link هر قسمت داخل works.episodes ذخیره می‌شوند
+   - ساختار فصل/قسمت فعلی حفظ می‌شود
+   ========================================================= */
+let __bulkParsed = []; /* [{url, epNum, assignedNum, status}] */
+let __bulkBusy = false;
+
+function extractEpisodeNumberFromText(s){
+  const t = String(s || "");
+  const patterns = [
+    /(?:^|[^\d])E0*(\d{1,4})(?:[^\d]|$)/i,
+    /(?:^|[^\d])EP(?:ISODE)?[ ._\-]*0*(\d{1,4})(?:[^\d]|$)/i,
+    /(?:^|[^\d])(?:قسمت|chapter|ch)[ ._\-]*0*(\d{1,4})(?:[^\d]|$)/i,
+    /[_\-\/.]0*(\d{1,4})(?:\.[a-z0-9]{2,5})(?:$|\?|#)/i,
+    /[_\-\/.]S\d{1,2}E0*(\d{1,4})(?:[^\d]|$)/i
+  ];
+  for(const re of patterns){
+    const m = t.match(re);
+    if(m && m[1]){
+      const n = parseInt(m[1], 10);
+      if(n >= 1 && n <= 9999) return n;
+    }
+  }
+  return null;
+}
+
+function extractUrlsFromBulkText(raw){
+  const text = String(raw || "");
+  const found = [];
+  const re = /https?:\/\/[^\s<>"'`\]]+/gi;
+  let m;
+  while((m = re.exec(text)) !== null){
+    let u = m[0].replace(/[.,;:!?)\]}>]+$/g, "").trim();
+    if(u) found.push(u);
+  }
+  if(!found.length){
+    text.split(/[\r\n]+/).forEach(line => {
+      line.split(/[\s\t]+/).forEach(tok => {
+        const t = tok.trim();
+        if(/^https?:\/\//i.test(t)) found.push(t.replace(/[.,;:!?)\]}>]+$/g, ""));
+      });
+    });
+  }
+  return found;
+}
+
+function initBulkLinksPanel(){
+  fillBulkWorkSelect();
+  const sel = $("bulkWorkSelect");
+  if(sel && !sel._bulkBound){
+    sel._bulkBound = true;
+    sel.addEventListener("change", onBulkWorkChange);
+  }
+  const search = $("bulkWorkSearch");
+  if(search && !search._bulkBound){
+    search._bulkBound = true;
+    search.addEventListener("input", ()=> fillBulkWorkSelect(search.value));
+  }
+  if(!$("bulkParseBtn")?._bulkBound){
+    if($("bulkParseBtn")){ $("bulkParseBtn")._bulkBound = true; $("bulkParseBtn").addEventListener("click", bulkParseLinks); }
+    if($("bulkApplyBtn")){ $("bulkApplyBtn")._bulkBound = true; $("bulkApplyBtn").addEventListener("click", bulkApplyLinks); }
+    if($("bulkClearBtn")){ $("bulkClearBtn")._bulkBound = true; $("bulkClearBtn").addEventListener("click", ()=>{
+      if($("bulkLinksText")) $("bulkLinksText").value = "";
+      __bulkParsed = [];
+      if($("bulkStatsBox")) $("bulkStatsBox").style.display = "none";
+      if($("bulkPreviewBox")) $("bulkPreviewBox").style.display = "none";
+      if($("bulkResultBox")) $("bulkResultBox").style.display = "none";
+      if($("bulkProgressBox")) $("bulkProgressBox").style.display = "none";
+      if($("bulkWarnBox")){ $("bulkWarnBox").style.display = "none"; $("bulkWarnBox").textContent = ""; }
+    }); }
+  }
+}
+
+function fillBulkWorkSelect(q){
+  const sel = $("bulkWorkSelect");
+  if(!sel) return;
+  const prev = sel.value;
+  const query = String(q || "").trim().toLowerCase();
+  const list = (typeof allWorks !== "undefined" && Array.isArray(allWorks) ? allWorks : [])
+    .filter(w => w && !w.isDraft && !w.unpublished)
+    .filter(w => {
+      if(!query) return true;
+      const t = String(w.title || "").toLowerCase();
+      const a = String(w.Author || "").toLowerCase();
+      return t.includes(query) || a.includes(query);
+    })
+    .slice()
+    .sort((a,b)=> String(a.title||"").localeCompare(String(b.title||""), "fa"));
+  sel.innerHTML = '<option value="">— انتخاب انیمه —</option>';
+  list.forEach(w => {
+    const opt = document.createElement("option");
+    opt.value = w.id;
+    const kind = w.type === "movie" ? "سینمایی" : "سریالی";
+    opt.textContent = (w.title || "بدون عنوان") + " · " + kind;
+    sel.appendChild(opt);
+  });
+  if(prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+  onBulkWorkChange();
+}
+
+function onBulkWorkChange(){
+  const id = ($("bulkWorkSelect")?.value || "");
+  const work = (typeof allWorks !== "undefined" ? allWorks : []).find(w => w && w.id === id);
+  const meta = $("bulkWorkMeta");
+  const seasonWrap = $("bulkSeasonWrap");
+  const seasonSel = $("bulkSeasonSelect");
+  if(!work){
+    if(meta) meta.textContent = "";
+    if(seasonWrap) seasonWrap.style.display = "none";
+    return;
+  }
+  const epCount = work.type === "movie"
+    ? (work.episodes || []).length
+    : (work.seasons || []).reduce((n,s)=> n + ((s.episodes||[]).length), 0);
+  if(meta){
+    meta.textContent = (work.type === "movie" ? "سینمایی" : "سریالی")
+      + " · " + epCount + " قسمت موجود"
+      + (work.Author ? " · " + work.Author : "");
+  }
+  if(work.type === "movie"){
+    if(seasonWrap) seasonWrap.style.display = "none";
+  }else{
+    if(seasonWrap) seasonWrap.style.display = "block";
+    if(seasonSel){
+      const seasons = work.seasons && work.seasons.length
+        ? work.seasons
+        : [{ id: "s1", title: "فصل ۱", episodes: work.episodes || [] }];
+      seasonSel.innerHTML = "";
+      seasons.forEach((s, i) => {
+        const opt = document.createElement("option");
+        opt.value = String(i);
+        opt.textContent = (s.title || ("فصل " + (i+1))) + " (" + ((s.episodes||[]).length) + " قسمت)";
+        seasonSel.appendChild(opt);
+      });
+    }
+  }
+}
+
+function bulkParseLinks(){
+  if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
+  const raw = ($("bulkLinksText")?.value || "");
+  const urls = extractUrlsFromBulkText(raw);
+  const seen = new Set();
+  let invalid = 0, dup = 0;
+  const validItems = [];
+  urls.forEach(u => {
+    if(!isValidUrl(u)){ invalid++; return; }
+    const key = u.toLowerCase();
+    if(seen.has(key)){ dup++; return; }
+    seen.add(key);
+    const num = extractEpisodeNumberFromText(u);
+    validItems.push({ url: u, epNum: num });
+  });
+
+  const withNum = validItems.filter(x => x.epNum != null);
+  const ratio = validItems.length ? withNum.length / validItems.length : 0;
+  let ordered;
+  if(ratio >= 0.5){
+    ordered = validItems.slice().sort((a,b)=>{
+      const an = a.epNum != null ? a.epNum : 999999;
+      const bn = b.epNum != null ? b.epNum : 999999;
+      if(an !== bn) return an - bn;
+      return 0;
+    });
+  }else{
+    ordered = validItems.slice();
+  }
+
+  const start = Math.max(1, parseInt(($("bulkStartEp")?.value || "1"), 10) || 1);
+  const nums = ordered.map(x => x.epNum).filter(n => n != null);
+  const uniqueNums = new Set(nums);
+  const warnings = [];
+  if(nums.length && uniqueNums.size < nums.length){
+    warnings.push("برخی لینک‌ها شمارهٔ قسمت تکراری دارند؛ ترتیب عددی حفظ می‌شود ولی قبل از ثبت بررسی کنید.");
+  }
+  if(withNum.length && withNum.length < ordered.length){
+    warnings.push((ordered.length - withNum.length) + " لینک بدون شمارهٔ قابل‌تشخیص هستند و بر اساس ترتیب ورود شماره‌گذاری می‌شوند.");
+  }
+  if(ratio >= 0.5 && nums.length){
+    const minN = Math.min(...nums), maxN = Math.max(...nums);
+    if(maxN - minN + 1 !== uniqueNums.size){
+      warnings.push("شماره‌های قسمت ناقص یا نامنظم به نظر می‌رسند (بازه " + minN + " تا " + maxN + "). ترتیب بدون تأیید شما تغییر نمی‌کند.");
+    }
+  }
+
+  __bulkParsed = ordered.map((item, idx) => {
+    let assigned;
+    if(ratio >= 0.5 && item.epNum != null) assigned = item.epNum;
+    else assigned = start + idx;
+    return {
+      url: item.url,
+      epNum: item.epNum,
+      assignedNum: assigned,
+      status: "pending"
+    };
+  });
+
+  if($("bulkStatTotal")) $("bulkStatTotal").textContent = String(urls.length);
+  if($("bulkStatValid")) $("bulkStatValid").textContent = String(__bulkParsed.length);
+  if($("bulkStatDup")) $("bulkStatDup").textContent = String(dup);
+  if($("bulkStatInvalid")) $("bulkStatInvalid").textContent = String(invalid);
+  if($("bulkStatsBox")) $("bulkStatsBox").style.display = "block";
+
+  const warnBox = $("bulkWarnBox");
+  if(warnBox){
+    if(warnings.length){
+      warnBox.style.display = "block";
+      warnBox.textContent = warnings.join(" ");
+    }else{
+      warnBox.style.display = "none";
+      warnBox.textContent = "";
+    }
+  }
+
+  const list = $("bulkPreviewList");
+  if(list){
+    list.innerHTML = "";
+    if(!__bulkParsed.length){
+      list.innerHTML = '<div class="empty" style="padding:20px">لینک معتبری پیدا نشد.</div>';
+    }else{
+      __bulkParsed.forEach(row => {
+        const div = document.createElement("div");
+        div.style.cssText = "display:flex;gap:8px;align-items:flex-start;padding:8px 6px;border-bottom:1px solid var(--line,#2a2a30);font-size:10.5px;direction:rtl";
+        const num = document.createElement("span");
+        num.style.cssText = "flex:0 0 52px;color:var(--orange);font-weight:700;font-variant-numeric:tabular-nums";
+        num.textContent = "قسمت " + row.assignedNum;
+        const url = document.createElement("span");
+        url.style.cssText = "flex:1;min-width:0;word-break:break-all;direction:ltr;text-align:left;color:var(--muted);line-height:1.5";
+        url.textContent = row.url;
+        const tag = document.createElement("span");
+        tag.style.cssText = "flex:0 0 auto;font-size:9px;color:#8a8580";
+        tag.textContent = row.epNum != null ? ("E" + String(row.epNum).padStart(3,"0")) : "ترتیبی";
+        div.append(num, url, tag);
+        list.appendChild(div);
+      });
+    }
+  }
+  if($("bulkPreviewBox")) $("bulkPreviewBox").style.display = "block";
+  if($("bulkResultBox")) $("bulkResultBox").style.display = "none";
+  showToast(__bulkParsed.length ? (__bulkParsed.length + " لینک آمادهٔ ثبت") : "لینک معتبری نیست");
+}
+
+async function bulkApplyLinks(){
+  if(__bulkBusy){ showToast("عملیات قبلی هنوز تمام نشده"); return; }
+  if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
+  if(!(await requireAdminAction())) return;
+  if(!__bulkParsed.length){
+    bulkParseLinks();
+    if(!__bulkParsed.length){ showToast("ابتدا لینک‌های معتبر را بررسی کنید"); return; }
+  }
+  const workId = ($("bulkWorkSelect")?.value || "");
+  if(!workId){ showToast("انیمه را انتخاب کنید"); return; }
+  if(!appwriteReady || !databases){ showToast("اتصال به سرور برقرار نیست"); return; }
+
+  const overwrite = !!($("bulkOverwriteChk")?.checked);
+  const seasonIdx = parseInt(($("bulkSeasonSelect")?.value || "0"), 10) || 0;
+
+  __bulkBusy = true;
+  if($("bulkProgressBox")) $("bulkProgressBox").style.display = "block";
+  if($("bulkApplyBtn")) $("bulkApplyBtn").disabled = true;
+  if($("bulkParseBtn")) $("bulkParseBtn").disabled = true;
+  if($("bulkProgressTitle")) $("bulkProgressTitle").textContent = "خواندن داده از سرور...";
+  if($("bulkProgressFill")) $("bulkProgressFill").style.width = "5%";
+  if($("bulkResultBox")) $("bulkResultBox").style.display = "none";
+
+  let created = 0, updated = 0, skipped = 0, failed = 0;
+  const detailLines = [];
+
+  try{
+    /* همیشه از سرور تازه بخوان تا با دادهٔ واقعی کار کنیم */
+    const rawDoc = await databases.getDocument(DATABASE_ID, COLLECTION_WORKS, workId);
+    const type = rawDoc.type === "movie" ? "movie" : "serial";
+    const norm = normalizeWorkSeasons(rawDoc.episodes, type);
+
+    let seasons = [];
+    let flatMovie = [];
+    if(type === "movie"){
+      flatMovie = (norm.flatEpisodes || []).map(e => Object.assign({}, e));
+    }else{
+      if(norm.seasons && norm.seasons.length){
+        seasons = norm.seasons.map(s => ({
+          id: s.id || uid(),
+          title: s.title || "فصل",
+          episodes: (s.episodes || []).map(e => Object.assign({}, e))
+        }));
+      }else{
+        seasons = [{ id: uid(), title: "فصل ۱", episodes: [] }];
+      }
+      while(seasons.length <= seasonIdx){
+        seasons.push({ id: uid(), title: "فصل " + (seasons.length + 1), episodes: [] });
+      }
+    }
+
+    const targetEps = type === "movie" ? flatMovie : seasons[seasonIdx].episodes;
+
+    /* نقشهٔ شماره → قسمت موجود */
+    const byNum = new Map();
+    targetEps.forEach((ep, i) => {
+      let n = extractEpisodeNumberFromText(ep.title);
+      if(n == null) n = i + 1;
+      if(!byNum.has(n)) byNum.set(n, ep);
+    });
+
+    const total = __bulkParsed.length;
+    let cleared = 0;
+
+    if(overwrite){
+      /*
+        جایگزینی کامل در محدودهٔ فصل/سینمایی انتخاب‌شده:
+        - لینک‌های قبلی این محدوده حذف می‌شوند
+        - فقط لینک‌های جدید از لیست گروهی ثبت می‌شوند
+        - شناسه و عنوان قسمت هم‌شماره در صورت وجود حفظ می‌شود
+      */
+      const newList = [];
+      for(let i = 0; i < total; i++){
+        const row = __bulkParsed[i];
+        const num = row.assignedNum;
+        const prev = byNum.get(num);
+        try{
+          const title = (prev && (prev.title || "").trim())
+            ? prev.title
+            : (type === "movie" ? ("فایل " + num) : ("قسمت " + num));
+          const neu = {
+            id: (prev && prev.id) ? prev.id : uid(),
+            title,
+            link: row.url,
+            onlineEnabled: prev ? isOnlinePlaybackEnabled(prev) : true
+          };
+          if(prev && prev.playLink) neu.playLink = prev.playLink;
+          if(prev && prev.subtitleLink) neu.subtitleLink = prev.subtitleLink;
+          newList.push(neu);
+          if(prev && (prev.link || "").trim()){
+            updated++;
+            row.status = "replaced";
+            detailLines.push("قسمت " + num + ": لینک قبلی حذف و جایگزین شد");
+          }else if(prev){
+            updated++;
+            row.status = "updated";
+            detailLines.push("قسمت " + num + ": لینک گذاشته شد");
+          }else{
+            created++;
+            row.status = "created";
+            detailLines.push("قسمت " + num + ": ساخته شد");
+          }
+        }catch(err){
+          failed++;
+          row.status = "failed";
+          detailLines.push("قسمت " + num + ": خطا");
+        }
+        const pct = Math.round(((i + 1) / total) * 70) + 10;
+        if($("bulkProgressFill")) $("bulkProgressFill").style.width = pct + "%";
+        if($("bulkProgressMeta")) $("bulkProgressMeta").textContent = (i + 1) + " از " + total;
+        if($("bulkProgressTitle")) $("bulkProgressTitle").textContent = "جایگزینی لینک‌ها...";
+        if(i % 25 === 24) await new Promise(r => setTimeout(r, 0));
+      }
+      const newNums = new Set(__bulkParsed.map(r => r.assignedNum));
+      targetEps.forEach((ep, i) => {
+        let n = extractEpisodeNumberFromText(ep.title);
+        if(n == null) n = i + 1;
+        if(!newNums.has(n) && (ep.link || "").trim()) cleared++;
+      });
+      targetEps.length = 0;
+      newList.sort((a, b) => {
+        const an = extractEpisodeNumberFromText(a.title);
+        const bn = extractEpisodeNumberFromText(b.title);
+        if(an != null && bn != null && an !== bn) return an - bn;
+        if(an != null && bn == null) return -1;
+        if(an == null && bn != null) return 1;
+        return 0;
+      });
+      newList.forEach(e => targetEps.push(e));
+      if(cleared > 0){
+        detailLines.unshift("لینک " + cleared + " قسمت قبلی که در لیست جدید نبودند حذف شد");
+      }
+    }else{
+      for(let i = 0; i < total; i++){
+        const row = __bulkParsed[i];
+        const num = row.assignedNum;
+        const hit = byNum.get(num);
+        try{
+          if(hit){
+            const existingLink = (hit.link || "").trim();
+            if(existingLink){
+              skipped++;
+              row.status = "skipped";
+              detailLines.push("قسمت " + num + ": رد شد (لینک قبلی حفظ شد)");
+            }else{
+              hit.link = row.url;
+              if(hit.onlineEnabled === undefined) hit.onlineEnabled = true;
+              if(!hit.title || !String(hit.title).trim()){
+                hit.title = type === "movie" ? ("فایل " + num) : ("قسمت " + num);
+              }
+              updated++;
+              row.status = "updated";
+              detailLines.push("قسمت " + num + ": لینک گذاشته شد");
+            }
+          }else{
+            const title = type === "movie" ? ("فایل " + num) : ("قسمت " + num);
+            const neu = { id: uid(), title, link: row.url, onlineEnabled: true };
+            targetEps.push(neu);
+            byNum.set(num, neu);
+            created++;
+            row.status = "created";
+            detailLines.push("قسمت " + num + ": ساخته شد");
+          }
+        }catch(err){
+          failed++;
+          row.status = "failed";
+          detailLines.push("قسمت " + num + ": خطا");
+        }
+        const pct = Math.round(((i + 1) / total) * 70) + 10;
+        if($("bulkProgressFill")) $("bulkProgressFill").style.width = pct + "%";
+        if($("bulkProgressMeta")) $("bulkProgressMeta").textContent = (i + 1) + " از " + total;
+        if($("bulkProgressTitle")) $("bulkProgressTitle").textContent = "اتصال لینک‌ها به قسمت‌ها...";
+        if(i % 25 === 24) await new Promise(r => setTimeout(r, 0));
+      }
+      targetEps.sort((a, b) => {
+        const an = extractEpisodeNumberFromText(a.title);
+        const bn = extractEpisodeNumberFromText(b.title);
+        if(an != null && bn != null && an !== bn) return an - bn;
+        if(an != null && bn == null) return -1;
+        if(an == null && bn != null) return 1;
+        return 0;
+      });
+    }
+
+    let episodesPayload;
+    if(type === "movie"){
+      episodesPayload = flatMovie.map(c => {
+        const o = { id: c.id || uid(), title: c.title, link: c.link || "", onlineEnabled: isOnlinePlaybackEnabled(c) };
+        if(c.playLink) o.playLink = c.playLink;
+        if(c.subtitleLink) o.subtitleLink = c.subtitleLink;
+        return o;
+      });
+    }else{
+      episodesPayload = seasons.map(s => ({
+        id: s.id || uid(),
+        title: s.title,
+        episodes: (s.episodes || []).map(e => {
+          const o = { id: e.id || uid(), title: e.title, link: e.link || "", onlineEnabled: isOnlinePlaybackEnabled(e) };
+          if(e.playLink) o.playLink = e.playLink;
+          if(e.subtitleLink) o.subtitleLink = e.subtitleLink;
+          return o;
+        })
+      }));
+    }
+
+    if($("bulkProgressTitle")) $("bulkProgressTitle").textContent = "ذخیره در Appwrite (جدول works)...";
+    if($("bulkProgressFill")) $("bulkProgressFill").style.width = "90%";
+    if($("bulkProgressMeta")) $("bulkProgressMeta").textContent = "updateDocument → episodes";
+
+    await databases.updateDocument(DATABASE_ID, COLLECTION_WORKS, workId, {
+      episodes: JSON.stringify(episodesPayload)
+    });
+
+    if($("bulkProgressFill")) $("bulkProgressFill").style.width = "100%";
+    if($("bulkProgressTitle")) $("bulkProgressTitle").textContent = "ذخیره شد";
+
+    await loadWorks();
+    onBulkWorkChange();
+
+    const workTitle = (rawDoc.title || workId);
+    const seasonLabel = type === "movie" ? "سینمایی" : ("فصل " + (seasonIdx + 1));
+    const res = $("bulkResultBox");
+    if(res){
+      res.style.display = "block";
+      let html = "<b style='color:var(--orange)'>ذخیره در سرور انجام شد</b><br>"
+        + "اثر: <b>" + escapeHtml(workTitle) + "</b><br>"
+        + "محل: جدول <b>works</b> → فیلد <b>episodes</b> → فیلد <b>link</b> هر قسمت<br>"
+        + "محدوده: " + escapeHtml(seasonLabel) + "<br>"
+        + "جدید: <b>" + created + "</b> · جایگزین/پر شد: <b>" + updated + "</b> · رد (لینک قبلی): <b>" + skipped + "</b> · خطا: <b>" + failed + "</b>"
+        + (overwrite ? (" · حذف لینک‌های خارج از لیست: <b>" + cleared + "</b>") : "");
+      if(overwrite){
+        html += "<br><span style='color:#7fbf78'>حالت جایگزینی کامل: لینک‌های قبلی این محدوده حذف و فقط لینک‌های جدید ذخیره شدند.</span>";
+      }else if(updated + created === 0 && skipped > 0){
+        html += "<br><br><span style='color:#e0b0a0'>هیچ لینکی عوض نشد چون قسمت‌ها از قبل لینک داشتند. برای حذف لینک‌های قبلی و جایگزینی کامل، تیک جایگزینی را بزن و دوباره ثبت کن.</span>";
+      }
+      if(detailLines.length && detailLines.length <= 30){
+        html += "<br><br><span style='color:var(--muted);font-size:10px;line-height:1.7'>" + detailLines.map(escapeHtml).join("<br>") + "</span>";
+      }else if(detailLines.length > 30){
+        html += "<br><br><span style='color:var(--muted);font-size:10px'>" + detailLines.slice(0, 20).map(escapeHtml).join("<br>") + "<br>… و " + (detailLines.length - 20) + " مورد دیگر</span>";
+      }
+      res.innerHTML = html;
+    }
+
+    if(updated + created > 0){
+      showToast("ذخیره شد روی «" + workTitle + "»: " + (updated + created) + " قسمت");
+    }else if(skipped > 0){
+      showToast("چیزی عوض نشد — تیک بازنویسی را بزن");
+    }else{
+      showToast("ثبت گروهی بدون تغییر");
+    }
+  }catch(e){
+    console.error("bulkApplyLinks", e);
+    const em = String(e && e.message || "");
+    if($("bulkProgressTitle")) $("bulkProgressTitle").textContent = "خطا در ذخیره";
+    if($("bulkResultBox")){
+      $("bulkResultBox").style.display = "block";
+      $("bulkResultBox").innerHTML = "<b style='color:#e0b0a0'>ذخیره ناموفق بود</b><br>"
+        + ( /permission|unauthorized|forbidden/i.test(em)
+          ? "مجوز به‌روزرسانی این اثر در Appwrite وجود ندارد."
+          : /network|fetch|Failed/i.test(em)
+            ? "خطای شبکه — هیچ چیزی ذخیره نشد."
+            : ("خطا: " + escapeHtml(em.slice(0, 200))) );
+    }
+    showToast("ذخیره گروهی ناموفق بود");
+  }finally{
+    __bulkBusy = false;
+    if($("bulkApplyBtn")) $("bulkApplyBtn").disabled = false;
+    if($("bulkParseBtn")) $("bulkParseBtn").disabled = false;
+  }
+}
+
 
 try{ init(); }catch(e){ console.error(e); }
 
