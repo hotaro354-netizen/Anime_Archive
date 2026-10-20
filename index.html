@@ -5122,7 +5122,7 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
         <div class="keywordHint">تا ۳ ژانر می‌توانید انتخاب کنید</div>
 
         <label>لینک مستقیم جلد</label>
-        <input id="adminCoverUrl" type="url" placeholder="https://...">
+        <input id="adminCoverUrl" type="url" placeholder="https://..."><div class="adminBox" style="margin:10px 0"><label>شناسه Bucket تصاویر Appwrite</label><input id="aaBucketId" value="6ad750e6002a79e3b628" placeholder="Bucket ID"><button type="button" class="editBtn" onclick="aaSaveBucket()">ذخیره شناسه Bucket</button><div class="keywordHint">برای تصاویر قابل نمایش عمومی، دسترسی خواندن Storage باید مناسب تنظیم شود.</div></div><div class="adminBox" style="margin:8px 0 12px"><label>آپلود جلد از گالری (اختیاری)</label><input type="file" id="adminCoverFile" accept="image/*" onchange="aaPreview('adminCover')"><img id="adminCoverPreview" alt="پیش‌نمایش" style="display:none;max-height:150px;max-width:100%;border-radius:10px;margin:8px 0"><div style="display:flex;gap:8px"><button type="button" class="editBtn" onclick="aaUpload('adminCover')">آپلود تصویر انتخابی</button><button type="button" class="delete" onclick="aaClear('adminCover')">لغو انتخاب</button></div><div id="adminCoverStatus" class="keywordHint" aria-live="polite"></div></div>
         <div class="coverFocusBox" id="adminCoverFocusBox" style="display:none">
           <label>تنظیم فوکوس جلد (پس‌زمینه صفحه جزئیات)</label>
           <div class="coverFocusFrame" id="adminCoverFocusFrame">
@@ -5448,9 +5448,10 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
           <div class="keywordHint">برای آثار سریالی با چند فصل، فصل مقصد را انتخاب کنید.</div>
         </div>
 
-        <label>شمارهٔ اولین قسمت (در صورت نبود شماره در لینک)</label>
+        <label>شمارهٔ اولین قسمت مقصد</label>
         <input id="bulkStartEp" type="number" min="1" max="9999" value="1" style="margin-bottom:11px">
 
+        <div id="aaBulkRange" class="keywordHint" aria-live="polite"></div>
         <label>لینک‌ها (هر خط یک لینک، یا چند لینک با فاصله)</label>
         <textarea id="bulkLinksText" rows="10" placeholder="https://example.com/E001.mkv&#10;https://example.com/E002.mkv&#10;..." style="min-height:160px;direction:ltr;text-align:left;font-size:11px;line-height:1.7"></textarea>
 
@@ -5472,7 +5473,7 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
 
         <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;margin:8px 0 12px">
           <input type="checkbox" id="bulkOverwriteChk" checked style="width:18px;height:18px;accent-color:var(--orange);margin-top:2px;flex-shrink:0">
-          <span style="font-size:11px;color:var(--muted);line-height:1.7">جایگزینی کامل: لینک‌های قبلی این فصل/اثر حذف می‌شوند و فقط لینک‌های جدید ثبت می‌گردند. اگر خاموش باشد فقط قسمت‌های بدون لینک پر می‌شوند و بقیه دست‌نخورده می‌مانند.</span>
+          <span style="font-size:11px;color:var(--muted);line-height:1.7">جایگزینی فقط قسمت‌های محدودهٔ انتخابی؛ قسمت‌های دیگر حفظ می‌شوند. اگر خاموش باشد لینک‌های موجود تغییر نمی‌کنند.</span>
         </label>
 
         <div id="bulkPreviewBox" style="display:none;margin-bottom:12px">
@@ -5587,7 +5588,7 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
       <input id="editKeywordsInput" class="modalInput" placeholder="کلیدواژه را بنویس و Enter بزن">
       <div class="keywordHint">هر کلیدواژه را جدا بنویس و Enter بزن</div>
       <label>لینک جلد</label>
-      <input id="editCoverUrl" type="url" placeholder="https://...">
+      <input id="editCoverUrl" type="url" placeholder="https://..."><div class="adminBox" style="margin:8px 0 12px"><label>آپلود جلد از گالری (اختیاری)</label><input type="file" id="editCoverFile" accept="image/*" onchange="aaPreview('editCover')"><img id="editCoverPreview" alt="پیش‌نمایش" style="display:none;max-height:150px;max-width:100%;border-radius:10px;margin:8px 0"><div style="display:flex;gap:8px"><button type="button" class="editBtn" onclick="aaUpload('editCover')">آپلود تصویر انتخابی</button><button type="button" class="delete" onclick="aaClear('editCover')">لغو انتخاب</button></div><div id="editCoverStatus" class="keywordHint" aria-live="polite"></div></div>
       <div class="coverFocusBox" id="editCoverFocusBox" style="display:none">
         <label>تنظیم فوکوس جلد (پس‌زمینه صفحه جزئیات)</label>
         <div class="coverFocusFrame" id="editCoverFocusFrame">
@@ -6003,6 +6004,7 @@ const SETTINGS_GENRES_DOC_ID = "genres_config";
 
 let client = null;
 let databases = null;
+let aaStorage = null;
 let account = null;
 let appwriteReady = false;
 let appwriteID = null;
@@ -7679,6 +7681,7 @@ async function initAppwrite(){
       .setEndpoint(APPWRITE_ENDPOINT)
       .setProject(APPWRITE_PROJECT);
     databases = new Databases(client);
+    aaStorage = new Appwrite.Storage(client);
     account = new Account(client);
     appwriteID = ID;
     appwriteQuery = Query;
@@ -18868,49 +18871,16 @@ function bulkParseLinks(){
     validItems.push({ url: u, epNum: num });
   });
 
-  const withNum = validItems.filter(x => x.epNum != null);
-  const ratio = validItems.length ? withNum.length / validItems.length : 0;
-  let ordered;
-  if(ratio >= 0.5){
-    ordered = validItems.slice().sort((a,b)=>{
-      const an = a.epNum != null ? a.epNum : 999999;
-      const bn = b.epNum != null ? b.epNum : 999999;
-      if(an !== bn) return an - bn;
-      return 0;
-    });
-  }else{
-    ordered = validItems.slice();
+  const startValue = Number($("bulkStartEp")?.value);
+  if(!Number.isSafeInteger(startValue) || startValue < 1 || startValue > 9999){
+    __bulkParsed = []; showToast("شماره شروع نامعتبر است"); return;
   }
-
-  const start = Math.max(1, parseInt(($("bulkStartEp")?.value || "1"), 10) || 1);
-  const nums = ordered.map(x => x.epNum).filter(n => n != null);
-  const uniqueNums = new Set(nums);
+  if(!validItems.length || invalid || dup || startValue + validItems.length - 1 > 9999){
+    __bulkParsed = []; showToast("لینک نامعتبر، تکراری یا محدوده نامعتبر است"); return;
+  }
+  __bulkParsed = validItems.map((item,idx)=>({url:item.url,epNum:item.epNum,assignedNum:startValue+idx,status:"pending"}));
+  if($("aaBulkRange")) $("aaBulkRange").textContent = "محدوده: قسمت " + startValue + " تا " + (startValue + validItems.length - 1) + " | تعداد: " + validItems.length;
   const warnings = [];
-  if(nums.length && uniqueNums.size < nums.length){
-    warnings.push("برخی لینک‌ها شمارهٔ قسمت تکراری دارند؛ ترتیب عددی حفظ می‌شود ولی قبل از ثبت بررسی کنید.");
-  }
-  if(withNum.length && withNum.length < ordered.length){
-    warnings.push((ordered.length - withNum.length) + " لینک بدون شمارهٔ قابل‌تشخیص هستند و بر اساس ترتیب ورود شماره‌گذاری می‌شوند.");
-  }
-  if(ratio >= 0.5 && nums.length){
-    const minN = Math.min(...nums), maxN = Math.max(...nums);
-    if(maxN - minN + 1 !== uniqueNums.size){
-      warnings.push("شماره‌های قسمت ناقص یا نامنظم به نظر می‌رسند (بازه " + minN + " تا " + maxN + "). ترتیب بدون تأیید شما تغییر نمی‌کند.");
-    }
-  }
-
-  __bulkParsed = ordered.map((item, idx) => {
-    let assigned;
-    if(ratio >= 0.5 && item.epNum != null) assigned = item.epNum;
-    else assigned = start + idx;
-    return {
-      url: item.url,
-      epNum: item.epNum,
-      assignedNum: assigned,
-      status: "pending"
-    };
-  });
-
   if($("bulkStatTotal")) $("bulkStatTotal").textContent = String(urls.length);
   if($("bulkStatValid")) $("bulkStatValid").textContent = String(__bulkParsed.length);
   if($("bulkStatDup")) $("bulkStatDup").textContent = String(dup);
@@ -18960,8 +18930,8 @@ async function bulkApplyLinks(){
   if(__bulkBusy){ showToast("عملیات قبلی هنوز تمام نشده"); return; }
   if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
   if(!(await requireAdminAction())) return;
+  bulkParseLinks();
   if(!__bulkParsed.length){
-    bulkParseLinks();
     if(!__bulkParsed.length){ showToast("ابتدا لینک‌های معتبر را بررسی کنید"); return; }
   }
   const workId = ($("bulkWorkSelect")?.value || "");
@@ -19021,73 +18991,22 @@ async function bulkApplyLinks(){
     let cleared = 0;
 
     if(overwrite){
-      /*
-        جایگزینی کامل در محدودهٔ فصل/سینمایی انتخاب‌شده:
-        - لینک‌های قبلی این محدوده حذف می‌شوند
-        - فقط لینک‌های جدید از لیست گروهی ثبت می‌شوند
-        - شناسه و عنوان قسمت هم‌شماره در صورت وجود حفظ می‌شود
-      */
-      const newList = [];
-      for(let i = 0; i < total; i++){
-        const row = __bulkParsed[i];
+      for(const row of __bulkParsed){
         const num = row.assignedNum;
-        const prev = byNum.get(num);
-        try{
-          const title = (prev && (prev.title || "").trim())
-            ? prev.title
-            : (type === "movie" ? ("فایل " + num) : ("قسمت " + num));
-          const neu = {
-            id: (prev && prev.id) ? prev.id : uid(),
-            title,
-            link: row.url,
-            onlineEnabled: prev ? isOnlinePlaybackEnabled(prev) : true
-          };
-          if(prev && prev.playLink) neu.playLink = prev.playLink;
-          if(prev && prev.subtitleLink) neu.subtitleLink = prev.subtitleLink;
-          newList.push(neu);
-          if(prev && (prev.link || "").trim()){
-            updated++;
-            row.status = "replaced";
-            detailLines.push("قسمت " + num + ": لینک قبلی حذف و جایگزین شد");
-          }else if(prev){
-            updated++;
-            row.status = "updated";
-            detailLines.push("قسمت " + num + ": لینک گذاشته شد");
-          }else{
-            created++;
-            row.status = "created";
-            detailLines.push("قسمت " + num + ": ساخته شد");
-          }
-        }catch(err){
-          failed++;
-          row.status = "failed";
-          detailLines.push("قسمت " + num + ": خطا");
+        const hit = byNum.get(num);
+        if(hit){
+          hit.link = row.url;
+          updated++;
+          row.status = "replaced";
+        }else{
+          const neu = {id:uid(),title:type === "movie" ? "فایل " + num : "قسمت " + num,link:row.url,onlineEnabled:true};
+          targetEps.push(neu);
+          byNum.set(num,neu);
+          created++;
+          row.status = "created";
         }
-        const pct = Math.round(((i + 1) / total) * 70) + 10;
-        if($("bulkProgressFill")) $("bulkProgressFill").style.width = pct + "%";
-        if($("bulkProgressMeta")) $("bulkProgressMeta").textContent = (i + 1) + " از " + total;
-        if($("bulkProgressTitle")) $("bulkProgressTitle").textContent = "جایگزینی لینک‌ها...";
-        if(i % 25 === 24) await new Promise(r => setTimeout(r, 0));
       }
-      const newNums = new Set(__bulkParsed.map(r => r.assignedNum));
-      targetEps.forEach((ep, i) => {
-        let n = extractEpisodeNumberFromText(ep.title);
-        if(n == null) n = i + 1;
-        if(!newNums.has(n) && (ep.link || "").trim()) cleared++;
-      });
-      targetEps.length = 0;
-      newList.sort((a, b) => {
-        const an = extractEpisodeNumberFromText(a.title);
-        const bn = extractEpisodeNumberFromText(b.title);
-        if(an != null && bn != null && an !== bn) return an - bn;
-        if(an != null && bn == null) return -1;
-        if(an == null && bn != null) return 1;
-        return 0;
-      });
-      newList.forEach(e => targetEps.push(e));
-      if(cleared > 0){
-        detailLines.unshift("لینک " + cleared + " قسمت قبلی که در لیست جدید نبودند حذف شد");
-      }
+      targetEps.sort((a,b)=>(extractEpisodeNumberFromText(a.title)||0)-(extractEpisodeNumberFromText(b.title)||0));
     }else{
       for(let i = 0; i < total; i++){
         const row = __bulkParsed[i];
@@ -20026,5 +19945,46 @@ window.planetAdminSave = planetAdminSave;
 })();
 </script>
 
+<script>
+/* Optional Appwrite Storage cover upload; original URL field remains authoritative. */
+const AA_BUCKET_KEY = "animearchive_storage_bucket_v1";
+let aaUploadBusy = false;
+function aaSaveBucket(){
+ const v=document.getElementById("aaBucketId")?.value.trim();
+ if(!v){showToast("شناسه Bucket لازم است");return;}
+ localStorage.setItem(AA_BUCKET_KEY,v);showToast("شناسه Bucket ذخیره شد");
+}
+function aaBucket(){return localStorage.getItem(AA_BUCKET_KEY)||document.getElementById("aaBucketId")?.value.trim()||"6ad750e6002a79e3b628";}
+function aaPreview(prefix){
+ const f=document.getElementById(prefix+"File")?.files?.[0];
+ const img=document.getElementById(prefix+"Preview");
+ if(img){if(img.dataset.objectUrl)URL.revokeObjectURL(img.dataset.objectUrl);img.removeAttribute("data-object-url");img.style.display="none";}
+ if(!f)return;
+ if(!f.type.startsWith("image/")){aaClear(prefix);showToast("فقط فایل تصویر انتخاب کنید");return;}
+ const url=URL.createObjectURL(f);img.src=url;img.dataset.objectUrl=url;img.style.display="block";
+ document.getElementById(prefix+"Status").textContent="تصویر آماده آپلود است؛ تا تأیید آپلود لینک قبلی حفظ می‌شود.";
+}
+function aaClear(prefix){const el=document.getElementById(prefix+"File");if(el)el.value="";const img=document.getElementById(prefix+"Preview");if(img){if(img.dataset.objectUrl)URL.revokeObjectURL(img.dataset.objectUrl);img.removeAttribute("data-object-url");img.style.display="none";}const st=document.getElementById(prefix+"Status");if(st)st.textContent="انتخاب لغو شد؛ لینک فعلی حفظ شد.";}
+async function aaUpload(prefix){
+ if(aaUploadBusy)return;
+ const f=document.getElementById(prefix+"File")?.files?.[0];
+ const st=document.getElementById(prefix+"Status");
+ if(!f){showToast("ابتدا تصویر انتخاب کنید");return;}
+ if(!isAdminMode || !(await requireAdminAction()))return;
+ if(!aaStorage || !appwriteID){showToast("Storage متصل نیست");return;}
+ const bucket=aaBucket();if(!bucket){showToast("شناسه Bucket را ثبت کنید");return;}
+ aaUploadBusy=true;if(st)st.textContent="در حال آپلود...";
+ try{
+   const uploaded=await aaStorage.createFile(bucket,appwriteID.unique(),f);
+   const url=APPWRITE_ENDPOINT+"/storage/buckets/"+encodeURIComponent(bucket)+"/files/"+encodeURIComponent(uploaded.$id)+"/view?project="+encodeURIComponent(APPWRITE_PROJECT);
+   const field=document.getElementById(prefix+"Url");if(field){field.value=url;field.dispatchEvent(new Event("input",{bubbles:true}));field.dispatchEvent(new Event("change",{bubbles:true}));}
+   if(st)st.textContent="آپلود موفق؛ لینک در فیلد جلد قرار گرفت. برای ثبت در دیتابیس، اثر را ذخیره کنید. نمایش عمومی نیازمند مجوز خواندن است.";
+   aaClearFileOnly(prefix);
+ }catch(e){console.error("Storage upload",e);if(st)st.textContent="آپلود ناموفق: "+(e.message||"مجوز یا اتصال را بررسی کنید");}
+ finally{aaUploadBusy=false;}
+}
+function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File");if(el)el.value="";}
+(function(){const el=document.getElementById("aaBucketId");if(el)el.value=localStorage.getItem(AA_BUCKET_KEY)||el.value;})();
+</script>
 </body>
 </html>
