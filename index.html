@@ -18,6 +18,16 @@
   var r=document.documentElement; r.classList.add(i[0]); r.style.backgroundColor=i[1]; r.style.colorScheme=i[2];
   var m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content",i[1]);
 }catch(e){}})();
+
+// Keep the "currently airing" switch at the bottom of each add/edit form.
+document.addEventListener("DOMContentLoaded", ()=>{
+  ["adminCurrentlyAiring","editCurrentlyAiring"].forEach(id=>{
+    const input = document.getElementById(id);
+    const label = input?.closest("label");
+    const form = label?.parentElement;
+    if(label && form) form.appendChild(label);
+  });
+});
 </script>
 <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -37,7 +47,7 @@
 <title>Anime Archive | آرشیو انیمه</title>
 
 <!-- Appwrite SDK -->
-<script src="https://cdn.jsdelivr.net/npm/appwrite@16.1.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/appwrite@25.0.0"></script>
 
 <script type="application/ld+json">
 {
@@ -108,16 +118,47 @@ button{cursor:pointer}
 
 /* ردیف افقی قابل اسکرول — مثل کافه‌کتاب */
 .booksStrip{
-  display:block;overflow-x:auto;overflow-y:hidden;padding:2px 1px 10px;margin:0 -4px;
-  scrollbar-width:none;-webkit-overflow-scrolling:touch
+  display:block;position:relative;overflow-x:auto;overflow-y:hidden;
+  padding:7px 2px 13px;margin:0 -4px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;overscroll-behavior-y:auto;
+  /* اسکرول بومی اندروید بدون snap؛ snap روی کارت‌ها باعث گیرکردن و پرش لمس می‌شد */
+  scroll-snap-type:none;scroll-behavior:auto;
+  touch-action:pan-x pan-y;direction:rtl;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;user-select:none
 }
 .booksStrip::-webkit-scrollbar{display:none}
 .booksStripTrack{
-  display:flex;flex-direction:row;gap:12px;min-width:max-content;padding:0 4px
+  display:flex;flex-direction:row;direction:rtl;justify-content:flex-start;
+  gap:11px;width:max-content;min-width:100%;padding:0 5px;
+  align-items:flex-start
 }
-.booksStrip .book{width:112px;flex:0 0 112px;min-width:112px}
+.booksStrip .book{
+  width:112px;flex:0 0 112px;min-width:112px;
+  scroll-snap-align:none;scroll-snap-stop:normal
+}
 .booksStrip .cover{height:148px}
-.booksStrip .bookTitle{font-size:10px;-webkit-line-clamp:3}
+.booksStrip .currentlyAiringBadge{
+  position:absolute;top:3px;right:3px;z-index:4;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  min-width:0;min-height:25px;padding:0 9px;
+  border-radius:999px;line-height:1;white-space:nowrap;
+  color:#35d98a;
+  background:linear-gradient(135deg,rgba(7,25,20,.94),rgba(3,13,10,.9));
+  border:1px solid rgba(42,211,132,.32);
+  box-shadow:0 3px 10px rgba(0,0,0,.38),0 0 12px rgba(24,190,112,.12),inset 0 1px 0 rgba(255,255,255,.05);
+  font-size:9px;font-weight:800;letter-spacing:0;
+  text-shadow:0 0 8px rgba(53,217,138,.18)
+}
+.booksStrip .currentlyAiringBadge:before{
+  content:"";width:8px;height:8px;flex:0 0 8px;
+  display:inline-block;border-radius:50%;
+  background:#20d982;
+  box-shadow:0 0 8px rgba(32,217,130,.55)
+}
+.booksStrip .book:active{opacity:.94}
+.bookTitle{font-size:10px;-webkit-line-clamp:3}
 .booksStrip .bookAuthor{font-size:8px;-webkit-line-clamp:2}
 
 .cover{
@@ -177,14 +218,25 @@ button{cursor:pointer}
 }
 .searchBox input::placeholder{color:#8a8580}
 
-.genres{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.genre{
-  height:58px;border:1px solid #2a2a30;border-radius:13px;color:#f5f0e6;font-size:12px;
-  background:linear-gradient(145deg,#1c1c22,#16161a);
-  transition:border-color .15s,background .15s
-}
-.genre:active,.genre:hover{border-color:rgba(245,166,35,.4);background:linear-gradient(145deg,#222228,#1a1a20)}
-.genre:nth-child(n){background:linear-gradient(145deg,#1c1c22,#16161a)}
+.genres{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.genreCard{position:relative;isolation:isolate;overflow:hidden;min-width:0;min-height:132px;padding:13px 13px 12px;
+  border:1px solid color-mix(in srgb,var(--genre-accent) 26%,var(--line));border-radius:17px;
+  background:linear-gradient(145deg,var(--card2),var(--card));color:var(--text);text-align:right;
+  display:flex;flex-direction:column;align-items:stretch;gap:7px;box-shadow:0 7px 18px rgba(0,0,0,.14);
+  transition:transform .16s,border-color .16s}
+.genreCard:active{transform:scale(.975)}
+.genreCard::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  border-radius:inherit;background:rgba(255,255,255,.22);mix-blend-mode:screen}
+.genreCardTop{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.genreCardSymbol{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  color:var(--genre-accent);background:color-mix(in srgb,var(--genre-accent) 15%,transparent);font-size:19px}
+.genreCardArrow{color:var(--muted);font-size:14px}
+.genreCardName{font-size:13px;font-weight:800;line-height:1.45;position:relative;z-index:1;overflow-wrap:anywhere}
+.genreCardMeta{font-size:9px;color:var(--muted);position:relative;z-index:1}
+.genreCardLine{height:2px;width:32px;border-radius:4px;background:var(--genre-accent);opacity:.8;margin-top:2px}
+.genreCardGlow{position:absolute;z-index:-1;width:100px;height:100px;border-radius:50%;left:-42px;bottom:-55px;
+  background:var(--genre-accent);filter:blur(42px);opacity:.17}
+@media(max-width:360px){.genres{gap:8px}.genreCard{padding:11px;min-height:124px}.genreCardName{font-size:12px}}
 
 .profileCenter{text-align:center;padding-top:20px}
 .avatar{
@@ -3079,7 +3131,7 @@ html.theme-brown #resumeWatchStartBtn{background:#3a2818 !important;color:#f5ebe
 /* ===== تب‌های پنل مدیریت: هم‌اندازه و مرتب (ردیف اول ۴ تا، ردیف دوم ۳ تا) ===== */
 .adminTabs{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;padding:6px}
 .adminTabs button{grid-column:span 4;height:42px;padding:0 4px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:600;line-height:1;white-space:nowrap;border-radius:11px;background:#16161a}
-.adminTabs button:nth-child(-n+4){grid-column:span 3}
+.adminTabs button:nth-child(-n/**/+4){grid-column:span 3}
 .adminTabs button.active{background:#e09520;color:#fff}
 html.theme-brown .adminTabs button{background:#3a2818 !important;color:#f0e0c8 !important;border:1px solid #6b4a2a !important}
 html.theme-brown .adminTabs button.active{background:#d4893f !important;color:#1a1008 !important;border-color:#e0a060 !important}
@@ -4307,8 +4359,407 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
 }
+
+/* Anime Archive — independent comment experience (local preview) */
+.aaCommentsEntry{width:100%;margin:20px 0 8px;padding:17px;border:1px solid var(--line);border-radius:19px;background:linear-gradient(120deg,var(--card),var(--card2));color:var(--text);text-align:right;display:flex;align-items:center;gap:13px;box-shadow:0 8px 25px rgba(0,0,0,.13)}
+.aaCommentsEntry .aaBubble{width:45px;height:45px;border-radius:14px;background:var(--accent-glow);display:grid;place-items:center;font-size:22px;flex-shrink:0}.aaCommentsEntry .aaEntryText{flex:1;min-width:0}.aaCommentsEntry strong{font-size:14px;display:block}.aaCommentsEntry small{font-size:10px;color:var(--muted);display:block;margin-top:6px}.aaCommentsEntry .aaArrow{color:var(--orange);font-size:23px}
+.aaCommentPage .aaHead{display:flex;align-items:center;gap:12px;margin:0 0 20px}.aaCommentPage .aaBack{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);width:42px;height:42px;font-size:20px}.aaCommentPage h2{font-size:18px}.aaCommentPage .aaSub{font-size:11px;color:var(--muted);margin-top:5px}.aaCommentPage .aaComposer,.aaCommentPage .aaCommentCard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}.aaCommentPage .aaComposer{background:linear-gradient(145deg,var(--card),var(--card2));border-color:var(--line)}.aaCommentPage .aaComposeTitle{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text)}.aaCommentPage input,.aaCommentPage textarea,.aaCommentPage select{width:100%;border:1px solid var(--line);border-radius:12px;background:var(--bg2);color:var(--text);padding:12px;margin-bottom:10px;outline:none;font-size:12px}.aaCommentPage textarea{min-height:105px;resize:vertical;line-height:1.9}.aaCommentPage input:focus,.aaCommentPage textarea:focus{border-color:var(--orange)}.aaCommentPage .aaRow{display:flex;align-items:center;justify-content:space-between;gap:10px}.aaCommentPage .aaSend{border:0;border-radius:12px;background:var(--orange);color:#1a1008;padding:11px 20px;font-weight:700;font-size:12px}.aaCommentPage .aaHint{font-size:10px;color:var(--muted);line-height:1.8}.aaCommentPage .aaSectionTitle{font-size:14px;font-weight:700;margin:24px 0 14px}.aaCommentPage .aaFilter{width:auto;max-width:155px;margin:0;padding:8px;font-size:11px}.aaCommentPage .aaAvatar{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:var(--accent-glow);color:var(--orange);font-weight:800;flex-shrink:0}.aaCommentPage .aaDate{font-size:10px;color:var(--muted);margin-top:4px}.aaCommentPage .aaBody{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.95;font-size:12px;margin:14px 0;color:var(--text)}.aaCommentPage .aaActions{display:flex;gap:12px;align-items:center}.aaCommentPage .aaAction{border:1px solid var(--line);border-radius:10px;background:var(--bg2);color:var(--muted);padding:7px 11px;font-size:11px}.aaCommentPage .aaAction.liked{color:var(--orange);border-color:var(--orange)}.aaCommentPage .aaEmpty{text-align:center;border:1px dashed var(--line);border-radius:18px;padding:32px 16px;color:var(--muted);font-size:12px;line-height:2}.aaCommentPage .aaEmpty .icon{font-size:30px;display:block;margin-bottom:8px}.aaCommentPage .aaReply{margin:12px 15px 0 0;padding:10px 13px;border-right:2px solid var(--orange);background:var(--bg2);border-radius:9px}.aaCommentPage .aaReply strong{font-size:11px}.aaCommentPage .aaReply p{font-size:11px;line-height:1.8;margin-top:6px;white-space:pre-wrap;overflow-wrap:anywhere}.aaCommentPage .aaReplyBox{margin-top:12px}.aaCommentPage .aaReplyBox textarea{min-height:70px}.aaCommentPage .aaPreviewBadge{font-size:10px;border:1px solid var(--line);border-radius:20px;padding:5px 10px;color:var(--muted)}
+
+
+/* Premium full-page anime reviews — inherits all existing theme tokens */
+.aaCommentPage{padding-top:20px!important;min-height:100dvh;background:var(--bg);}
+.aaCommentPage .aaHead{position:relative;padding:0 0 16px;border-bottom:1px solid var(--line)}
+.aaCommentPage .aaHead h2{font-size:21px;font-weight:800;letter-spacing:-.4px}
+.aaCommentPage .aaBack{flex-shrink:0;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.aaAnimeContext{display:flex;gap:15px;align-items:center;margin:19px 0 20px;padding:15px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(130deg,var(--card2),var(--card));box-shadow:0 9px 25px rgba(0,0,0,.1)}
+.aaAnimePoster{height:105px;width:75px;flex:0 0 75px;border-radius:13px;overflow:hidden;background:var(--bg2);border:1px solid var(--line);box-shadow:0 5px 16px rgba(0,0,0,.24)}
+.aaAnimePoster img{width:100%;height:100%;object-fit:cover;display:block}
+.aaAnimeContextText{min-width:0;display:flex;flex-direction:column;gap:9px}.aaEyebrow{color:var(--orange);font-size:9px;letter-spacing:1.5px;font-weight:800;direction:ltr;text-align:right}
+.aaAnimeContextText strong{font-size:15px;line-height:1.7;overflow-wrap:anywhere}.aaAnimeContextText small{color:var(--muted);font-size:11px}
+.aaCommentPage .aaComposer{border-radius:22px;padding:18px;box-shadow:0 8px 26px rgba(0,0,0,.09)}
+.aaCommentPage .aaComposeTitle{font-size:15px;margin-bottom:14px}.aaCommentPage textarea{min-height:122px}
+.aaComposerTools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-1px 0 14px;font-size:10px;color:var(--muted)}
+.aaSpoilerToggle{display:flex;align-items:center;gap:7px;cursor:pointer}.aaCommentPage .aaSpoilerToggle input{width:17px;height:17px;margin:0;accent-color:var(--orange)}
+.aaCommentPage .aaSend{min-height:40px;border-radius:12px}.aaCommentPage .aaCommentCard{border-radius:19px;padding:16px;box-shadow:0 5px 18px rgba(0,0,0,.07)}
+.aaCommentPage .aaAvatar{border-radius:50%;width:43px;height:43px;font-size:16px;border:1px solid var(--line)}
+.aaCommentPage .aaBody{font-size:13px;line-height:2.05}.aaCommentPage .aaActions{flex-wrap:wrap;gap:7px}.aaCommentPage .aaAction{min-height:35px;cursor:pointer}
+.aaCommentPage .aaSectionTitle{margin:21px 0 15px}.aaCommentPage .aaEmpty{background:var(--card);padding:42px 18px;border-radius:20px}
+.aaSpoilerContent{border:1px dashed var(--orange);background:var(--bg2);border-radius:12px;padding:15px;margin:12px 0;color:var(--muted);font-size:12px;line-height:1.9}
+.aaSpoilerReveal{background:var(--orange);color:#1a1008;border:0;border-radius:9px;padding:8px 13px;margin-top:10px;font-size:11px;font-weight:700}
+.aaSpoilerLabel{font-size:10px;color:var(--orange);border:1px solid var(--orange);border-radius:8px;padding:3px 7px;margin-right:auto}
+.aaCommentPage .aaReply{margin-right:8px;border-radius:0 12px 12px 0;padding:12px}
+.aaCommentPage .aaReply p{font-size:12px}
+.aaCommentsEntry:active{transform:scale(.992)}
+@media(max-width:360px){.aaCommentPage .aaRow{flex-wrap:wrap}.aaCommentPage .aaSend{width:100%}.aaAnimeContext{gap:10px;padding:11px}}
+
+/* Minimal comments layout — only comments page */
+.aaCommentPage{padding-top:14px!important}
+.aaCommentPage .aaHead{margin-bottom:12px;padding-bottom:12px}
+.aaCommentPage .aaHead h2{font-size:18px}
+.aaCommentPage .aaHead .aaSub{display:none}
+.aaAnimeContext{margin:10px 0 16px;padding:11px 12px;border-radius:14px;gap:12px;box-shadow:none;background:var(--card)}
+.aaAnimePoster{width:48px;height:68px;flex-basis:48px;border-radius:8px;box-shadow:none}
+.aaAnimeContextText{gap:5px}
+.aaAnimeContextText strong{font-size:13px;line-height:1.5}
+.aaAnimeContextText small{font-size:10px}
+.aaEyebrow{display:none}
+.aaCommentPage .aaComposer{padding:14px;border-radius:15px;box-shadow:none;background:var(--card);margin-bottom:12px}
+.aaCommentPage .aaComposeTitle{font-size:12px;margin-bottom:9px}
+.aaCommentPage textarea{min-height:88px;border-radius:10px;margin-bottom:8px}
+.aaIdentity{font-size:10px;color:var(--muted);margin-bottom:9px;padding:0 2px;line-height:1.7}
+.aaComposerTools{margin:0 0 10px}
+.aaCommentPage .aaHint{font-size:9px}
+.aaCommentPage .aaSend{padding:9px 14px;min-height:36px;font-size:11px}
+.aaCommentPage .aaSectionTitle{margin:14px 0 12px;font-size:13px}
+.aaCommentPage .aaFilter{font-size:10px;padding:7px 9px}
+.aaCommentPage .aaCommentCard{padding:13px;border-radius:14px;margin-bottom:10px;box-shadow:none}
+.aaCommentPage .aaAvatar{width:34px;height:34px;font-size:13px}
+
+.aaCommentPage .aaDate{font-size:9px}
+.aaCommentPage .aaBody{margin:10px 0;font-size:12px;line-height:1.9}
+.aaCommentPage .aaActions{gap:5px}
+.aaCommentPage .aaAction{border:0;background:transparent;padding:6px 8px;min-height:30px;font-size:10px}
+.aaCommentPage .aaReply{padding:9px;margin-top:8px}
+.aaCommentPage .aaEmpty{padding:28px 12px;box-shadow:none}
+
+/* Elegant editorial comments page — scoped; original site layout untouched */
+.aaCommentPage{max-width:520px;margin-inline:auto}
+.aaCommentPage .aaHead{align-items:center;gap:10px}
+.aaCommentPage .aaBack{width:38px;height:38px;border-radius:11px;box-shadow:none}
+.aaCommentPage .aaAnimeContext{border:1px solid var(--line);background:var(--card);align-items:center}
+.aaCommentPage .aaComposer{border:1px solid var(--line)}
+.aaCommentPage .aaComposer textarea{background:var(--bg2);border:1px solid var(--line);transition:border-color .2s,box-shadow .2s}
+.aaCommentPage .aaComposer textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--accent-glow)}
+.aaCommentPage .aaIdentity{display:flex;align-items:center;gap:6px;color:var(--muted);margin:0 0 12px;font-size:11px}
+.aaCommentPage .aaIdentity:before{content:"●";font-size:8px;color:var(--orange)}
+.aaCommentPage .aaComposerTools{margin-top:2px}
+.aaCommentPage .aaRow:has(.aaSectionTitle){padding:4px 1px 0}
+.aaCommentPage .aaFilter{background:var(--card);border:1px solid var(--line);border-radius:10px}
+.aaCommentPage .aaCommentCard{border:1px solid var(--line);background:var(--card)}
+.aaCommentPage .aaCommentCard .aaActions{border-top:1px solid var(--line);padding-top:7px;margin-top:9px}
+.aaCommentPage .aaCommentCard .aaAction:hover{color:var(--orange)}
+.aaCommentPage .aaReply{background:var(--bg2);border-right:2px solid var(--orange)}
+.aaCommentPage .aaHint{text-wrap:pretty}
+@media(max-width:390px){.aaCommentPage .aaComposer .aaRow{align-items:center;gap:8px}.aaCommentPage .aaComposer .aaHint{max-width:55%}}
+
+/* AA Comments — refined editorial redesign; isolated from other site pages */
+#aaCommentsPage.aaCommentPage{--aaGlass:var(--card);padding:12px 16px 155px!important;background:var(--bg);}
+.aaCommentPage .aaHead{position:sticky;top:0;z-index:28;display:flex;gap:12px;align-items:center;margin:0 -16px 14px;padding:10px 16px 13px;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 8px 22px rgba(0,0,0,.08)}
+.aaCommentPage .aaHead h2{font-size:17px;letter-spacing:0;font-weight:800}.aaCommentPage .aaBack{width:40px;height:40px;min-width:40px;border-radius:13px;border:1px solid var(--line);background:var(--card);box-shadow:none}
+.aaCommentPage .aaAnimeContext{display:flex;gap:13px;align-items:center;margin:0 0 19px;padding:12px;border-radius:17px;background:linear-gradient(115deg,var(--card2),var(--card));border:1px solid var(--line);box-shadow:none;position:relative;overflow:hidden}
+.aaCommentPage .aaAnimeContext:before{content:"";position:absolute;right:0;top:0;bottom:0;width:3px;background:var(--orange)}
+.aaCommentPage .aaAnimePoster{width:57px;flex-basis:57px;height:79px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.16)}
+.aaCommentPage .aaAnimeContextText{gap:6px}.aaCommentPage .aaAnimeContextText strong{font-size:14px;line-height:1.6}.aaCommentPage .aaEyebrow{font-size:8px;letter-spacing:1.7px}.aaCommentPage .aaAnimeContextText small{font-size:10px}
+.aaCommentPage .aaReviewsToolbar{margin:0 0 13px;padding:0 1px 10px;border-bottom:1px solid var(--line)}
+.aaCommentPage .aaReviewsToolbar .aaSectionTitle{font-size:14px;font-weight:800;margin:0;padding:0}
+.aaCommentPage .aaFilter{width:auto;min-width:105px;max-width:145px;height:37px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);font-size:11px;padding:0 10px;margin:0;outline:none}
+.aaCommentPage .aaCommentCard{position:relative;padding:16px 14px 12px;border:1px solid var(--line);border-radius:17px;background:var(--card);margin-bottom:11px;box-shadow:0 3px 13px rgba(0,0,0,.035)}
+.aaCommentPage .aaAvatar{height:38px;width:38px;border-radius:13px;font-size:14px;background:var(--accent-glow);color:var(--orange)}.aaCommentPage .aaDate{font-size:9px;margin-top:3px}
+.aaCommentPage .aaBody{font-size:12.5px;line-height:2.05;margin:13px 0 12px}.aaCommentPage .aaActions{display:flex;gap:5px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:9px;margin-top:10px}.aaCommentPage .aaAction{min-height:34px;padding:6px 10px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-size:11px}.aaCommentPage .aaAction:active{background:var(--accent-glow);color:var(--orange)}.aaCommentPage .aaAction.liked{color:var(--orange)}
+.aaCommentPage .aaEmpty{border:1px dashed var(--line);background:var(--card);border-radius:17px;padding:44px 18px;line-height:2.1}.aaCommentPage .aaEmpty .icon{font-size:32px;color:var(--orange)}
+.aaCommentPage .aaComposeFab{position:fixed;z-index:80;bottom:calc(91px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 40px);height:48px;padding:0 23px;border:1px solid rgba(255,255,255,.16);border-radius:100px;background:var(--orange);color:#1a1008;box-shadow:0 9px 30px rgba(0,0,0,.35),0 2px 10px var(--accent-glow);font-size:13px;font-weight:800;display:none;align-items:center;justify-content:center;gap:9px}
+.aaCommentPage.active .aaComposeFab{display:flex}
+.aaCommentPage .aaComposer{display:none;position:fixed;z-index:120;bottom:calc(76px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:500px;max-height:min(78dvh,610px);overflow-y:auto;margin:0;padding:19px 16px 17px;background:var(--card);border:1px solid var(--line);border-radius:23px;box-shadow:0 0 0 100vmax rgba(0,0,0,.62),0 16px 48px rgba(0,0,0,.4)}
+.aaCommentPage .aaComposer.isOpen{display:block}.aaCommentPage .aaComposeTitle{display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800;margin-bottom:12px}.aaCommentPage .aaComposerClose{height:34px;width:34px;border:1px solid var(--line);background:var(--bg2);color:var(--text);border-radius:10px;font-size:13px}.aaCommentPage .aaIdentity{font-size:10px;margin-bottom:12px}.aaCommentPage .aaComposer textarea{min-height:125px;max-height:30dvh;font-size:13px;border-radius:14px;background:var(--bg2);border:1px solid var(--line)}.aaCommentPage .aaComposerTools{margin:0 0 16px;gap:8px}.aaCommentPage .aaComposer .aaRow{gap:10px}.aaCommentPage .aaComposer .aaHint{font-size:9px}.aaCommentPage .aaSend{min-height:42px;border-radius:12px;font-size:12px;padding:9px 15px}
+.aaCommentPage .aaReply{background:var(--bg2);border-right:2px solid var(--orange);border-radius:12px;padding:12px;margin:10px 0 0}.aaCommentPage .aaReplyBox{margin-top:12px}.aaCommentPage .aaReplyBox textarea{min-height:75px}.aaCommentPage .aaSpoilerContent{border-radius:13px}
+@media(max-width:370px){.aaCommentPage .aaComposer .aaRow{flex-direction:column;align-items:stretch}.aaCommentPage .aaComposer .aaSend{width:100%}}
+
+
+/* AA editorial conversation cards v3: calmer reading, discreet controls */
+#aaCommentsPage .aaCommentCard{padding:18px 17px 13px;border-radius:20px;background:var(--card);border:1px solid var(--line);box-shadow:0 6px 22px rgba(0,0,0,.07);margin-bottom:14px;overflow:visible}
+#aaCommentsPage .aaUser{display:flex;align-items:center;gap:11px}
+#aaCommentsPage .aaAvatar{width:42px;height:42px;border-radius:50%;flex:0 0 42px;background:linear-gradient(145deg,var(--accent-glow),var(--card2));border:1px solid var(--line);font-weight:800;font-size:16px}
+#aaCommentsPage .aaUser strong{font-size:13px;line-height:1.6;font-weight:800;color:var(--text)}
+#aaCommentsPage .aaDate{font-size:10px;color:var(--muted);margin-top:1px}
+#aaCommentsPage .aaBody{font-size:13px;line-height:2.15;margin:15px 0 17px;color:var(--text);white-space:pre-wrap;overflow-wrap:anywhere}
+#aaCommentsPage .aaActions{display:flex;align-items:center;gap:9px;border-top:1px solid var(--line);padding-top:10px;margin-top:5px;flex-wrap:nowrap}
+#aaCommentsPage .aaAction{display:inline-flex;align-items:center;justify-content:center;gap:5px;border:0;background:transparent;color:var(--muted);padding:7px 11px;border-radius:12px;min-height:37px;font-size:11px;font-weight:700;white-space:nowrap}
+#aaCommentsPage .aaAction:active{background:var(--accent-glow)}
+#aaCommentsPage .aaLike{border:1px solid var(--line);background:var(--bg2);border-radius:100px;min-width:62px;font-size:13px}
+#aaCommentsPage .aaLike.liked{border-color:var(--orange);color:var(--orange)}
+#aaCommentsPage .aaReplyAction{margin-right:0}
+#aaCommentsPage .aaMoreWrap{margin-right:auto;position:relative}
+#aaCommentsPage .aaMoreButton{font-size:22px;line-height:1;width:38px;padding:0}
+#aaCommentsPage .aaMoreMenu{display:none;position:absolute;left:0;bottom:calc(100% + 5px);width:146px;padding:6px;border:1px solid var(--line);border-radius:14px;background:var(--card2);box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:5}
+#aaCommentsPage .aaMoreWrap.open .aaMoreMenu{display:grid;gap:3px}
+#aaCommentsPage .aaMoreMenu button{border:0;background:transparent;color:var(--text);padding:12px;text-align:right;border-radius:9px;font-size:11px}
+#aaCommentsPage .aaMoreMenu button:active{background:var(--accent-glow)}
+#aaCommentsPage .aaMoreMenu .aaDeleteAction{color:#d88982}
+#aaCommentsPage .aaExpandReplies{border:0;background:transparent;color:var(--orange);font-size:11px;font-weight:700;padding:12px 4px 5px;display:block;cursor:pointer}
+#aaCommentsPage .aaThread{display:none;margin-top:8px;margin-right:15px;padding-right:15px;border-right:1px solid var(--line)}
+#aaCommentsPage .aaThread.expanded{display:block}
+#aaCommentsPage .aaReply{background:transparent;border:0!important;padding:11px 0 9px!important;margin:0!important;border-radius:0;border-bottom:1px solid var(--line)!important}
+#aaCommentsPage .aaReply:last-child{border-bottom:0!important}
+#aaCommentsPage .aaReplyHead{display:flex;align-items:center;gap:9px}
+#aaCommentsPage .aaReplyAvatar{width:29px;height:29px;display:grid;place-items:center;flex:0 0 29px;border-radius:50%;background:var(--bg2);border:1px solid var(--line);color:var(--orange);font-weight:700;font-size:11px}
+#aaCommentsPage .aaReplyMeta{display:flex;flex-direction:column;gap:1px}
+#aaCommentsPage .aaReplyMeta strong{font-size:11px;color:var(--text)}
+#aaCommentsPage .aaReplyMeta small{font-size:9px;color:var(--muted)}
+#aaCommentsPage .aaReply p{margin:9px 38px 0 0;font-size:12px;line-height:2;color:var(--text);white-space:pre-wrap;overflow-wrap:anywhere}
+#aaCommentsPage .aaReplyBox{background:var(--bg2);border:1px solid var(--line);border-radius:15px;padding:12px;margin-top:13px}
+#aaCommentsPage .aaReplyBox textarea{width:100%;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:11px;padding:11px;font-size:12px;resize:vertical}
+#aaCommentsPage .aaReplyBox .aaSend{margin-top:8px}
+@media(max-width:370px){#aaCommentsPage .aaCommentCard{padding:15px 13px 11px}#aaCommentsPage .aaThread{margin-right:7px;padding-right:10px}}
+
+/* Clean threaded replies: compact, clear hierarchy and accessible actions */
+#aaCommentsPage .aaThread{margin:8px 0 0!important;padding:4px 0 0!important;border-right:0!important}
+#aaCommentsPage .aaReply{position:relative;padding:13px 12px 9px!important;margin:8px 0 0!important;background:var(--bg2)!important;border:1px solid var(--line)!important;border-radius:15px!important}
+#aaCommentsPage .aaReply:last-child{border:1px solid var(--line)!important}
+#aaCommentsPage .aaReplyHead{gap:9px}
+#aaCommentsPage .aaReplyAvatar{width:32px;height:32px;flex-basis:32px;background:var(--card)}
+#aaCommentsPage .aaReply p{margin:10px 0 6px!important;font-size:12px;line-height:2;overflow-wrap:anywhere}
+#aaCommentsPage .aaReplyTo{font-size:10px;color:var(--orange);margin:9px 0 0;opacity:.85}
+#aaCommentsPage .aaReplyTools{display:flex;align-items:center;gap:5px;margin-top:5px}
+#aaCommentsPage .aaReplyMini{border:0;background:transparent;color:var(--muted);font-size:10.5px;font-weight:700;border-radius:9px;padding:7px 10px;min-height:34px}
+#aaCommentsPage .aaReplyMini:active{background:var(--accent-glow)}
+#aaCommentsPage .aaReplyTools .aaMoreWrap{margin-right:auto}
+#aaCommentsPage .aaReplyMore{font-size:19px;min-width:36px}
+#aaCommentsPage .aaEditorHeading{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px}
+#aaCommentsPage .aaEditorActions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:7px}
+#aaCommentsPage .aaCancelReply{border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--muted);padding:10px 14px;font-size:11px}
+#aaCommentsPage .aaInlineReplyEditor{margin-top:12px}
+#aaCommentsPage .aaActions{justify-content:flex-start}
+#aaCommentsPage .aaExpandReplies{padding:11px 5px 4px}
+
+/* Elegant chronological chat layout: keep composer and other site UI intact */
+#aaCommentsPage .aaReviewsToolbar{margin:8px 0 17px!important}
+#aaCommentsPage #aaCommentList{display:flex;flex-direction:column;gap:15px;align-items:stretch;min-height:120px;padding-bottom:24px}
+#aaCommentsPage .aaCommentCard{width:86%;max-width:420px;margin:0!important;padding:15px 15px 11px!important;box-shadow:0 4px 20px rgba(0,0,0,.08)!important;border-radius:19px!important;position:relative}
+#aaCommentsPage .aaCommentCard.aaMine{align-self:flex-start;background:linear-gradient(140deg,var(--card2),var(--card));border-color:var(--orange)!important;border-color:color-mix(in srgb,var(--orange) 32%,var(--line))!important;border-bottom-right-radius:6px!important}
+#aaCommentsPage .aaCommentCard.aaOther{align-self:flex-end;background:var(--card);border-bottom-left-radius:6px!important}
+#aaCommentsPage .aaCommentCard .aaAvatar{width:34px;height:34px;flex-basis:34px;font-size:13px}
+#aaCommentsPage .aaCommentCard .aaUser{gap:9px}
+#aaCommentsPage .aaCommentCard .aaBody{margin:12px 0 10px;line-height:1.95;font-size:12.5px}
+#aaCommentsPage .aaCommentCard .aaActions{margin-top:3px;padding-top:7px;gap:3px}
+#aaCommentsPage .aaCommentCard .aaAction{font-size:10.5px;padding:6px 8px;min-height:31px}
+#aaCommentsPage .aaCommentCard .aaMoreButton{font-size:20px}
+#aaCommentsPage .aaCommentCard .aaThread{padding:0!important;margin:9px 0 0!important;border:0!important}
+#aaCommentsPage .aaCommentCard .aaReply{background:color-mix(in srgb,var(--bg2) 78%,var(--card))!important;border:1px solid var(--line)!important;border-radius:13px!important;padding:10px!important;margin:7px 0 0!important}
+#aaCommentsPage .aaCommentCard .aaReply p{font-size:11.5px;line-height:1.9;margin:7px 0 4px!important}
+#aaCommentsPage .aaCommentCard .aaReplyAvatar{width:27px;height:27px;flex-basis:27px}
+#aaCommentsPage .aaCommentCard .aaReplyMini{padding:5px 7px;min-height:30px}
+#aaCommentsPage .aaCommentCard .aaExpandReplies{font-size:10.5px;padding:9px 2px 3px}
+#aaCommentsPage .aaCommentCard.aaDemo .aaDate{font-size:9px;color:var(--muted)}
+@media(max-width:370px){#aaCommentsPage .aaCommentCard{width:92%;padding:12px!important}}
+
+/* Collection cards are the same size as anime cards in the similar-anime row. */
+.aaSimilarCollectionTile{font:inherit;text-align:inherit;color:inherit;background:transparent;border:0;padding:0;cursor:pointer;min-width:0}
+.aaSimilarCollCover{position:relative;overflow:hidden}
+.aaSimilarCollCover .aaCollCover{width:100%;height:100%;position:absolute;inset:0;border-radius:inherit}
+.aaSimilarCollCover .aaCollCover img{min-width:0;min-height:0}
+.aaSimilarCollBadge{position:absolute;bottom:7px;right:7px;background:rgba(16,15,25,.8);color:#fff;border-radius:7px;padding:3px 7px;font-size:10px;z-index:1}
+.aaSimilarCollCount{font-size:11px;color:var(--muted);margin-top:3px}
+
+
+/* ===== Curated social profile — scoped, theme aware ===== */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media(prefers-reduced-motion:reduce){}
+
+/* Profile list editor: quick creation and reliable modal */
+
+
+
+
+
+
+
+
+.aaProfileConfirm{position:fixed;inset:0;z-index:2147483000;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:20px;direction:rtl}
+.aaProfileConfirmCard{width:min(100%,390px);padding:23px 19px;border-radius:19px;background:var(--sp-surface,#19191e);border:1px solid var(--sp-border,#474047);color:var(--sp-ink,#f5f0e6);box-shadow:0 22px 70px #0009}
+.aaProfileConfirmCard h3{font-size:17px;margin:0 0 12px}.aaProfileConfirmCard p{font-size:12px;line-height:1.9;opacity:.8}
+.aaProfileConfirmActions{display:flex;gap:10px;margin-top:22px}.aaProfileConfirmActions button{flex:1;min-height:45px;border-radius:11px;border:1px solid var(--sp-border,#474047);font-size:12px;color:inherit;background:transparent}
+.aaProfileConfirmActions .aaProfileConfirmDelete{background:#a93f40;border-color:#a93f40;color:white}
+
+
+
+
+
+
+
+
+
+/* Refined list cards and dedicated anime selection experience */
+
+
+
+
+
+
+
+
+
+
+
+
+
+.aaAnimePickerOverlay{position:fixed;inset:0;z-index:25000;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:0;direction:rtl}
+.aaAnimePickerPanel{width:min(100%,520px);height:100dvh;display:flex;flex-direction:column;background:var(--card,#16161a);color:var(--text,#f0ebe3);padding:calc(18px + env(safe-area-inset-top,0px)) 14px calc(12px + env(safe-area-inset-bottom,0px))}
+.aaAnimePickerHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.aaAnimePickerHeader h3{font-size:18px;margin-top:5px}.aaAnimePickerHeader small{font-size:9px;letter-spacing:2px;color:var(--orange)}
+.aaAnimePickerClose{border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--text);height:42px;width:42px}
+.aaAnimePickerSearch{width:100%;min-height:48px;border-radius:13px;border:1px solid var(--line);background:var(--card2);color:var(--text);padding:0 14px;outline:none;margin-bottom:14px}
+.aaAnimePickerGrid{flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-content:start;gap:11px;padding-bottom:14px}
+.aaAnimePickerTile{position:relative;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--card2);color:var(--text);padding:0;text-align:right}
+.aaAnimePickerTile img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block}.aaAnimePickerTitle{font-size:10px;line-height:1.5;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:37px;padding:5px 7px}
+.aaAnimePickerCheck{position:absolute;top:7px;left:7px;width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:rgba(10,10,12,.85);color:white;border:1px solid rgba(255,255,255,.4)}
+.aaAnimePickerTile.selected{border-color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange)}.aaAnimePickerTile.selected .aaAnimePickerCheck{background:var(--orange);color:#1a1008;border-color:var(--orange)}
+.aaAnimePickerFooter{display:flex;gap:10px;align-items:center;padding-top:12px;border-top:1px solid var(--line)}.aaAnimePickerCounter{font-size:11px;color:var(--muted);flex:1}.aaAnimePickerDone{background:var(--orange);color:#1a1008;border:0;border-radius:12px;padding:13px 17px;font-size:12px;font-weight:700}
+.aaProfileConfirmActions{direction:rtl}.aaProfileConfirmActions .aaProfileConfirmDelete{order:0}.aaProfileConfirmActions .aaProfileConfirmCancel{order:1}
+@media(min-width:420px){.aaAnimePickerGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+html.theme-light .aaAnimePickerPanel{background:#f8f6f2;color:#1c1916}html.theme-light .aaAnimePickerTile,html.theme-light .aaAnimePickerSearch,html.theme-light .aaAnimePickerClose{background:#fff;color:#1c1916;border-color:#ded9d0}
+html.theme-brown .aaAnimePickerPanel{background:#1e140c;color:#f5ebe0}html.theme-brown .aaAnimePickerTile,html.theme-brown .aaAnimePickerSearch{background:#2c1c12;color:#f5ebe0;border-color:#6b4a2a}
+html.theme-ocean .aaAnimePickerPanel{background:#06101e}html.theme-forest .aaAnimePickerPanel{background:#06140e}
+
+
+/* Picker repair: prevent inherited global button/card sizing from collapsing posters */
+.aaAnimePickerOverlay .aaAnimePickerGrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:max-content!important;align-items:start!important;align-content:start!important;gap:12px!important;overflow-y:auto!important;min-height:0!important;padding:4px 2px 28px!important}
+.aaAnimePickerOverlay .aaAnimePickerTile{display:flex!important;flex-direction:column!important;position:relative!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;align-self:start!important;padding:0!important;overflow:hidden!important;border-radius:13px!important;box-shadow:none;transform:none!important;opacity:1!important}
+.aaAnimePickerOverlay .aaAnimePickerTile>img{display:block!important;position:static!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:2/3!important;object-fit:cover!important;flex:none!important;border-radius:0!important;transform:none!important}
+.aaAnimePickerOverlay .aaAnimePickerTitle{display:-webkit-box!important;position:static!important;width:100%!important;min-height:42px!important;height:auto!important;padding:8px 7px!important;font-size:11px!important;line-height:1.55!important;color:var(--text)!important;background:var(--card2)!important;white-space:normal!important;-webkit-line-clamp:2!important;overflow:hidden!important}
+.aaAnimePickerOverlay .aaAnimePickerCheck{z-index:3!important;top:7px!important;left:7px!important;right:auto!important}
+.aaAnimePickerOverlay .aaAnimePickerTile.selected{outline:2px solid var(--orange)!important;outline-offset:-2px}
+@media(min-width:420px){.aaAnimePickerOverlay .aaAnimePickerGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+/* Fullscreen public list, separate from the compact edit sheet */
+.aaProfileListPage{position:fixed;inset:0;z-index:22000;display:flex;flex-direction:column;max-width:520px;margin:auto;background:var(--bg,#0a0a0c);color:var(--text,#f0ebe3);direction:rtl;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.aaProfileListTop{display:flex;align-items:center;gap:12px;margin-bottom:15px}.aaProfileListTop h2{flex:1;font-size:19px;line-height:1.5}.aaProfileListBack{width:44px;height:44px;border-radius:13px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:22px}
+.aaProfileListCount{color:var(--muted);font-size:12px;margin-bottom:18px}.aaProfileListItems{overflow-y:auto;flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:max-content;gap:16px 12px;align-content:start;padding-bottom:24px}
+.aaProfileListAnime{display:flex;flex-direction:column;text-align:right;background:var(--card);border:1px solid var(--line);border-radius:17px;overflow:hidden;color:var(--text);padding:0;min-width:0}
+.aaProfileListAnime img{width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;display:block}.aaProfileListAnime span{padding:10px 9px;min-height:50px;font-size:12px;line-height:1.6}
+.aaProfileListEmpty{grid-column:1/-1;text-align:center;color:var(--muted);padding:70px 15px;line-height:2}
+html.theme-light .aaProfileListPage{background:#f4f2ef}html.theme-brown .aaProfileListPage{background:#1a120c}html.theme-ocean .aaProfileListPage{background:#06101e}html.theme-forest .aaProfileListPage{background:#06140e}
+
+
+/* Profile anime catalogs: identical card proportions to genre-detail grid */
+.aaAnimePickerOverlay .aaAnimePickerGrid.books,.aaProfileListPage .aaProfileListItems.books{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;align-content:start!important;align-items:start!important}
+.aaAnimePickerOverlay .aaAnimePickerTile.book,.aaProfileListPage .aaProfileListAnime.book{display:block!important;min-width:0!important;width:100%!important;height:auto!important;background:transparent!important;border:0!important;border-radius:0!important;overflow:visible!important;padding:0!important;text-align:right!important;box-shadow:none!important}
+.aaAnimePickerOverlay .aaAnimePickerTile .cover,.aaProfileListPage .aaProfileListAnime .cover{height:155px!important;aspect-ratio:auto!important;border-radius:11px!important;overflow:hidden!important;position:relative!important;background:var(--card2)!important}
+.aaAnimePickerOverlay .aaAnimePickerTile .cover img,.aaProfileListPage .aaProfileListAnime .cover img{width:100%!important;height:100%!important;aspect-ratio:auto!important;object-fit:cover!important;display:block!important}
+.aaAnimePickerOverlay .aaAnimePickerTile .aaAnimePickerTitle.bookTitle,.aaProfileListPage .aaProfileListAnime .bookTitle{display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:3!important;overflow:hidden!important;min-height:0!important;margin-top:8px!important;padding:0!important;background:transparent!important;color:var(--text)!important;font-size:11px!important;line-height:1.35!important}
+.aaAnimePickerOverlay .aaAnimePickerTile.selected .cover{outline:2px solid var(--orange);outline-offset:-2px}
+.aaAnimePickerOverlay .aaAnimePickerCheck{position:absolute!important;top:6px!important;left:6px!important;z-index:5!important}
+.aaFavoriteGenreChoices{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 5px}
+.aaFavoriteGenreOption{border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:999px;padding:10px 13px;font-size:11px;line-height:1.4}
+.aaFavoriteGenreOption.selected{border-color:var(--orange);background:color-mix(in srgb,var(--orange) 16%,var(--card));color:var(--orange);font-weight:700}
+.aaFavoriteGenresDisplay{display:flex;flex-wrap:wrap;gap:8px;margin:17px 2px 2px}
+.aaFavoriteGenresDisplay[hidden]{display:none!important}
+.aaFavoriteGenreBadge{border-radius:999px;border:1px solid color-mix(in srgb,var(--orange) 35%,var(--line));background:color-mix(in srgb,var(--orange) 8%,var(--card));color:var(--text);font-size:11px;padding:8px 13px}
 </style>
-</head>
+<style id="aaProfileLuxuryV3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+<style id="aaSocialSimplify2026">
+
+
+
+
+
+
+
+
+
+
+</style>
+
+
+
+
+
+
+
+<style id="aaProfileLayoutRefinement">
+/* 2026-10-23: unified profile layout and fixed-position directory search */
+#profilePage{padding-inline:16px}
+#profilePage .profileCard{margin-bottom:18px}
+
+
+
+
+
+#profilePage #profileCoinBox{margin-top:0!important;margin-bottom:12px!important;gap:12px!important}
+#profilePage #profileCoinBox>*{min-width:0}
+#profilePage #claimDailyBtn{margin-top:0!important;margin-bottom:20px!important}
+
+
+
+
+
+@media(max-width:420px){#profilePage #profileCoinBox{gap:9px!important}}
+</style></head>
 <body>
 
 <!-- ===== Boot Splash ===== -->
@@ -4375,6 +4826,14 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
     <button id="tabAll" class="active" type="button">همه</button>
     <button id="tabSerial" type="button">انیمه‌ی سریالی</button>
     <button id="tabMovie" type="button">انیمه‌ی سینمایی</button>
+  </div>
+
+  <div id="airingSection" style="display:none;margin-bottom:18px">
+    <div class="sectionHead">
+      <h3>در حال پخش</h3>
+      <button class="arrow" id="airingSectionArrow" type="button">›</button>
+    </div>
+    <div id="airingBooks" class="booksStrip"></div>
   </div>
 
   <div class="sectionHead">
@@ -4476,6 +4935,9 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
     <div>اکسپلور تریلر و کلیپ‌ها<br>به‌زودی فعال می‌شود</div>
   </div>
 </section>
+
+
+
 
 <!-- ========== PROFILE ========== -->
 <section id="profilePage" class="page">
@@ -4865,6 +5327,8 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
     <div class="detailStudiosLabel" id="detailStudiosLabel" style="display:none">استودیو</div>
     <div id="detailStudiosRow" class="detailStudiosRow" style="display:none"></div>
 
+    <button class="aaCommentsEntry" id="aaOpenComments" type="button"><span class="aaBubble">💬</span><span class="aaEntryText"><strong>نظرها</strong><small id="aaCommentsPreview">نظرت درباره این انیمه چیه؟</small></span><span class="aaArrow">←</span></button>
+
     <button type="button" class="reportAnimeBtn" id="reportAnimeBtn">🚩 گزارش این انیمه</button>
 
     <div class="detailSimilarHead"><h3>انیمه‌های مشابه</h3></div>
@@ -4883,6 +5347,15 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
     <div id="downloadBtn" style="display:none"></div>
     <div id="detailPanelSimilar" class="detailPanel" style="display:none"></div>
   </div>
+</section>
+
+
+<section id="aaCommentsPage" class="page aaCommentPage">
+ <div class="aaHead"><button type="button" class="aaBack" id="aaCommentsBack" aria-label="بازگشت">→</button><div><h2>نظرها</h2><div class="aaSub" id="aaCommentsAnimeTitle"></div></div></div>
+ <div class="aaAnimeContext"><div class="aaAnimePoster" id="aaCommentsPoster"></div><div class="aaAnimeContextText"><span class="aaEyebrow">ANIME ARCHIVE</span><strong id="aaCommentsContextName">نظرهای این انیمه</strong><small id="aaCommentsContextCount">هنوز نظری ثبت نشده</small></div></div>
+ <div class="aaComposer" id="aaComposerPanel"><div class="aaComposeTitle"><span>✦ نظر جدید</span><button type="button" id="aaComposerClose" class="aaComposerClose" aria-label="بستن فرم">✕</button></div><div class="aaIdentity" id="aaCommentIdentity">برای ارسال نظر وارد حساب کاربری شوید</div><label class="aaFieldLabel" for="aaCommentDisplayName" style="display:block;font-size:11px;color:var(--muted);margin:0 0 6px">نام نمایشی</label><input type="text" id="aaCommentDisplayName" maxlength="50" placeholder="نام نمایشی (حداکثر ۵۰ کاراکتر)" style="width:100%;border:1px solid var(--line);border-radius:12px;background:var(--bg2);color:var(--text);padding:12px;margin-bottom:10px;outline:none;font-size:12px"><label class="aaSpoilerToggle" style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text)"><input id="aaCommentAnonymous" type="checkbox"><span>ارسال به صورت ناشناس</span></label><textarea id="aaCommentText" maxlength="2000" placeholder="متن نظر خود را بنویسید..."></textarea><div class="aaComposerTools"><label class="aaSpoilerToggle"><input id="aaCommentSpoiler" type="checkbox"><span>⚠️ این نظر اسپویل دارد</span></label><span id="aaCharCount">۰ / ۲۰۰۰</span></div><div class="aaRow"><span class="aaHint">نظر شما پس از ارسال برای همه قابل مشاهده است</span><button type="button" class="aaSend" id="aaCommentSubmit">ارسال نظر</button></div></div>
+ <div class="aaRow aaReviewsToolbar"><div class="aaSectionTitle" id="aaCommentCount">نظرات کاربران</div></div>
+ <div id="aaCommentList" aria-live="polite"></div><button type="button" id="aaComposeFab" class="aaComposeFab">✎ <span>نوشتن نظر</span></button><div class="aaHint" style="text-align:center;margin-top:16px" id="aaCommentsFooterHint">نظرات عمومی هستند و برای همه کاربران نمایش داده می‌شوند.</div>
 </section>
 
 <!-- صفحه تماشا: فصل‌ها و قسمت‌ها با پخش و دانلود -->
@@ -5098,8 +5571,12 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
       <button data-admin-tab="accounts" type="button">اکانت‌ها<span class="dotBadge" id="dotAccountsTab" hidden></span></button>
       <button data-admin-tab="planets" type="button">سیاره‌ها</button>
       <button data-admin-tab="bulkLinks" type="button">ورود گروهی</button>
+      <button data-admin-tab="comments" type="button">نظرها</button>
+      <button data-admin-tab="collections" type="button">کالکشن</button>
     </div>
 
+    <div id="adminComments" class="adminSection"><div class="aaAdminIntro"><h3>مدیریت نظرها</h3><p>انیمه موردنظر را انتخاب کن تا گفتگوها و پاسخ‌هایش را ببینی.</p></div><div id="aaAdminCommentWorks"></div></div>
+    <div id="adminCollections" class="adminSection"><div class="aaAdminIntro"><h3>کالکشن‌ها</h3><p>مجموعه‌های اختصاصی بساز و ترتیب انیمه‌ها را مشخص کن.</p></div><div class="aaCollectionCreate"><input id="aaCollectionName" placeholder="نام کالکشن جدید" maxlength="70"><button type="button" id="aaCollectionCreate">ساخت کالکشن</button></div><div id="aaCollectionList"></div></div>
     <div id="adminAdd" class="adminSection active">
       <div class="form">
         <label>نوع انیمه</label>
@@ -5150,6 +5627,10 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
         <label>سال پخش</label>
         <input id="adminAirYear" type="number" min="1900" max="2100" placeholder="مثلاً 2013 (اختیاری)" dir="ltr" style="text-align:left">
         <div class="keywordHint">امتیاز و سال در بنر صفحه اصلی و صفحه انیمه برای همه کاربران نمایش داده می‌شود</div>
+        <label style="display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;border:1px solid #493a25;border-radius:12px;background:#17130e;cursor:pointer">
+          <input id="adminCurrentlyAiring" type="checkbox" style="width:18px;height:18px;margin:0;accent-color:var(--orange)">
+          <span>فعال‌سازی وضعیت «در حال پخش»</span>
+        </label>
 
         <label>توضیحات</label>
         <textarea id="adminDescription" placeholder="خلاصه داستان..."></textarea>
@@ -5251,7 +5732,7 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
                 <button class="addBtn" id="bulkAddSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">+ ساخت خودکار</button>
                 <button class="delete" id="clearSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">حذف همه</button>
               </div>
-              <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;background:#0c0c10;border:1px solid #2a2a30;border-radius:12px;padding:10px">
+              <div id="bulkOnlineControlBox" style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;background:#0c0c10;border:1px solid #2a2a30;border-radius:12px;padding:10px">
                 <span style="font-size:10px;color:var(--orange);width:100%">مدیریت گروهی پخش آنلاین این فصل</span>
                 <input id="bulkOnlineCount" type="number" min="1" max="500" placeholder="تعداد" style="width:70px;margin:0">
                 <select id="bulkOnlineSide" style="font-size:10px;background:#1c1c22;color:#e8dcc8;border:0;border-radius:8px;padding:8px;margin:0">
@@ -5264,6 +5745,10 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
               </div>
               <div class="keywordHint">شماره‌گذاری از ادامهٔ آخرین قسمت این فصل شروع می‌شود · برای غیرفعال‌کردن گروهی پخش آنلاین از کادر بالا استفاده کنید</div>
               <div id="pendingSeasonEpisodes" class="seasonEpList" style="margin-top:10px"></div>
+              <label class="seasonDownloadPlayOption" style="display:flex;align-items:center;gap:9px;margin-top:14px;padding:12px;border:1px solid #493a25;border-radius:12px;background:#17130e;cursor:pointer">
+                <input id="seasonDownloadPlayEnabled" type="checkbox" style="width:18px;height:18px;margin:0;accent-color:var(--orange)">
+                <span>فعال کردن دکمه دانلود و پخش</span>
+              </label>
             </div>
             <div id="adminNoSeasonHint" class="seasonEmptyHint">اول یک فصل بساز، بعد قسمت‌ها را به آن اضافه کن.</div>
           </div>
@@ -5494,6 +5979,7 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
   </div>
 </section>
 
+
 <nav class="nav" id="mainNav">
   <button data-page="homePage" class="active" type="button"><span class="navIcon">⌂</span>خانه</button>
   <button data-page="savedPage" type="button"><span class="navIcon">★</span>نشانه‌گذاری</button>
@@ -5618,6 +6104,10 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
         <span>انتشار نشده (بدون نیاز به قسمت)</span>
       </label>
       <div class="keywordHint">اگر فعال باشد، در صفحهٔ جزئیات نوشته می‌شود «این انیمه هنوز منتشر نشده».</div>
+      <label style="display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px;border:1px solid #493a25;border-radius:12px;background:#17130e;cursor:pointer">
+        <input id="editCurrentlyAiring" type="checkbox" style="width:18px;height:18px;margin:0;accent-color:var(--orange)">
+        <span>فعال‌سازی وضعیت «در حال پخش»</span>
+      </label>
 
       <label style="margin-top:14px">نوع محتوا</label>
       <div class="segment" id="editContentKindSeg" style="margin-bottom:12px">
@@ -5690,7 +6180,7 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
               <button class="addBtn" id="editBulkAddSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">+ ساخت خودکار</button>
               <button class="delete" id="editClearSeasonEpsBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">حذف همه</button>
             </div>
-            <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;background:#0c0c10;border:1px solid #2a2a30;border-radius:12px;padding:10px">
+            <div id="editBulkOnlineControlBox" style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;background:#0c0c10;border:1px solid #2a2a30;border-radius:12px;padding:10px">
               <span style="font-size:10px;color:var(--orange);width:100%">مدیریت گروهی پخش آنلاین این فصل</span>
               <input id="editBulkOnlineCount" type="number" min="1" max="500" placeholder="تعداد" style="width:70px;margin:0">
               <select id="editBulkOnlineSide" style="font-size:10px;background:#1c1c22;color:#e8dcc8;border:0;border-radius:8px;padding:8px;margin:0">
@@ -5701,6 +6191,10 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
               <button class="addBtn" id="editBulkOnlineOffBtn" type="button" style="width:auto;height:36px;padding:0 10px;margin:0;font-size:10px;background:#4a3030">غیرفعال پخش</button>
               <button class="addBtn" id="editBulkOnlineOnBtn" type="button" style="width:auto;height:36px;padding:0 10px;margin:0;font-size:10px;background:#2e5c3a">فعال پخش</button>
             </div>
+            <label class="seasonDownloadPlayOption" style="display:flex;align-items:center;gap:9px;margin-top:14px;padding:12px;border:1px solid #493a25;border-radius:12px;background:#17130e;cursor:pointer">
+              <input id="editSeasonDownloadPlayEnabled" type="checkbox" style="width:18px;height:18px;margin:0;accent-color:var(--orange)">
+              <span>فعال کردن دکمه دانلود و پخش</span>
+            </label>
           </div>
         </div>
       </div>
@@ -5907,8 +6401,7 @@ html.theme-ocean .detailImdbBadge,html.theme-forest .detailImdbBadge{background:
     <div class="ibEmoji">⚠️ 🔔 ❗</div>
     <h3>خیلی مهم — حتماً بخوانید</h3>
     <p>
-      برای عملکرد بهتر اپ حتماً از <b>فیلترشکن</b> استفاده کنید.<br>
-      اما <b>بعد از پرداخت سکه</b>، فیلترشکن را خاموش کنید تا دانلود به‌درستی انجام شود.
+      لطفاً <b>پیش از پخش یا دانلود هر محتوا</b>، از جمله انیمه، مانگا و تریلر، حتماً <b>فیلترشکن (VPN) خود را خاموش کنید.</b><br>برای باز شدن صحیح لینک‌ها، پس از خاموش کردن فیلترشکن ادامه دهید.
     </p>
     <div class="ibActions">
       <button type="button" class="ibBtn ok" id="importantBannerOk">تأیید</button>
@@ -5966,6 +6459,12 @@ const APPWRITE_PROJECT = "6a9c13d8002a280adb24";
 const DATABASE_ID = "6a9c15f700270e8a347d";
 const COLLECTION_WORKS = "works";
 const COLLECTION_USERS = "app_users";
+
+/* Project 2 — Comments (TablesDB) — separate from auth project */
+const COMMENTS_ENDPOINT = "https://fra.cloud.appwrite.io/v1";
+const COMMENTS_PROJECT = "6ae8d7f2002b1ec38353";
+const COMMENTS_DATABASE_ID = "6ae8d9ac003a78c04166";
+const COMMENTS_TABLE_ID = "6ae8d9bb0018f8077231";
 const ADMIN_EMAIL = "haro354@gmail.com";
 /* ایمیل‌های مجاز ادمین (اصلی + سازگاری با اکانت قبلی) */
 const ADMIN_EMAIL_ALIASES = ["haro354@gmail.com", "hotaro354@gmail.com"];
@@ -6009,6 +6508,9 @@ let account = null;
 let appwriteReady = false;
 let appwriteID = null;
 let appwriteQuery = null;
+let commentsClient = null;
+let commentsTablesDB = null;
+let commentsReady = false;
 
 const DEFAULT_GENRES = [
   "اکشن","ماجراجویی","کمدی","درام","فانتزی","ترسناک",
@@ -7431,6 +7933,7 @@ function normalizeWorkSeasons(rawEpisodes, type){
       seasons: parsed.map(s => ({
         id: s.id || uid(),
         title: s.title || "فصل",
+        downloadPlayEnabled: s.downloadPlayEnabled === true,
         episodes: Array.isArray(s.episodes) ? s.episodes.map(normalizeEpisodeObj) : []
       })),
       flatEpisodes: []
@@ -7549,6 +8052,7 @@ function mapWorkDoc(doc){
       return 28;
     })(),
     unpublished: !!(doc.unpublished === true || doc.unpublished === 1 || doc.unpublished === "true"),
+    currentlyAiring: !!(doc.currentlyAiring === true || doc.currentlyAiring === 1 || doc.currentlyAiring === "true"),
     isDraft: !!(doc.isDraft === true || doc.isDraft === 1 || doc.isDraft === "true"),
     contentKind,
     mangaNumbering,
@@ -7676,18 +8180,35 @@ async function initAppwrite(){
       showToast("SDK لود نشد");
       return false;
     }
-    const { Client, Databases, Account, ID, Query, Permission, Role } = Appwrite;
+    const { Client, Databases, Account, ID, Query, Permission, Role, TablesDB, Storage } = Appwrite;
     client = new Client()
       .setEndpoint(APPWRITE_ENDPOINT)
       .setProject(APPWRITE_PROJECT);
     databases = new Databases(client);
-    aaStorage = new Appwrite.Storage(client);
+    aaStorage = new (Storage || Appwrite.Storage)(client);
     account = new Account(client);
     appwriteID = ID;
     appwriteQuery = Query;
     appwritePermission = Permission || null;
     appwriteRole = Role || null;
     appwriteReady = true;
+
+    /* Separate client for Comments Project (TablesDB) — no auth session on this client */
+    try {
+      commentsClient = new Client()
+        .setEndpoint(COMMENTS_ENDPOINT)
+        .setProject(COMMENTS_PROJECT);
+      if (typeof TablesDB === "function") {
+        commentsTablesDB = new TablesDB(commentsClient);
+        commentsReady = true;
+      } else {
+        console.warn("TablesDB not available in this SDK version");
+        commentsReady = false;
+      }
+    } catch (ce) {
+      console.error("Comments Appwrite init", ce);
+      commentsReady = false;
+    }
     return true;
   }catch(e){
     console.error(e);
@@ -7995,7 +8516,7 @@ function updateProfile(){
   try{ updateHomeGreeting(); }catch(e){}
   try{ updateCoinUI(); }catch(e){}
 
-  const avatarSrc = profile.avatar || "";
+  let avatarSrc = profile.avatar || "";
   if(avatarSrc){
     $("avatarImg").src = avatarSrc;
     $("avatarImg").style.display = "block";
@@ -8073,10 +8594,8 @@ function showPage(id, fromPop){
     try{ resetHeroToAutomatic(); }catch(e){}
   }
   if(id === "homePage"){
-    ["latestBooks","newBooks","forYou","serialSectionBooks","movieSectionBooks"].forEach(boxId => {
-      const el = $(boxId);
-      if(el) el.scrollLeft = 0;
-    });
+    /* موقع برگشت به خانه، scrollLeft ردیف‌های RTL را دستکاری نکن؛
+       مقدار صفر در WebViewهای مختلف گاهی انتهای ردیف را نشان می‌دهد. */
     try{ startHeroAuto(); }catch(e){}
   } else {
     try{ stopHeroAuto(); }catch(e){}
@@ -8348,7 +8867,7 @@ function filteredByCategory(list){
   return list.slice();
 }
 
-function createBookCard(work){
+function createBookCard(work, showAiringBadge = false){
   const el = document.createElement("div");
   el.className = "book";
   if(!work) return el;
@@ -8373,10 +8892,19 @@ function createBookCard(work){
     cover.appendChild(t);
   }
 
-  const badge = document.createElement("span");
-  badge.className = "workTypeBadge";
-  badge.textContent = workTypeBadgeText(work);
-  cover.appendChild(badge);
+  if(!showAiringBadge){
+    const badge = document.createElement("span");
+    badge.className = "workTypeBadge";
+    badge.textContent = workTypeBadgeText(work);
+    cover.appendChild(badge);
+  }
+
+  if(showAiringBadge && work.currentlyAiring){
+    const airing = document.createElement("span");
+    airing.className = "currentlyAiringBadge";
+    airing.textContent = "در حال پخش";
+    cover.appendChild(airing);
+  }
 
   const star = document.createElement("button");
   star.type = "button";
@@ -8438,10 +8966,15 @@ function fillBooksStrip(boxId, list, emptyText){
   }
   const track = document.createElement("div");
   track.className = "booksStripTrack";
-  list.forEach(w => { if(w) track.appendChild(createBookCard(w)); });
+  const isAiringRow = boxId === "airingBooks";
+  /* ترتیب آرایه را تغییر نده: در چیدمان RTL، اولین کارت راست‌ترین کارت است. */
+  const frag = document.createDocumentFragment();
+  list.forEach(w => { if(w) frag.appendChild(createBookCard(w, isAiringRow)); });
+  track.appendChild(frag);
   box.appendChild(track);
 
-  box.scrollLeft = 0;
+  /* اسکرول RTL را به مرورگر می‌سپاریم؛ صفرکردن scrollLeft در بعضی WebViewها
+     ردیف را به انتهای اشتباه می‌پراند و لمس افقی را گیج‌کننده می‌کند. */
 }
 
 function shuffleArray(arr){
@@ -8562,11 +9095,16 @@ function getBestList(base){
 }
 
 function getHeroWorks(){
-  /* همیشه فقط ۱۵ انیمهٔ منتشرشدهٔ جدیدتر */
+  /* اولویت بنر مستقل از تاریخ انتشار است؛ تاریخ واقعی انیمه هرگز تغییر نمی‌کند. */
+  const priority = (window.__AA_CONTROLS_STATE && window.__AA_CONTROLS_STATE.priority) || {};
   return (allWorks || [])
     .filter(w => w && !w.unpublished && !w.isDraft)
     .slice()
-    .sort((a,b)=> (b.createdAt||0) - (a.createdAt||0))
+    .sort((a,b)=>{
+      const atA = Math.max(Number(a.createdAt)||0, Number(priority[String(a.id)])||0);
+      const atB = Math.max(Number(b.createdAt)||0, Number(priority[String(b.id)])||0);
+      return atB - atA || (Number(b.createdAt)||0) - (Number(a.createdAt)||0);
+    })
     .slice(0, HERO_MAX_ITEMS);
 }
 
@@ -8865,6 +9403,18 @@ function moveHero(direction){
 })();
 
 
+function getCurrentlyAiringWorks(list){
+  return (Array.isArray(list) ? list : [])
+    .filter(w => w && w.currentlyAiring === true && !w.unpublished && !w.isDraft)
+    .slice()
+    /* ترتیب فعال‌سازی تیک حفظ می‌شود: قدیمی‌ترین فعال‌سازی اول، از راست به چپ. */
+    .sort((a,b) => {
+      const ta = Number(a.currentlyAiringAt) || Number(a.createdAt) || 0;
+      const tb = Number(b.currentlyAiringAt) || Number(b.createdAt) || 0;
+      return ta - tb;
+    });
+}
+
 function renderHome(){
   /* همیشه حالت «همه» برای صفحه خانه جدید */
   homeCategory = "all";
@@ -8880,6 +9430,10 @@ function renderHome(){
     10,
     4
   );
+  const airingList = getCurrentlyAiringWorks(base);
+  const airingSection = $("airingSection");
+  if(airingSection) airingSection.style.display = airingList.length ? "" : "none";
+  fillBooksStrip("airingBooks", airingList, "فعلاً انیمه‌ای در حال پخش نیست.");
   fillBooksStrip("latestBooks", byDate.slice(0, 10), "هنوز انیمه‌ای منتشر نشده.");
   fillBooksStrip("newBooks", built[1], "پیشنهادی موجود نیست.");
   fillBooksStrip("forYou", built[2], "برای شروع چند انیمه ببینید.");
@@ -8916,6 +9470,10 @@ function openListPage(title, list){
 }
 $("listBack")?.addEventListener("click", ()=> navigateBack());
 
+$("airingSectionArrow")?.addEventListener("click", ()=>{
+  const list = getCurrentlyAiringWorks(filteredByCategory(allWorks));
+  openListPage("در حال پخش", list);
+});
 $("latestArrow")?.addEventListener("click", ()=>{
   /* همیشه جدیدترین بالاتر */
   const list = filteredByCategory(allWorks).sort((a,b)=> (b.createdAt||0)-(a.createdAt||0));
@@ -9470,13 +10028,17 @@ function renderGenres(){
   const box = $("genres");
   if(!box) return;
   box.innerHTML = "";
-  getGenres().forEach(g => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "genre";
-    btn.textContent = g;
-    btn.addEventListener("click", ()=> openGenreDetail(g));
-    box.appendChild(btn);
+  const genres = getGenres();
+  if(!genres.length){ showEmpty(box, "هنوز ژانری ثبت نشده است."); return; }
+  const accents = [["✦","#e8a34a"],["◈","#7ca8cf"],["❖","#b28bd4"],["✧","#d27e91"],["⌁","#7eb69a"],["✺","#d39a67"],["◇","#91a7d4"],["✷","#c18baf"]];
+  genres.forEach((g,i)=>{
+    const count = allWorks.filter(w=>w&&!w.isDraft&&!w.unpublished&&workGenres(w).some(x=>normalizeText(x)===normalizeText(g))).length;
+    const [symbol,color] = accents[i%accents.length];
+    const card = document.createElement("button");
+    card.type="button"; card.className="genreCard"; card.style.setProperty("--genre-accent",color);
+    card.innerHTML=`<span class="genreCardGlow"></span><span class="genreCardTop"><span class="genreCardSymbol">${symbol}</span><span class="genreCardArrow">↗</span></span><span class="genreCardName">${escapeHtml(g)}</span><span class="genreCardMeta">${count.toLocaleString("fa-IR")} عنوان در آرشیو</span><span class="genreCardLine"></span>`;
+    card.addEventListener("click",()=>openGenreDetail(g));
+    box.appendChild(card);
   });
 }
 
@@ -9738,6 +10300,7 @@ function openDetail(work){
     }
   }
   renderSimilar(work);
+  try{ window.aaRefreshCommentsPreview?.(); }catch(e){}
   showPage("detailPage");
 }
 
@@ -10816,6 +11379,9 @@ $("detailPlayTrailerBtn")?.addEventListener("click", ()=>{
     showToast("لینک تریلر موجود نیست");
     return;
   }
+  showVpnDownloadBannerThen(()=>aaPlayTrailerConfirmed(work,tUrl),{title:'پیش از پخش تریلر',html:'لطفاً پیش از پخش تریلر، <b>فیلترشکن خود را خاموش کنید.</b>'});
+});
+function aaPlayTrailerConfirmed(work,tUrl){
   /* پخش تریلر در صفحه پخش بدون کسر سکه */
   const fakeEp = { id: "trailer_" + (work.id||""), title: "تریلر — " + (work.title||""), link: tUrl, playLink: tUrl, onlineEnabled: true };
   stopStandalonePlayer();
@@ -10840,7 +11406,7 @@ $("detailPlayTrailerBtn")?.addEventListener("click", ()=>{
     if(!p) return;
     p.play().then(()=> showToast("در حال پخش تریلر")).catch(()=> showToast("دکمه پخش را بزنید"));
   }, 80);
-});
+}
 
 
 
@@ -10853,7 +11419,10 @@ async function startEpisodeDownload(ep, idx, rowEl){
     dlBtn.classList.toggle("dlBusy", !!busy);
     dlBtn.classList.toggle("downloaded", done);
     if(busy){ dlBtn.setAttribute("aria-busy", "true"); dlBtn.textContent = "در حال آماده‌سازی..."; }
-    else{ dlBtn.removeAttribute("aria-busy"); dlBtn.textContent = done ? "✓ دانلود شده" : "⬇ دانلود"; }
+    else{
+      dlBtn.removeAttribute("aria-busy");
+      dlBtn.textContent = done ? "✓ دانلود شده" : (rowEl && rowEl.dataset.combinedDownloadPlay === "1" ? "⬇ دانلود و پخش" : "⬇ دانلود");
+    }
   };
   await runDownloadFlow({
     link: ep && ep.link,
@@ -10881,6 +11450,9 @@ function renderEpisodesList(episodes){
   window.currentEpisodes = episodes;
   if(!episodes.length){ showEmpty(box, "قسمتی ثبت نشده است."); return; }
   const playCost = playCostForWork(currentWork);
+  const activeSeason = (currentWork && currentWork.type !== "movie" && Array.isArray(currentWork.seasons))
+    ? currentWork.seasons[selectedDetailSeasonIdx] : null;
+  const combinedDownloadPlay = isSeasonDownloadPlayEnabled(activeSeason);
   episodes.forEach((ep, idx) => {
     const row = document.createElement("div");
     row.className = "chapterItem";
@@ -10891,7 +11463,7 @@ function renderEpisodesList(episodes){
     const onlineOn = isOnlinePlaybackEnabled(ep);
 
     const watchSec = (!locked && currentUser) ? getWatchPosition(currentWork, ep, idx) : 0;
-    const watchHtml = (onlineOn && watchSec >= 1)
+    const watchHtml = (onlineOn && !combinedDownloadPlay && watchSec >= 1)
       ? `<div class="epWatchHint">آخرین بار تا دقیقه ${formatClock(watchSec)} مشاهده شده</div>`
       : "";
 
@@ -10904,7 +11476,11 @@ function renderEpisodesList(episodes){
       </div>`;
     }else{
       const dlLabel = downloaded ? "✓ دانلود شده" : "⬇ دانلود";
-      if(onlineOn){
+      if(combinedDownloadPlay){
+        actionsHtml = `<div class="epActions">
+          <button type="button" class="epBtn epBtnDl ${downloaded ? "downloaded" : ""}" data-act="download">${downloaded ? "✓ دانلود شده" : "⬇ دانلود و پخش"}</button>
+        </div>`;
+      }else if(onlineOn){
         const playLabel = (played || unlimited)
           ? "▶ پخش"
           : ("▶ پخش · " + playCost + "🪙");
@@ -10920,6 +11496,7 @@ function renderEpisodesList(episodes){
     }
 
     row.innerHTML = titleHtml + actionsHtml;
+    if(combinedDownloadPlay) row.dataset.combinedDownloadPlay = "1";
 
     row.querySelector('[data-act="login"]')?.addEventListener("click", (e)=>{
       e.preventDefault();
@@ -11070,6 +11647,9 @@ function renderSimilar(work){
     .sort((a,b)=> b.score - a.score || (b.w.createdAt||0)-(a.w.createdAt||0));
   let list = scored.map(x => x.w).slice(0, 24);
   if(!list.length) list = allWorks.filter(w => w && !w.isDraft && !w.unpublished && w.id !== work.id).slice(0, 12);
+  const ordered=window.aaCollectionPriority?.(work)||[];
+  list=[...ordered,...list.filter(w=>!ordered.some(x=>String(x.$id||x.id)===String(w.$id||w.id)))].slice(0,24);
+  window.aaInsertCollectionCards?.(work,box);
   if(!list.length){ showEmpty(box, "مورد مشابهی نیست."); return; }
   list.forEach(w => box.appendChild(createBookCard(w)));
 }
@@ -12447,6 +13027,8 @@ document.querySelectorAll("[data-admin-tab]").forEach(btn => {
     document.querySelectorAll(".adminSection").forEach(s => s.classList.remove("active"));
     const tab = btn.dataset.adminTab;
     if(tab === "add") $("adminAdd").classList.add("active");
+    if(tab === "comments"){ $("adminComments")?.classList.add("active"); window.aaRenderAdminComments?.(); }
+    if(tab === "collections"){ $("adminCollections")?.classList.add("active"); window.aaRenderCollections?.(); }
     if(tab === "genres"){
       $("adminGenres").classList.add("active");
       loadGenresFromServer().then(()=>{ fillGenreSelect(); renderGenreAdmin(); renderGenres(); }).catch(()=> renderGenreAdmin());
@@ -12833,9 +13415,28 @@ function renderAdminSeasonsUI(){
   if(panel) panel.style.display = "";
   renderPendingSeasonEpisodes();
   const season = pendingSeasons[selectedAdminSeasonIdx];
+  syncSeasonDownloadPlayUI(season, "seasonDownloadPlayEnabled", "bulkOnlineControlBox");
   if($("seasonChapterTitle")) $("seasonChapterTitle").value = nextSeasonEpisodeDefaultTitle(season);
   if($("seasonChapterLink")) $("seasonChapterLink").value = "";
   if($("seasonChapterSubtitleInput")) $("seasonChapterSubtitleInput").value = "";
+}
+
+$("seasonDownloadPlayEnabled")?.addEventListener("change", ()=>{
+  const season = pendingSeasons[selectedAdminSeasonIdx];
+  if(!season) return;
+  season.downloadPlayEnabled = !!$("seasonDownloadPlayEnabled").checked;
+  renderAdminSeasonsUI();
+});
+
+function isSeasonDownloadPlayEnabled(season){
+  return !!(season && season.downloadPlayEnabled === true);
+}
+function syncSeasonDownloadPlayUI(season, checkboxId, bulkBoxId){
+  const enabled = isSeasonDownloadPlayEnabled(season);
+  const check = $(checkboxId);
+  if(check) check.checked = enabled;
+  const bulk = $(bulkBoxId);
+  if(bulk) bulk.style.display = enabled ? "none" : "flex";
 }
 
 function renderPendingSeasonEpisodes(){
@@ -12876,7 +13477,7 @@ function renderPendingSeasonEpisodes(){
       season.episodes.splice(i, 1);
       renderAdminSeasonsUI();
     });
-    div.appendChild(buildOnlineToggleBtn(ch, ()=> renderAdminSeasonsUI()));
+    if(!isSeasonDownloadPlayEnabled(season)) div.appendChild(buildOnlineToggleBtn(ch, ()=> renderAdminSeasonsUI()));
     div.appendChild(moveSel);
     div.appendChild(del);
     box.appendChild(div);
@@ -12920,7 +13521,7 @@ $("clearSeasonEpsBtn")?.addEventListener("click", async ()=>{
 $("addSeasonBtn")?.addEventListener("click", ()=>{
   if(!isAdminMode){ showToast("وارد مدیریت شوید"); return; }
   const title = ($("newSeasonTitle")?.value || "").trim() || ("فصل " + (pendingSeasons.length + 1));
-  pendingSeasons.push({ id: uid(), title, episodes: [] });
+  pendingSeasons.push({ id: uid(), title, downloadPlayEnabled: false, episodes: [] });
   selectedAdminSeasonIdx = pendingSeasons.length - 1;
   if($("newSeasonTitle")) $("newSeasonTitle").value = "";
   renderAdminSeasonsUI();
@@ -13003,6 +13604,7 @@ async function createWorkFromAdmin(asDraft){
     episodesPayload = pendingSeasons.map(s => ({
       id: s.id || uid(),
       title: s.title,
+      downloadPlayEnabled: s.downloadPlayEnabled === true,
       episodes: (s.episodes || []).map(e => {
         const o = { id: e.id || uid(), title: e.title, link: e.link, onlineEnabled: isOnlinePlaybackEnabled(e) };
         if(e.playLink) o.playLink = e.playLink;
@@ -13042,6 +13644,8 @@ async function createWorkFromAdmin(asDraft){
       coverUrl,
       trailerUrl,
       unpublished: isUnpublished,
+      currentlyAiring: !!$("adminCurrentlyAiring")?.checked,
+      currentlyAiringAt: $("adminCurrentlyAiring")?.checked ? Date.now() : 0,
       contentKind,
       mangaNumbering,
       mangaItems: JSON.stringify(mangaPayload),
@@ -13083,6 +13687,7 @@ async function createWorkFromAdmin(asDraft){
       if($("adminAirYear")) $("adminAirYear").value = "";
       $("adminType").value = "serial";
       if($("adminUnpublished")) $("adminUnpublished").checked = false;
+      if($("adminCurrentlyAiring")) $("adminCurrentlyAiring").checked = false;
       showToast("در پیش‌نویس‌ها ذخیره شد");
       try{ renderAdminDrafts(); }catch(e){}
       return;
@@ -13127,6 +13732,7 @@ async function createWorkFromAdmin(asDraft){
     if($("adminAirYear")) $("adminAirYear").value = "";
     $("adminType").value = "serial";
     if($("adminUnpublished")) $("adminUnpublished").checked = false;
+      if($("adminCurrentlyAiring")) $("adminCurrentlyAiring").checked = false;
     updateEpisodeLabels();
     try{
       if(createdWorkDoc && createdWorkDoc.$id){
@@ -13374,6 +13980,7 @@ function openEditWork(work, draftRow){
   }catch(e){}
   if($("editAirYear")) $("editAirYear").value = work.year ? String(work.year) : "";
   if($("editUnpublished")) $("editUnpublished").checked = !!work.unpublished;
+  if($("editCurrentlyAiring")) $("editCurrentlyAiring").checked = !!work.currentlyAiring;
 
   /* مانگا همیشه جدا لود می‌شود تا قسمت‌های انیمه پاک نشوند */
   editingMangaItems = (work.mangaItems && work.mangaItems.length)
@@ -13399,12 +14006,14 @@ function openEditWork(work, draftRow){
     editingSeasons = (work.seasons || []).map(s => ({
       id: s.id || uid(),
       title: s.title || "فصل",
+      downloadPlayEnabled: s.downloadPlayEnabled === true,
       episodes: (s.episodes || []).map(e => ({...e}))
     }));
     if(!editingSeasons.length && (work.episodes || []).length){
       editingSeasons = [{
         id: uid(),
         title: "فصل ۱",
+        downloadPlayEnabled: false,
         episodes: (work.episodes || []).map(e => ({...e}))
       }];
     }
@@ -13654,6 +14263,8 @@ function renderEditSeasonsUI(){
     tabs.appendChild(btn);
   });
   if(panel) panel.style.display = "";
+  const activeSeason = editingSeasons[selectedEditSeasonIdx];
+  syncSeasonDownloadPlayUI(activeSeason, "editSeasonDownloadPlayEnabled", "editBulkOnlineControlBox");
   renderEditSeasonEpisodes();
 }
 
@@ -13732,11 +14343,18 @@ function renderEditSeasonEpisodes(){
     div.appendChild(l);
     div.appendChild(pl);
     div.appendChild(s);
-    div.appendChild(buildOnlineToggleBtn(ch, ()=> renderEditSeasonEpisodes()));
+    if(!isSeasonDownloadPlayEnabled(season)) div.appendChild(buildOnlineToggleBtn(ch, ()=> renderEditSeasonEpisodes()));
     div.appendChild(row);
     box.appendChild(div);
   });
 }
+
+$("editSeasonDownloadPlayEnabled")?.addEventListener("change", ()=>{
+  const season = editingSeasons[selectedEditSeasonIdx];
+  if(!season) return;
+  season.downloadPlayEnabled = !!$("editSeasonDownloadPlayEnabled").checked;
+  renderEditSeasonsUI();
+});
 
 $("editRenameSeasonBtn")?.addEventListener("click", ()=>{
   if(selectedEditSeasonIdx < 0 || !editingSeasons[selectedEditSeasonIdx]) return;
@@ -13796,7 +14414,7 @@ $("editClearSeasonEpsBtn")?.addEventListener("click", async ()=>{
 
 $("editAddSeasonBtn")?.addEventListener("click", ()=>{
   const title = ($("editNewSeasonTitle")?.value || "").trim() || ("فصل " + (editingSeasons.length + 1));
-  editingSeasons.push({ id: uid(), title, episodes: [] });
+  editingSeasons.push({ id: uid(), title, downloadPlayEnabled: false, episodes: [] });
   selectedEditSeasonIdx = editingSeasons.length - 1;
   if($("editNewSeasonTitle")) $("editNewSeasonTitle").value = "";
   renderEditSeasonsUI();
@@ -13877,6 +14495,7 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     episodesPayload = editingSeasons.map(s => ({
       id: s.id || uid(),
       title: s.title || "فصل",
+      downloadPlayEnabled: s.downloadPlayEnabled === true,
       episodes: (s.episodes || []).map((e, i) => {
         const o = { id: e.id || uid(), title: (e.title||"").trim() || ("قسمت " + (i + 1)), link: (e.link||"").trim(), onlineEnabled: isOnlinePlaybackEnabled(e) };
         if((e.playLink||"").trim()) o.playLink = e.playLink.trim();
@@ -13907,6 +14526,8 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
     coverUrl,
     trailerUrl,
     unpublished: isUnpublished,
+    currentlyAiring: !!$("editCurrentlyAiring")?.checked,
+    currentlyAiringAt: $("editCurrentlyAiring")?.checked ? (editingWork.currentlyAiring ? (Number(editingWork.currentlyAiringAt)||Date.now()) : Date.now()) : 0,
     contentKind,
     mangaNumbering,
     mangaItems: JSON.stringify(mangaPayload),
@@ -13974,8 +14595,13 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
       COLLECTION_WORKS,
       editingWork.id,
       payload,
-      ["title","type","episodes","coverUrl","Author","genre","description"]
+      ["title","type","episodes","coverUrl","Author","genre","description","currentlyAiring"]
     );
+
+    /* فقط اولویت بنر جدا از سند انیمه ذخیره می‌شود؛ createdAt دست‌نخورده می‌ماند. */
+    try{
+      await aaPersistWorkSettings(editingWork.id, {}, !!document.getElementById("aaEditBannerPriority")?.checked);
+    }catch(settingsErr){ console.warn("Anime banner priority save:", settingsErr); showToast("اطلاعات انیمه ذخیره شد؛ اولویت بنر همگام نشد"); }
 
     try{ await clearBrokenLinksForWork(editingWork.id); }catch(e){ console.warn(e); }
     const keepId = editingWork.id;
@@ -17974,7 +18600,7 @@ async function clearWorkOrder(workId){
 /* ساخت سند اثر با تحمل اسکیمای ناقص: فقط ستونی که Appwrite نمی‌شناسد حذف می‌شود */
 async function createWorkDocSafe(id, payload){
   const p = Object.assign({}, payload);
-  const KEEP = ["title","type","episodes","coverUrl"];
+  const KEEP = ["title","type","episodes","coverUrl","currentlyAiring"];
   let droppedOptional = false;
   for(let i = 0; i < 16; i++){
     try{
@@ -19985,6 +20611,463 @@ async function aaUpload(prefix){
 }
 function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File");if(el)el.value="";}
 (function(){const el=document.getElementById("aaBucketId");if(el)el.value=localStorage.getItem(AA_BUCKET_KEY)||el.value;})();
+
+
+/* Comments system — Appwrite Project 2 (TablesDB). Auth from Project 1. */
+(function(){
+  const $ = id => document.getElementById(id);
+  const workId = () => String(currentWork?.$id || currentWork?.id || "");
+  const fmt = n => Number(n || 0).toLocaleString("fa-IR");
+  const node = (tag, cls, value) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (value !== undefined) e.textContent = value;
+    return e;
+  };
+  const dateStr = t => {
+    try {
+      return new Date(t).toLocaleDateString("fa-IR", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    } catch (e) { return ""; }
+  };
+  let commentsCache = [], submitting = false;
+  const expanded = new Set();
+  const T = { databaseId: COMMENTS_DATABASE_ID, tableId: COMMENTS_TABLE_ID };
+  const isLoggedIn = () => !!(currentUser && currentUser.id);
+  const myId = () => String(currentUser?.id || "");
+  const myName = () => String(currentUser?.name || (currentUser?.email || "").split("@")[0] || "").trim().slice(0, 50);
+  const nameOf = i => i.is_anonymous ? "Anonymous" : (i.display_name || "کاربر");
+  const isMine = i => isLoggedIn() && i.user_id === myId();
+  const closeMenus = () => document.querySelectorAll("#aaCommentsPage .aaMoreWrap.open").forEach(m => m.classList.remove("open"));
+  document.addEventListener("click", e => { if (!e.target.closest("#aaCommentsPage .aaMoreWrap")) closeMenus(); });
+
+  function updateIdentity() {
+    const el = $("aaCommentIdentity"); if (!el) return;
+    el.textContent = isLoggedIn() ? "در حال نوشتن با حساب: " + (myName() || "کاربر") : "برای ارسال نظر، ابتدا وارد حساب کاربری شوید";
+  }
+  function updatePreviewCount(n) {
+    const p = $("aaCommentsPreview"), c = $("aaCommentsContextCount");
+    if (p) p.textContent = n ? fmt(n) + " نظر برای این انیمه" : "اولین نفری باش که نظر می‌ده";
+    if (c) c.textContent = n ? fmt(n) + " نظر ثبت شده" : "هنوز نظری ثبت نشده";
+  }
+  function scrollLatest() {
+    const go = () => { if (!$("aaCommentsPage")?.classList.contains("active")) return; window.scrollTo({ top: Math.max(0, Math.max(document.documentElement.scrollHeight, document.body.scrollHeight) - window.innerHeight), left: 0, behavior: "instant" }); };
+    requestAnimationFrame(() => requestAnimationFrame(go)); [90, 300, 650].forEach(t => setTimeout(go, t));
+  }
+  function message(icon, text) {
+    const list = $("aaCommentList"); if (!list) return;
+    list.replaceChildren(); const box = node("div", "aaEmpty"); box.append(node("span", "icon", icon), node("div", "", text)); list.append(box);
+  }
+  async function fetchComments() {
+    const aid = workId(); if (!aid) return [];
+    if (!commentsReady || !commentsTablesDB) throw new Error("سیستم نظرات آماده نیست");
+    const { Query } = Appwrite;
+    const res = await commentsTablesDB.listRows({ ...T, queries: [Query.equal("anime_id", aid), Query.orderAsc("$createdAt"), Query.limit(500)] });
+    return (res.rows || res.documents || []).map(r => ({ id: r.$id, user_id: r.user_id, display_name: r.display_name, is_anonymous: !!r.is_anonymous, content: r.content || "", is_spoiler: !!r.is_spoiler, is_edited: !!r.is_edited, parent_id: r.parent_id || "", reply_to_name: r.reply_to_name || "", createdAt: r.$createdAt }));
+  }
+  function needLogin() {
+    if (isLoggedIn()) return false;
+    showToast("برای این کار وارد حساب کاربری شوید");
+    if (typeof openLoginModal === "function") openLoginModal();
+    return true;
+  }
+  async function act(fn, okMsg) {
+    try { await fn(); if (okMsg) showToast(okMsg); await refresh(false); }
+    catch (e) { console.error(e); showToast(/permission|forbidden|401|403/i.test(String(e?.message || e)) ? "مجوز این کار وجود ندارد" : "خطا؛ دوباره تلاش کنید"); }
+  }
+  const createRow = data => commentsTablesDB.createRow({ ...T, rowId: Appwrite.ID.unique(), data: { anime_id: workId(), user_id: myId(), is_anonymous: false, ...data } });
+
+  function editor(card, o) {
+    card.querySelectorAll(".aaReplyBox").forEach(b => b.remove());
+    const box = node("div", "aaReplyBox aaInlineReplyEditor"), ta = node("textarea"), row = node("div", "aaEditorActions");
+    const cancel = node("button", "aaCancelReply", "انصراف"), send = node("button", "aaSend", o.label);
+    ta.maxLength = o.max; ta.value = o.value || ""; ta.placeholder = "بنویس...";
+    cancel.type = send.type = "button"; cancel.onclick = () => box.remove();
+    send.onclick = async () => { const v = ta.value.trim(); if (!v) { showToast("متن خالی است"); return; } send.disabled = true; await o.onSend(v); send.disabled = false; };
+    row.append(cancel, send); box.append(node("div", "aaEditorHeading", o.title), ta, row); card.append(box); ta.focus();
+  }
+  function moreMenu(mini, onEdit, onDelete, editLabel, delLabel) {
+    const more = node("div", "aaMoreWrap"), toggle = node("button", mini ? "aaReplyMini aaReplyMore" : "aaAction aaMoreButton", "⋯"), menu = node("div", "aaMoreMenu");
+    const ed = node("button", "", editLabel), del = node("button", "aaDeleteAction", delLabel);
+    toggle.type = ed.type = del.type = "button";
+    toggle.onclick = () => { const was = more.classList.contains("open"); closeMenus(); if (!was) more.classList.add("open"); };
+    ed.onclick = () => { closeMenus(); onEdit(); };
+    del.onclick = async () => { closeMenus(); await onDelete(); };
+    menu.append(ed, del); more.append(toggle, menu); return more;
+  }
+  // قبل از هر ویرایش/حذف، ردیف از سرور دوباره خوانده می‌شود و صاحبش با کاربر فعلی مقایسه می‌شود
+  const owned = async id => { if (!isLoggedIn()) throw new Error("forbidden"); const r = await commentsTablesDB.getRow({ ...T, rowId: id }); if (String(r.user_id) !== myId()) throw new Error("forbidden"); };
+  const askDelete = (msg, title, ok) => appConfirm(msg, { title, okText: ok, cancelText: "انصراف" });
+
+  function renderComments(all) {
+    const list = $("aaCommentList"); if (!list) return;
+    list.replaceChildren();
+    const tops = all.filter(x => !x.parent_id);
+    if ($("aaCommentCount")) $("aaCommentCount").textContent = "نظرها · " + fmt(tops.length);
+    updatePreviewCount(tops.length);
+    if (!tops.length) { message("✦", "هنوز نظری برای این انیمه نوشته نشده.\nاولین نفر باش و تجربه‌ات رو به اشتراک بذار!"); return; }
+    for (const item of tops) {
+      const mineC = isMine(item), card = node("article", "aaCommentCard " + (mineC ? "aaMine" : "aaOther"));
+      const head = node("div", "aaUser"), info = node("div"), nm = nameOf(item), avatar = node("div", "aaAvatar", nm.trim().slice(0, 1));
+      if (mineC && !item.is_anonymous) { try { const social = JSON.parse(localStorage.getItem("aa_elegant_profile_v2_" + myId()) || "{}"); const src = social.avatar || (typeof getProfile === "function" ? getProfile()?.avatar : "") || ""; if (src) { avatar.textContent = ""; const pic = document.createElement("img"); pic.src = src; pic.alt = "تصویر پروفایل"; pic.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"; avatar.append(pic); } } catch (e) {} }
+      info.append(node("strong", "", nm), node("div", "aaDate", dateStr(item.createdAt) + (item.is_edited ? " · ویرایش‌شده" : "")));
+      head.append(avatar, info); card.append(head);
+      if (item.is_spoiler) {
+        const sp = node("div", "aaSpoilerContent"); sp.append(node("div", "", "⚠️ این نظر بخش‌هایی از داستان را فاش می‌کند."));
+        const rv = node("button", "aaSpoilerReveal", "نمایش نظر"); rv.type = "button"; rv.onclick = () => sp.replaceWith(node("p", "aaBody", item.content)); sp.append(rv); card.append(sp);
+      } else card.append(node("p", "aaBody", item.content));
+      const replies = all.filter(x => x.parent_id === item.id);
+      const actions = node("div", "aaActions"), reply = node("button", "aaAction aaReplyAction", "↩ پاسخ"); reply.type = "button"; actions.append(reply);
+      const sendReply = (v, to) => act(() => createRow({ display_name: myName() || "کاربر", content: v.slice(0, 2000), parent_id: item.id, ...(to ? { reply_to_name: to } : {}) }).then(() => expanded.add(item.id)), "پاسخ ثبت شد");
+      const openReply = to => { if (needLogin()) return; editor(card, { title: to ? "پاسخ به " + to : "پاسخ به نظر", label: "ارسال پاسخ", max: 2000, onSend: v => sendReply(v, to) }); };
+      reply.onclick = () => openReply("");
+      if (mineC) actions.append(moreMenu(false,
+        () => editor(card, { title: "ویرایش نظر", label: "ذخیره تغییرات", max: 2000, value: item.content, onSend: v => act(async () => { await owned(item.id); await commentsTablesDB.updateRow({ ...T, rowId: item.id, data: { content: v.slice(0, 2000), is_edited: true } }); }, "نظر ویرایش شد") }),
+        async () => { if (!await askDelete("این نظر حذف شود؟ (پاسخ‌های بقیه‌ی کاربران حذف نمی‌شوند و فقط پنهان می‌مانند)", "حذف نظر", "حذف نظر")) return; act(async () => { await owned(item.id); await Promise.all(replies.filter(isMine).map(async r => { await owned(r.id); await commentsTablesDB.deleteRow({ ...T, rowId: r.id }); })); await commentsTablesDB.deleteRow({ ...T, rowId: item.id }); }, "نظر حذف شد"); },
+        "ویرایش نظر", "حذف نظر"));
+      card.append(actions);
+      if (replies.length) {
+        const open = expanded.has(item.id), thread = node("div", "aaThread" + (open ? " expanded" : "")), label = n => (n ? "بستن پاسخ‌ها  ⌃" : "نمایش " + fmt(replies.length) + " پاسخ  ⌄");
+        const exp = node("button", "aaExpandReplies", label(open)); exp.type = "button";
+        for (const r of replies) {
+          const box = node("div", "aaReply"), rh = node("div", "aaReplyHead"), rn = nameOf(r), meta = node("div", "aaReplyMeta");
+          meta.append(node("strong", "", rn), node("small", "", dateStr(r.createdAt) + (r.is_edited ? " · ویرایش‌شده" : "")));
+          rh.append(node("span", "aaReplyAvatar", rn.trim().slice(0, 1)), meta); box.append(rh);
+          if (r.reply_to_name) box.append(node("div", "aaReplyTo", "↪ در پاسخ به " + r.reply_to_name));
+          box.append(node("p", "", r.content));
+          const tools = node("div", "aaReplyTools"), respond = node("button", "aaReplyMini", "↩ پاسخ"); respond.type = "button"; respond.onclick = () => openReply(rn); tools.append(respond);
+          if (isMine(r)) tools.append(moreMenu(true,
+            () => editor(card, { title: "ویرایش پاسخ", label: "ذخیره تغییرات", max: 2000, value: r.content, onSend: v => act(async () => { await owned(r.id); await commentsTablesDB.updateRow({ ...T, rowId: r.id, data: { content: v.slice(0, 2000), is_edited: true } }); expanded.add(item.id); }, "پاسخ ویرایش شد") }),
+            async () => { if (!await askDelete("این پاسخ حذف شود؟", "حذف پاسخ", "حذف پاسخ")) return; expanded.add(item.id); act(async () => { await owned(r.id); await commentsTablesDB.deleteRow({ ...T, rowId: r.id }); }, "پاسخ حذف شد"); },
+            "ویرایش پاسخ", "حذف پاسخ"));
+          box.append(tools); thread.append(box);
+        }
+        exp.onclick = () => { const on = thread.classList.toggle("expanded"); on ? expanded.add(item.id) : expanded.delete(item.id); exp.textContent = label(on); };
+        card.append(exp, thread);
+      }
+      list.append(card);
+    }
+  }
+  async function refresh(showLoading = true) {
+    if (!workId()) return;
+    if (showLoading) message("⏳", "در حال بارگذاری نظرات...");
+    try { commentsCache = await fetchComments(); renderComments(commentsCache); }
+    catch (e) { console.error("load comments", e); message("⚠️", "نتوانستیم نظرات را بارگذاری کنیم. اتصال اینترنت یا دسترسی را بررسی کنید."); }
+  }
+  function open() {
+    const w = currentWork;
+    if (!w || !workId()) { showToast("ابتدا یک انیمه انتخاب کن"); return; }
+    const title = w.title || w.name || w.titleFa || "این انیمه";
+    if ($("aaCommentsAnimeTitle")) $("aaCommentsAnimeTitle").textContent = title;
+    if ($("aaCommentsContextName")) $("aaCommentsContextName").textContent = title;
+    const poster = $("aaCommentsPoster");
+    if (poster) { poster.replaceChildren(); const url = w.cover || w.coverUrl || w.image || w.imageUrl || w.poster || ""; if (url) { const img = node("img"); img.src = url; img.alt = "جلد " + title; img.loading = "lazy"; poster.append(img); } else poster.append(node("div", "", "🎬")); }
+    updateIdentity();
+    const dn = $("aaCommentDisplayName"); if (dn && !dn.value && isLoggedIn()) dn.value = myName();
+    $("aaComposerPanel")?.classList.remove("isOpen");
+    showPage("aaCommentsPage");
+    refresh().then(scrollLatest); scrollLatest();
+  }
+  function openComposer() {
+    if (needLogin()) return;
+    updateIdentity();
+    const dn = $("aaCommentDisplayName"); if (dn && !dn.value) dn.value = myName();
+    $("aaComposerPanel")?.classList.add("isOpen");
+    setTimeout(() => $("aaCommentText")?.focus(), 180);
+  }
+  async function submitComment() {
+    if (submitting) return;
+    if (!workId()) { showToast("انیمه مشخص نیست"); return; }
+    if (needLogin()) return;
+    if (!commentsReady || !commentsTablesDB) { showToast("سیستم نظرات در دسترس نیست"); return; }
+    const displayName = String($("aaCommentDisplayName")?.value || "").trim().slice(0, 50);
+    const isAnon = !!$("aaCommentAnonymous")?.checked, content = String($("aaCommentText")?.value || "").trim();
+    if (!content) { showToast("متن نظر را بنویس"); return; }
+    if (content.length > 2000) { showToast("متن نظر بیش از حد طولانی است"); return; }
+    if (!isAnon && !displayName) { showToast("نام نمایشی را وارد کنید یا گزینه ناشناس را فعال کنید"); return; }
+    submitting = true;
+    const btn = $("aaCommentSubmit"); if (btn) { btn.disabled = true; btn.textContent = "در حال ارسال..."; }
+    try {
+      await createRow({ display_name: displayName || "Anonymous", is_anonymous: isAnon, content, is_spoiler: !!$("aaCommentSpoiler")?.checked });
+      if ($("aaCommentText")) $("aaCommentText").value = "";
+      if ($("aaCommentAnonymous")) $("aaCommentAnonymous").checked = false;
+      if ($("aaCommentSpoiler")) $("aaCommentSpoiler").checked = false;
+      if ($("aaCharCount")) $("aaCharCount").textContent = "۰ / ۲۰۰۰";
+      showToast("نظر شما ثبت شد ✨"); $("aaComposerPanel")?.classList.remove("isOpen");
+      await refresh(false); scrollLatest();
+    } catch (e) {
+      console.error("submit comment", e);
+      showToast(/permission|forbidden|401|403/i.test(String(e?.message || e)) ? "مجوز ایجاد نظر وجود ندارد" : "خطا در ارسال نظر. دوباره تلاش کنید");
+    } finally { submitting = false; if (btn) { btn.disabled = false; btn.textContent = "ارسال نظر"; } }
+  }
+
+  // Bind events (once)
+  $("aaOpenComments")?.addEventListener("click", open);
+  $("aaComposeFab")?.addEventListener("click", openComposer);
+  $("aaComposerClose")?.addEventListener("click", () => $("aaComposerPanel")?.classList.remove("isOpen"));
+  $("aaCommentsBack")?.addEventListener("click", () => showPage("detailPage"));
+  $("aaCommentText")?.addEventListener("input", () => {
+    if ($("aaCharCount")) $("aaCharCount").textContent = fmt(($("aaCommentText")?.value || "").length) + " / ۲۰۰۰";
+  });
+  $("aaCommentSubmit")?.addEventListener("click", submitComment);
+
+  window.aaRefreshCommentsPreview = function () {
+    // lightweight count refresh when returning to detail
+    if (!workId() || !commentsReady) return;
+    fetchComments().then(items => updatePreviewCount(items.filter(x=>!x.parent_id).length)).catch(() => {});
+  };
+
+  // After login, if user returns to comments page, identity updates
+  const origOpenLogin = typeof openLoginModal === "function" ? openLoginModal : null;
+})();
 </script>
+<style>
+.aaAdminIntro{padding:16px 4px}.aaAdminIntro h3{font-size:17px;margin-bottom:7px}.aaAdminIntro p{font-size:12px;color:var(--muted);line-height:2}.aaCollectionCreate{display:flex;gap:9px;margin:6px 0 20px}.aaCollectionCreate input,.aaCollectionSearch{min-width:0;flex:1;background:var(--card2);border:1px solid var(--line);border-radius:13px;padding:12px;color:var(--text);width:100%;font:inherit}.aaCollectionCreate button,.aaMiniBtn{background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 13px;font:inherit;font-size:12px;cursor:pointer}.aaMiniBtn.danger{color:#ed9d93}.aaCollectionGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.aaCollCard{background:var(--card);border:1px solid var(--line);border-radius:19px;overflow:hidden;cursor:pointer;text-align:right;color:var(--text);padding:0;min-width:0}.aaCollCover{height:148px;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);gap:2px;background:var(--card2);overflow:hidden}.aaCollCover img{width:100%;height:100%;object-fit:cover;display:block}.aaCollCover .aaCoverEmpty{grid-column:span 2;grid-row:span 2;display:grid;place-items:center;font-size:35px;opacity:.5}.aaCollMeta{padding:12px}.aaCollMeta strong{font-size:13px;display:block;line-height:1.8}.aaCollMeta small{color:var(--muted);font-size:11px}.aaCollHeader{display:flex;align-items:center;gap:10px;margin:5px 0 18px}.aaCollHeader strong{font-size:15px;flex:1}.aaCollList{display:flex;flex-direction:column;gap:8px}.aaCollRow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px}.aaCollRow img{width:45px;height:64px;border-radius:9px;object-fit:cover;background:var(--card2)}.aaCollRow .aaCollName{flex:1;min-width:0;font-size:12px;line-height:1.8}.aaCollRow .aaCollName small{display:block;color:var(--muted)}.aaCollRow .aaCollActions{display:flex;gap:4px}.aaCollRow .aaMiniBtn{padding:7px 9px}.aaCollPicker{max-height:230px;overflow:auto;margin:9px 0}.aaCollPicker .aaCollRow{margin-bottom:6px;cursor:pointer}.aaAdminEmpty{text-align:center;padding:34px 12px;color:var(--muted);font-size:12px}.aaAdminCommentRow{padding:13px;margin:9px 0;border-radius:14px;background:var(--card);border:1px solid var(--line)}.aaAdminCommentRow strong{font-size:12px}.aaAdminCommentRow p{font-size:12px;line-height:2;white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0 10px}.aaAdminCommentRow .aaAdminCommentRow{margin:9px 0 0 14px;background:var(--card2)}
+</style>
+<script>
+/* Collection catalog stored in the existing Appwrite settings collection. */
+(function(){
+ const $=id=>document.getElementById(id), el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n};
+ const btn=(label,cb,cls='aaMiniBtn')=>{const n=el('button',cls,label);n.type='button';n.onclick=cb;return n};
+ const works=()=>typeof allWorks!=='undefined'&&Array.isArray(allWorks)?allWorks:[];
+ const id=w=>String(w?.$id||w?.id||'');const workFor=x=>works().find(w=>id(w)===String(x));
+ const name=w=>w?.title||w?.name||w?.titleFa||'بدون عنوان';const cover=w=>w?.coverUrl||w?.cover||w?.imageUrl||w?.image||w?.poster||'';
+ const localKey='animearchive_collections_preview_v1',docId='aa_anime_collections_v1';let catalog=[],loaded=false,selected=null,adminAnime=null;
+ const commentPrefix='animearchive_comments_preview_v1_';
+ function local(){try{return JSON.parse(localStorage.getItem(localKey)||'[]')}catch{return []}}
+ function cache(){try{localStorage.setItem(localKey,JSON.stringify(catalog))}catch{}}
+ function notice(s){if(typeof showToast==='function')showToast(s)}
+ function safeCatalog(a){return Array.isArray(a)?a.filter(x=>x&&typeof x.name==='string').map(x=>({id:String(x.id),name:x.name.slice(0,70),ids:Array.isArray(x.ids)?x.ids.map(String):[]})):[]}
+ async function load(force=false){if(loaded&&!force)return;try{if(typeof databases==='undefined'||!databases)throw Error('offline');const d=await databases.getDocument(DATABASE_ID,COLLECTION_SETTINGS,docId);catalog=safeCatalog(JSON.parse(d.value||'[]'));loaded=true;cache()}catch(e){if(!loaded){catalog=safeCatalog(local());loaded=true}if(e?.message!=='offline'&&!/404|not found|could not be found/i.test(String(e?.message||'')))console.warn('Collection read:',e)}}
+ async function persist(){cache();if(typeof databases==='undefined'||!databases){notice('اتصال به Appwrite برقرار نیست؛ تغییر فقط در این مرورگر ذخیره شد');return}try{const payload={key:'anime_collections',value:JSON.stringify(catalog)};try{await databases.updateDocument(DATABASE_ID,COLLECTION_SETTINGS,docId,payload)}catch(e){if(!/404|not found|could not be found/i.test(String(e.message)))throw e;const permissions=(typeof appwritePermission!=='undefined'&&appwritePermission&&typeof appwriteRole!=='undefined'&&appwriteRole)?[appwritePermission.read(appwriteRole.any())]:undefined;await databases.createDocument(DATABASE_ID,COLLECTION_SETTINGS,docId,payload,permissions)}notice('کالکشن برای کاربران ذخیره شد')}catch(e){console.error(e);notice('ذخیره عمومی انجام نشد؛ دسترسی settings را بررسی کن')}}
+ const confirmDel=s=>typeof appConfirm==='function'?appConfirm(s,{title:'تأیید حذف',okText:'حذف',cancelText:'انصراف'}):Promise.resolve(false);
+ function collage(c){const wrap=el('div','aaCollCover');const covers=(c.ids||[]).map(workFor).filter(Boolean).slice(0,4);if(!covers.length){wrap.append(el('div','aaCoverEmpty','✦'));return wrap}for(let i=0;i<4;i++){const w=covers[i%covers.length],src=cover(w);if(src){const im=el('img');im.src=src;im.loading='lazy';im.alt=name(w);wrap.append(im)}else wrap.append(el('div','aaCoverEmpty','✦'))}return wrap}
+ function card(c,click){const b=el('button','aaCollCard');b.type='button';b.append(collage(c));const meta=el('div','aaCollMeta');meta.append(el('strong','',c.name),el('small','',(c.ids||[]).length+' انیمه'));b.append(meta);b.onclick=click;return b}
+ function row(w,i,admin,c){const r=el('div','aaCollRow'),src=cover(w);if(src){const img=el('img');img.src=src;img.loading='lazy';r.append(img)}else r.append(el('span','', '🎬'));const info=el('div','aaCollName',name(w));info.append(el('small','',String(i+1).padStart(2,'0')));r.append(info);if(admin){const actions=el('div','aaCollActions');for(const [label,step] of [['↑',-1],['↓',1]])actions.append(btn(label,async()=>{const j=i+step;if(j<0||j>=c.ids.length)return;[c.ids[i],c.ids[j]]=[c.ids[j],c.ids[i]];await persist();renderAdmin()}));actions.append(btn('×',async()=>{c.ids.splice(i,1);await persist();renderAdmin()},'aaMiniBtn danger'));r.append(actions)}else{r.style.cursor='pointer';r.onclick=()=>{if(typeof openDetail==='function')openDetail(w);else if(typeof openWork==='function')openWork(w);else if(typeof showWorkDetail==='function')showWorkDetail(w)}}return r}
+ function renderAdmin(){const root=$('aaCollectionList');if(!root)return;root.replaceChildren();if(selected){const c=catalog.find(x=>x.id===selected);if(!c){selected=null;return renderAdmin()}const h=el('div','aaCollHeader');h.append(btn('→ بازگشت',()=>{selected=null;renderAdmin()}),el('strong','',c.name),btn('حذف',async()=>{if(!await confirmDel('کالکشن «'+c.name+'» حذف شود؟'))return;catalog=catalog.filter(x=>x.id!==c.id);selected=null;await persist();renderAdmin()},'aaMiniBtn danger'));root.append(h);const list=el('div','aaCollList');c.ids.forEach((x,i)=>{const w=workFor(x);if(w)list.append(row(w,i,true,c))});if(!c.ids.length)list.append(el('div','aaAdminEmpty','هنوز انیمه‌ای اضافه نشده.'));root.append(list);const input=el('input','aaCollectionSearch');input.placeholder='جست‌وجو و افزودن انیمه…';root.append(input);const picker=el('div','aaCollPicker');root.append(picker);input.oninput=()=>{picker.replaceChildren();const q=input.value.trim().toLocaleLowerCase();if(!q)return;works().filter(w=>!w.isDraft&&!w.unpublished&&!c.ids.includes(id(w))&&name(w).toLocaleLowerCase().includes(q)).slice(0,15).forEach(w=>{const r=row(w,0,false,c);r.onclick=async()=>{c.ids.push(id(w));await persist();renderAdmin()};picker.append(r)})};return}
+ const grid=el('div','aaCollectionGrid');catalog.forEach(c=>grid.append(card(c,()=>{selected=c.id;renderAdmin()})));root.append(grid);if(!catalog.length)root.append(el('div','aaAdminEmpty','هنوز کالکشنی ساخته نشده است.'))}
+ window.aaRenderCollections=async function(){await load();renderAdmin()};
+ $('aaCollectionCreate')?.addEventListener('click',async()=>{const input=$('aaCollectionName'),n=input.value.trim();if(!n)return notice('نام کالکشن را بنویس');await load();catalog.push({id:String(Date.now()),name:n,ids:[]});input.value='';await persist();renderAdmin()});
+ window.aaCollectionPriority=function(work){const ordered=[];for(const c of catalog)if(c.ids.includes(id(work)))for(const x of c.ids){const w=workFor(x);if(w&&id(w)!==id(work)&&!w.isDraft&&!w.unpublished&&!ordered.some(z=>id(z)===id(w)))ordered.push(w)}return ordered};
+ window.aaInsertCollectionCards=async function(work,box){
+   await load();
+   if(!box || (typeof currentWork!=='undefined' && id(currentWork)!==id(work)))return;
+   box.querySelectorAll('.aaSimilarCollectionTile').forEach(n=>n.remove());
+   const matches=catalog.filter(c=>c.ids.includes(id(work)));
+   const anchor=box.firstChild;
+   for(const c of matches){
+     const tile=el('button','book aaSimilarCollectionTile');tile.type='button';
+     const visual=el('div','cover aaSimilarCollCover');visual.append(collage(c));
+     const label=el('span','aaSimilarCollBadge','کالکشن');visual.append(label);
+     tile.append(visual,el('div','bookTitle',c.name),el('div','aaSimilarCollCount',(c.ids||[]).length+' انیمه'));
+     tile.onclick=()=>openPublic(c.id);
+     box.insertBefore(tile,anchor);
+   }
+ };
+ function openPublic(cid){
+   const c=catalog.find(x=>x.id===cid);if(!c)return;
+   let page=$('aaPublicCollectionPage');
+   if(!page){
+     page=el('section','page');page.id='aaPublicCollectionPage';
+     page.innerHTML='<div class="top"><button class="back" id="aaPublicCollectionBack" type="button">←</button><h2 id="aaPublicCollectionTitle"></h2></div><div class="sectionHead"><h3 id="aaPublicCollectionCount"></h3></div><div id="aaPublicCollectionBooks" class="books"></div>';
+     const detail=$('detailPage');(detail?.parentElement||document.body).append(page);
+     page.querySelector('#aaPublicCollectionBack').addEventListener('click',()=>navigateBack());
+   }
+   $('aaPublicCollectionTitle').textContent=c.name;
+   const list=c.ids.map(workFor).filter(w=>w&&!w.isDraft&&!w.unpublished);
+   $('aaPublicCollectionCount').textContent=list.length+' انیمه';
+   // Exactly the same card rendering and responsive layout as the genre-detail page.
+   fillBooksBox('aaPublicCollectionBooks',list,'هنوز انیمه‌ای در این کالکشن نیست.');
+   if(typeof showPage==='function')showPage('aaPublicCollectionPage');
+ }
+ window.aaRenderAdminComments=async function(){
+ const root=$('aaAdminCommentWorks');if(!root)return;
+ if(typeof commentsReady==='undefined'||!commentsReady||!commentsTablesDB){root.replaceChildren(el('div','aaAdminEmpty','سیستم نظرات آماده نیست'));return}
+ root.replaceChildren(el('div','aaAdminEmpty','در حال بارگذاری…'));
+ const T={databaseId:COMMENTS_DATABASE_ID,tableId:COMMENTS_TABLE_ID};let rows=[];
+ try{const {Query}=Appwrite;const res=await commentsTablesDB.listRows({...T,queries:[Query.orderAsc('$createdAt'),Query.limit(1000)]});rows=res.rows||res.documents||[]}catch(e){console.error(e);root.replaceChildren(el('div','aaAdminEmpty','خطا در دریافت نظرها'));return}
+ const del=async(r,withKids)=>{if(typeof isAdminMode==='undefined'||!isAdminMode){notice('فقط ادمین می‌تواند این کار را انجام دهد');return}if(!await confirmDel(withKids?'این نظر و تمام پاسخ‌هایش حذف شوند؟':'این پاسخ حذف شود؟'))return;try{if(withKids)await Promise.all(rows.filter(x=>x.parent_id===r.$id).map(x=>commentsTablesDB.deleteRow({...T,rowId:x.$id})));await commentsTablesDB.deleteRow({...T,rowId:r.$id});notice('حذف شد')}catch(e){console.error(e);notice('حذف انجام نشد؛ دسترسی جدول را بررسی کن')}window.aaRenderAdminComments()};
+ const who=r=>r.is_anonymous?'Anonymous':(r.display_name||'کاربر');root.replaceChildren();
+ if(adminAnime){const h=el('div','aaCollHeader');h.append(btn('→ بازگشت',()=>{adminAnime=null;window.aaRenderAdminComments()}),el('strong','',name(workFor(adminAnime))));root.append(h);
+  for(const r of rows.filter(x=>x.anime_id===adminAnime&&!x.parent_id)){const box=el('div','aaAdminCommentRow');box.append(el('strong','',who(r)+(r.is_spoiler?' ⚠️':'')),el('p','',r.content||''),btn('حذف نظر',()=>del(r,true),'aaMiniBtn danger'));
+   rows.filter(x=>x.parent_id===r.$id).forEach(rep=>{const c=el('div','aaAdminCommentRow');c.append(el('strong','','↳ '+who(rep)),el('p','',rep.content||''),btn('حذف پاسخ',()=>del(rep,false),'aaMiniBtn danger'));box.append(c)});root.append(box)}return}
+ const ids=[...new Set(rows.map(x=>x.anime_id))];const grid=el('div','aaCollectionGrid');
+ ids.forEach(x=>{const b=card({ids:[x],name:name(workFor(x))},()=>{adminAnime=x;window.aaRenderAdminComments()});b.querySelector('small').textContent=rows.filter(r=>r.anime_id===x&&!r.parent_id).length+' نظر';grid.append(b)});
+ root.append(grid);if(!ids.length)root.append(el('div','aaAdminEmpty','هنوز نظری ثبت نشده است.'))};
+ function read(x){try{return JSON.parse(localStorage.getItem(commentPrefix+x)||'[]')}catch{return []}}function write(x,a){localStorage.setItem(commentPrefix+x,JSON.stringify(a))}
+ // Public catalog loads on any visitor, independent of the admin panel.
+ setTimeout(()=>load().then(()=>{if(typeof currentWork!=='undefined'&&currentWork)window.aaInsertCollectionCards(currentWork,$('similarBooks'))}),1300);
+})();
+</script>
+
+
+
+
+
+
+
+<style id="aa-approved-updates-style">
+/* Genre mosaic: keep the genre title prominent and readable over artwork. */
+#genres{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#genres .genreMosaic{position:relative;display:block;width:100%;min-width:0;min-height:176px;padding:0;overflow:hidden;border-radius:18px;border:1px solid var(--line,#302a25);background:var(--card,#17171c);text-align:right;isolation:isolate;box-shadow:0 9px 24px rgba(0,0,0,.24)}
+#genres .genreMosaic:active{transform:scale(.985)}
+#genres .genreMosaicArt{position:absolute;inset:0;display:grid;grid-template-columns:1.12fr .88fr;grid-template-rows:1fr 1fr;gap:3px;overflow:hidden;background:linear-gradient(145deg,var(--card2,#22222a),var(--card,#141419))}
+#genres .genreMosaicArt img{display:block;width:100%;height:100%;min-width:0;min-height:0;object-fit:cover;filter:none;opacity:1;transform:translateZ(0);backface-visibility:hidden}
+#genres .genreMosaicArt img:first-child{grid-row:1 / span 2}
+#genres .genreMosaicArt img:nth-child(2){grid-column:2;grid-row:1}
+#genres .genreMosaicArt img:nth-child(3){grid-column:2;grid-row:2}
+#genres .genreMosaicArt .genreMosaicFallback{grid-row:1 / span 2;grid-column:1 / span 2;display:flex;align-items:center;justify-content:center;color:var(--accent,var(--orange));font-size:36px;opacity:.6;background:radial-gradient(circle at 25% 25%,rgba(245,166,35,.16),transparent 55%),linear-gradient(145deg,var(--card2,#22222a),var(--card,#141419))}
+#genres .genreMosaicShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.02) 0%,rgba(0,0,0,.04) 42%,rgba(0,0,0,.76) 100%);z-index:1;pointer-events:none}
+#genres .genreMosaicInfo{position:absolute;z-index:2;right:10px;left:10px;bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:7px;padding:9px 11px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(12,12,16,.76);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+#genres .genreMosaicInfo strong{display:block;min-width:0;font-size:15px;font-weight:900;line-height:1.5;color:#fff;text-shadow:0 1px 5px rgba(0,0,0,.8);overflow-wrap:anywhere}
+#genres .genreMosaicInfo small{flex:0 0 auto;font-size:10px;font-weight:700;white-space:nowrap;color:#f2c36e;background:rgba(235,157,30,.13);padding:4px 7px;border-radius:20px}
+#aaEditBannerPriorityPanel{border:1px solid var(--line,#302a25);border-radius:14px;background:var(--card2,#1b1b21);padding:12px;margin:10px 0 14px}
+#aaEditBannerPriorityPanel h4{margin:0 0 9px;color:var(--accent,var(--orange));font-size:12px}
+#aaEditBannerPriorityPanel label{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;color:var(--text,#eee);font-size:12px}
+#aaEditBannerPriority{width:19px;height:19px;accent-color:var(--accent,var(--orange));flex:0 0 auto}
+#aaEditBannerPriorityPanel small{display:block;font-size:10px;line-height:1.9;color:var(--muted,#999);margin-top:5px}
+@media(max-width:360px){#genres .genreMosaic{min-height:154px}#genres .genreMosaicInfo strong{font-size:13px}}
+</style>
+<script id="aa-approved-updates-script">
+(function(){
+  "use strict";
+  const AA_DOC_ID="aa_anime_controls_v1";
+  const AA_LOCAL_KEY="animearchive_controls_preview_v1";
+  const $=id=>document.getElementById(id);
+  let state={priority:{}},loaded=false,serverLoaded=false,saving=false;
+  const genrePosterCache=new Map();
+  const shuffleArray=a=>{const out=a.slice();for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out;};
+  function cleanState(raw){
+    const priority=raw&&raw.priority&&typeof raw.priority==="object"?raw.priority:{};
+    return {priority:{...priority}};
+  }
+  function localRead(){
+    try{return cleanState(JSON.parse(localStorage.getItem(AA_LOCAL_KEY)||"{}"));}
+    catch(e){return {priority:{}};}
+  }
+  function localWrite(){try{localStorage.setItem(AA_LOCAL_KEY,JSON.stringify(state));}catch(e){}}
+  function parseDocValue(doc){
+    try{return cleanState(JSON.parse(doc&&doc.value||"{}"));}
+    catch(e){return {priority:{}};}
+  }
+  async function loadState(force){
+    if(loaded&&!force&&(serverLoaded||typeof databases==="undefined"||!databases))return state;
+    state=localRead();
+    if(typeof databases!=="undefined"&&databases&&typeof DATABASE_ID!=="undefined"&&typeof COLLECTION_SETTINGS!=="undefined"){
+      try{
+        const doc=await databases.getDocument(DATABASE_ID,COLLECTION_SETTINGS,AA_DOC_ID);
+        state=parseDocValue(doc);localWrite();loaded=true;serverLoaded=true;window.__AA_CONTROLS_STATE=state;return state;
+      }catch(e){
+        const msg=String(e&&e.message||e);
+        if(/404|not found|could not be found/i.test(msg))serverLoaded=true;
+        else console.warn("Anime banner priority read:",e);
+      }
+    }
+    loaded=true;window.__AA_CONTROLS_STATE=state;return state;
+  }
+  async function saveState(){
+    if(saving)return false;
+    saving=true;localWrite();window.__AA_CONTROLS_STATE=state;
+    try{
+      if(typeof databases==="undefined"||!databases||typeof DATABASE_ID==="undefined"||typeof COLLECTION_SETTINGS==="undefined")return false;
+      const payload={key:"anime_controls",value:JSON.stringify(state)};
+      try{await databases.updateDocument(DATABASE_ID,COLLECTION_SETTINGS,AA_DOC_ID,payload);}
+      catch(e){
+        const msg=String(e&&e.message||e);
+        if(!/404|not found|could not be found/i.test(msg))throw e;
+        let perms;
+        try{if(typeof publicDocPermissions==="function")perms=publicDocPermissions();}catch(_){}
+        await databases.createDocument(DATABASE_ID,COLLECTION_SETTINGS,AA_DOC_ID,payload,perms);
+      }
+      return true;
+    }catch(e){console.error("Anime banner priority write:",e);return false;}
+    finally{saving=false;}
+  }
+  async function persistWork(id,config,priorityChecked){
+    if(!loaded)await loadState();
+    const key=String(id||"");if(!key)return false;
+    if(priorityChecked){
+      if(!Object.prototype.hasOwnProperty.call(state.priority,key))state.priority[key]=Date.now();
+    }else delete state.priority[key];
+    const ok=await saveState();
+    if(typeof renderHero==="function")try{renderHero(false);}catch(e){}
+    return ok;
+  }
+  window.__AA_CONTROLS_STATE=state;
+  window.aaPersistWorkSettings=persistWork;
+  window.aaLoadAnimeControls=loadState;
+
+  /* Randomize poster combinations once per page visit; navigation re-renders reuse the same picks. */
+  window.renderGenres=function(){
+    const box=$("genres");if(!box)return;
+    box.innerHTML="";
+    const works=(typeof allWorks!=="undefined"&&Array.isArray(allWorks)?allWorks:[]).filter(w=>w&&!w.isDraft&&!w.unpublished);
+    if(!works.length){return;}
+    getGenres().forEach(genre=>{
+      const normalized=normalizeText(genre);
+      const matching=works.filter(w=>workGenres(w).some(g=>normalizeText(g)===normalized));
+      let picks=genrePosterCache.get(normalized);
+      if(!picks){
+        const pool=shuffleArray(matching.filter(w=>w.coverUrl&&isValidUrl(w.coverUrl)));
+        picks=pool.slice(0,3).map(w=>({id:String(w.id),coverUrl:w.coverUrl}));
+        genrePosterCache.set(normalized,picks);
+      }
+      const btn=document.createElement("button");btn.type="button";btn.className="genre genreMosaic";
+      const art=document.createElement("span");art.className="genreMosaicArt";
+      if(picks.length){
+        picks.forEach(w=>{
+          const img=document.createElement("img");img.src=w.coverUrl;img.alt="";img.loading="lazy";img.draggable=false;
+          img.onerror=()=>img.remove();art.appendChild(img);
+        });
+      }else{
+        const fallback=document.createElement("span");fallback.className="genreMosaicFallback";fallback.textContent="✦";art.appendChild(fallback);
+      }
+      const shade=document.createElement("span");shade.className="genreMosaicShade";
+      const info=document.createElement("span");info.className="genreMosaicInfo";
+      const name=document.createElement("strong");name.textContent=genre;
+      const count=document.createElement("small");count.textContent=matching.length+" اثر";
+      info.append(name,count);btn.append(art,shade,info);
+      btn.addEventListener("click",()=>openGenreDetail(genre));box.appendChild(btn);
+    });
+  };
+
+  function addBannerPriorityControl(){
+    const modal=$("editWorkModal"),save=$("saveEditWorkBtn");
+    if(!modal||!save||$("aaEditBannerPriorityPanel"))return;
+    const panel=document.createElement("div");
+    panel.id="aaEditBannerPriorityPanel";
+    panel.innerHTML='<h4>اولویت نمایش در بنر خانه</h4><label><span>قرار گرفتن در اولویت بنر</span><input id="aaEditBannerPriority" type="checkbox"></label><small>این گزینه فقط ترتیب بنر خانه را تغییر می‌دهد. چند انیمه می‌توانند اولویت داشته باشند؛ آخرین انیمه‌ای که اولویت می‌گیرد، اول نمایش داده می‌شود. تاریخ انتشار و ترتیب سایر بخش‌ها تغییر نمی‌کند.</small>';
+    save.parentNode.insertBefore(panel,save);
+  }
+  function syncBannerPriority(work){
+    if($("aaEditBannerPriority"))$("aaEditBannerPriority").checked=!!state.priority[String(work&&work.id)];
+  }
+  function wrapEdit(){
+    if(typeof window.openEditWork!=="function"||window.openEditWork.__aaPriorityWrapped)return;
+    const original=window.openEditWork;
+    const wrapped=function(work,draftRow){
+      const result=original.apply(this,arguments);
+      addBannerPriorityControl();syncBannerPriority(work);return result;
+    };
+    wrapped.__aaPriorityWrapped=true;window.openEditWork=wrapped;
+  }
+  async function init(){
+    await loadState();
+    addBannerPriorityControl();wrapEdit();
+    if(typeof window.loadWorks==="function"&&!window.loadWorks.__aaPriorityWrapped){
+      const original=window.loadWorks;
+      const wrapped=async function(){
+        const result=await original.apply(this,arguments);
+        if(!serverLoaded)await loadState();
+        try{if(typeof renderHero==="function")renderHero(false);}catch(e){}
+        return result;
+      };
+      wrapped.__aaPriorityWrapped=true;window.loadWorks=wrapped;
+    }
+    if(typeof renderHero==="function")try{renderHero(false);}catch(e){}
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+})();
+</script>
+
 </body>
 </html>
