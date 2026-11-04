@@ -4692,6 +4692,8 @@ html.theme-light .aaProfileListPage{background:#f4f2ef}html.theme-brown .aaProfi
 .aaFavoriteGenresDisplay{display:flex;flex-wrap:wrap;gap:8px;margin:17px 2px 2px}
 .aaFavoriteGenresDisplay[hidden]{display:none!important}
 .aaFavoriteGenreBadge{border-radius:999px;border:1px solid color-mix(in srgb,var(--orange) 35%,var(--line));background:color-mix(in srgb,var(--orange) 8%,var(--card));color:var(--text);font-size:11px;padding:8px 13px}
+
+#aaAgeGateOverlay{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(5,7,10,.55);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px)}#aaAgeGateOverlay.active{display:flex}#aaAgeGateOverlay .aaAgeGateCard{width:min(440px,100%);padding:24px;border:1px solid rgba(230,170,90,.28);border-radius:22px;background:var(--card,#17171b);color:var(--text,#eee);box-shadow:0 24px 80px rgba(0,0,0,.5);text-align:center}#aaAgeGateOverlay .aaAgeGateBadge{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:15px;background:rgba(226,157,69,.14);color:#e7a24c;font-weight:800;font-size:18px}#aaAgeGateOverlay h2{margin:14px 0 8px;font-size:19px}#aaAgeGateOverlay p{font-size:13px;line-height:1.9;color:var(--muted,#aaa);margin:0 0 15px}#aaAgeGateOverlay .aaAgeGateCheck{display:flex;align-items:flex-start;gap:9px;text-align:right;font-size:12px;line-height:1.8;padding:12px;border-radius:12px;background:rgba(255,255,255,.035)}#aaAgeGateOverlay .aaAgeGateCheck input{flex:0 0 auto;margin-top:3px;width:17px;height:17px;accent-color:var(--orange,#e7a24c)}#aaAgeGateOverlay .aaAgeGateActions{display:flex;gap:10px;margin-top:16px}#aaAgeGateOverlay .aaAgeGateActions button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--line,#333);background:transparent;color:var(--text,#eee);font:inherit;cursor:pointer}#aaAgeGateOverlay .aaAgeGateActions #aaAgeGateEnter{background:var(--orange,#e7a24c);border-color:transparent;color:#16120d;font-weight:700}#aaAgeGateOverlay .aaAgeGateActions #aaAgeGateEnter:disabled{opacity:.4;cursor:not-allowed}
 </style>
 <style id="aaProfileLuxuryV3">
 
@@ -4759,7 +4761,8 @@ html.theme-light .aaProfileListPage{background:#f4f2ef}html.theme-brown .aaProfi
 
 
 @media(max-width:420px){#profilePage #profileCoinBox{gap:9px!important}}
-</style></head>
+</style><style id="aaAnonymousMarkStyle">.aaAnonymousMark{display:inline-flex;align-items:center;margin-inline-start:6px;padding:2px 6px;border-radius:999px;font-size:10px;line-height:1.4;color:var(--muted);background:var(--bg2);border:1px solid var(--line);vertical-align:middle}</style>
+</head>
 <body>
 
 <!-- ===== Boot Splash ===== -->
@@ -5353,7 +5356,7 @@ html.theme-light .aaProfileListPage{background:#f4f2ef}html.theme-brown .aaProfi
 <section id="aaCommentsPage" class="page aaCommentPage">
  <div class="aaHead"><button type="button" class="aaBack" id="aaCommentsBack" aria-label="بازگشت">→</button><div><h2>نظرها</h2><div class="aaSub" id="aaCommentsAnimeTitle"></div></div></div>
  <div class="aaAnimeContext"><div class="aaAnimePoster" id="aaCommentsPoster"></div><div class="aaAnimeContextText"><span class="aaEyebrow">ANIME ARCHIVE</span><strong id="aaCommentsContextName">نظرهای این انیمه</strong><small id="aaCommentsContextCount">هنوز نظری ثبت نشده</small></div></div>
- <div class="aaComposer" id="aaComposerPanel"><div class="aaComposeTitle"><span>✦ نظر جدید</span><button type="button" id="aaComposerClose" class="aaComposerClose" aria-label="بستن فرم">✕</button></div><div class="aaIdentity" id="aaCommentIdentity">برای ارسال نظر وارد حساب کاربری شوید</div><label class="aaFieldLabel" for="aaCommentDisplayName" style="display:block;font-size:11px;color:var(--muted);margin:0 0 6px">نام نمایشی</label><input type="text" id="aaCommentDisplayName" maxlength="50" placeholder="نام نمایشی (حداکثر ۵۰ کاراکتر)" style="width:100%;border:1px solid var(--line);border-radius:12px;background:var(--bg2);color:var(--text);padding:12px;margin-bottom:10px;outline:none;font-size:12px"><label class="aaSpoilerToggle" style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text)"><input id="aaCommentAnonymous" type="checkbox"><span>ارسال به صورت ناشناس</span></label><textarea id="aaCommentText" maxlength="2000" placeholder="متن نظر خود را بنویسید..."></textarea><div class="aaComposerTools"><label class="aaSpoilerToggle"><input id="aaCommentSpoiler" type="checkbox"><span>⚠️ این نظر اسپویل دارد</span></label><span id="aaCharCount">۰ / ۲۰۰۰</span></div><div class="aaRow"><span class="aaHint">نظر شما پس از ارسال برای همه قابل مشاهده است</span><button type="button" class="aaSend" id="aaCommentSubmit">ارسال نظر</button></div></div>
+ <div class="aaComposer" id="aaComposerPanel"><div class="aaComposeTitle"><span>✦ نظر جدید</span><button type="button" id="aaComposerClose" class="aaComposerClose" aria-label="بستن فرم">✕</button></div><div class="aaIdentity" id="aaCommentIdentity">برای ارسال نظر وارد حساب کاربری شوید</div><label class="aaSpoilerToggle" style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px;color:var(--text)"><input id="aaCommentAnonymous" type="checkbox"><span>ارسال به صورت ناشناس</span></label><textarea id="aaCommentText" maxlength="2000" placeholder="متن نظر خود را بنویسید..."></textarea><div class="aaComposerTools"><label class="aaSpoilerToggle"><input id="aaCommentSpoiler" type="checkbox"><span>⚠️ این نظر اسپویل دارد</span></label><span id="aaCharCount">۰ / ۲۰۰۰</span></div><div class="aaRow"><span class="aaHint">نظر شما پس از ارسال برای همه قابل مشاهده است</span><button type="button" class="aaSend" id="aaCommentSubmit">ارسال نظر</button></div></div>
  <div class="aaRow aaReviewsToolbar"><div class="aaSectionTitle" id="aaCommentCount">نظرات کاربران</div></div>
  <div id="aaCommentList" aria-live="polite"></div><button type="button" id="aaComposeFab" class="aaComposeFab">✎ <span>نوشتن نظر</span></button><div class="aaHint" style="text-align:center;margin-top:16px" id="aaCommentsFooterHint">نظرات عمومی هستند و برای همه کاربران نمایش داده می‌شوند.</div>
 </section>
@@ -5765,6 +5768,7 @@ html.theme-light .aaProfileListPage{background:#f4f2ef}html.theme-brown .aaProfi
       <div class="form">
         <label>ژانر جدید</label>
         <input id="newGenre" placeholder="مثلاً ایسی">
+        <label style="display:flex;align-items:center;gap:9px;margin:10px 0;padding:10px;border:1px solid var(--line);border-radius:12px;cursor:pointer"><input id="newGenreRestricted" type="checkbox" style="width:17px;height:17px;accent-color:var(--orange)"><span>ژانر دارای محدودیت سنی ۱۸+</span></label>
         <button class="addBtn" id="addGenreBtn" type="button">+ افزودن ژانر</button>
       </div>
       <div id="genreAdminList" style="margin-top:14px"></div>
@@ -7289,6 +7293,7 @@ function hasActiveUnlimited(user){
 }
 
 function downloadCostForWork(work){
+  if(isRestrictedWork(work)) return 7;
   return (work && work.type === "movie") ? COST_MOVIE : COST_SERIAL_EP;
 }
 function downloadCostForMangaItem(work, item){
@@ -7968,6 +7973,53 @@ function workGenres(work){
   if(Array.isArray(work.genres) && work.genres.length) return work.genres;
   return parseGenresList(work.genre);
 }
+/* محدودیت سنی با تیک مستقل در پنل مدیریت تنظیم می‌شود؛ نام ژانر نقشی ندارد. */
+const RESTRICTED_GENRES_CONFIG_ID = "genre_age_restrictions_config";
+const RESTRICTED_GENRES_LOCAL_KEY = "animearchive_restricted_genres_v2";
+let restrictedGenreNamesCache = loadJSON(RESTRICTED_GENRES_LOCAL_KEY, []);
+function normalizeGenreKey(name){ return normalizeText(String(name || "")).trim().toLowerCase(); }
+function getRestrictedGenreNames(){ return Array.isArray(restrictedGenreNamesCache) ? restrictedGenreNamesCache.slice() : []; }
+function isRestrictedGenreName(name){ return getRestrictedGenreNames().some(g => normalizeGenreKey(g) === normalizeGenreKey(name)); }
+function isRestrictedWork(work){ return !!work && workGenres(work).some(g => isRestrictedGenreName(g)); }
+let restrictedAgeAcceptedForCurrentGenre = false;
+function hasAcceptedRestrictedAge(){ return restrictedAgeAcceptedForCurrentGenre; }
+async function loadRestrictedGenreSettings(){
+  try{
+    if(!appwriteReady || !databases) return getRestrictedGenreNames();
+    const doc = await databases.getDocument(DATABASE_ID, COLLECTION_SETTINGS, RESTRICTED_GENRES_CONFIG_ID);
+    const val = JSON.parse(doc.value || "[]");
+    if(Array.isArray(val)) restrictedGenreNamesCache = val.map(String).filter(Boolean);
+    saveJSON(RESTRICTED_GENRES_LOCAL_KEY, restrictedGenreNamesCache);
+  }catch(e){}
+  return getRestrictedGenreNames();
+}
+async function saveRestrictedGenreSettings(list){
+  const clean = [...new Set((list || []).map(String).filter(Boolean))];
+  restrictedGenreNamesCache = clean; saveJSON(RESTRICTED_GENRES_LOCAL_KEY, clean);
+  if(!appwriteReady || !databases){ showToast("تنظیم فقط روی این دستگاه ذخیره شد؛ اتصال سرور برقرار نیست."); return false; }
+  const payload = { key: "genre_age_restrictions", value: JSON.stringify(clean) };
+  try{ await databases.updateDocument(DATABASE_ID, COLLECTION_SETTINGS, RESTRICTED_GENRES_CONFIG_ID, payload); }
+  catch(e){
+    if(e && e.code === 404){ let perms; try{ perms = publicDocPermissions(); }catch(_){}; if(perms) await databases.createDocument(DATABASE_ID, COLLECTION_SETTINGS, RESTRICTED_GENRES_CONFIG_ID, payload, perms); else await databases.createDocument(DATABASE_ID, COLLECTION_SETTINGS, RESTRICTED_GENRES_CONFIG_ID, payload); }
+    else { console.error("saveRestrictedGenreSettings",e); showToast("ذخیره محدودیت سنی در سرور ناموفق بود."); return false; }
+  }
+  return true;
+}
+async function requestRestrictedAgeAcceptance(){
+  return new Promise(resolve=>{
+    let overlay=document.getElementById("aaAgeGateOverlay");
+    if(!overlay){
+      overlay=document.createElement("div"); overlay.id="aaAgeGateOverlay";
+      overlay.innerHTML=`<div class="aaAgeGateCard" role="dialog" aria-modal="true" aria-labelledby="aaAgeGateTitle"><div class="aaAgeGateBadge">۱۸+</div><h2 id="aaAgeGateTitle">تأیید رده‌بندی سنی</h2><p>این ژانر ممکن است شامل صحنه‌های خشن، ترسناک یا موضوعات بزرگسالانه باشد. برای ورود باید ۱۸ سال یا بیشتر داشته باشید و قوانین نمایش محتوا را بپذیرید.</p><label class="aaAgeGateCheck"><input id="aaAgeGateAccept" type="checkbox"><span>تأیید می‌کنم ۱۸ سال یا بیشتر دارم و قوانین را می‌پذیرم.</span></label><div class="aaAgeGateActions"><button type="button" id="aaAgeGateCancel">بازگشت</button><button type="button" id="aaAgeGateEnter" disabled>تأیید و ورود</button></div></div>`;
+      document.body.appendChild(overlay);
+      overlay.querySelector("#aaAgeGateAccept").addEventListener("change",e=>overlay.querySelector("#aaAgeGateEnter").disabled=!e.target.checked);
+    }
+    const finish=ok=>{overlay.classList.remove("active");restrictedAgeAcceptedForCurrentGenre=!!ok;resolve(!!ok);};
+    overlay.querySelector("#aaAgeGateAccept").checked=false; overlay.querySelector("#aaAgeGateEnter").disabled=true;
+    overlay.querySelector("#aaAgeGateCancel").onclick=()=>finish(false); overlay.querySelector("#aaAgeGateEnter").onclick=()=>finish(true);
+    overlay.onclick=e=>{if(e.target===overlay)finish(false);}; overlay.classList.add("active");
+  });
+}
 function genreOverlapScore(a, b){
   const ga = new Set(workGenres(a).map(normalizeText));
   const gb = workGenres(b).map(normalizeText);
@@ -8585,6 +8637,8 @@ function pushHistory(id){
 function showPage(id, fromPop){
   if(!id) id = "homePage";
   const previousPage = appPageStack[appPageStack.length - 1] || "homePage";
+  if(previousPage === "genreDetailPage" && id !== "detailPage" && id !== "watchPage" && id !== "mangaPage") restrictedAgeAcceptedForCurrentGenre = false;
+  if((id === "homePage" || id === "searchPage" || id === "genresPage") && previousPage !== "genreDetailPage") restrictedAgeAcceptedForCurrentGenre = false;
 
   if(previousPage === "searchPage" && id !== "searchPage"){
     if($("searchInput")) $("searchInput").value = "";
@@ -8637,6 +8691,7 @@ function showPage(id, fromPop){
       if(Date.now() - __lastGenresFetchTs > 60000){
         __lastGenresFetchTs = Date.now();
         loadGenresFromServer().then(()=>{ fillGenreSelect(); renderGenres(); }).catch(()=>{});
+        loadRestrictedGenreSettings().then(()=>{ renderGenres(); renderGenreAdmin(); }).catch(()=>{});
       }
     }catch(e){}
   }
@@ -8862,9 +8917,10 @@ document.querySelectorAll("#mainNav button").forEach(btn => {
 });
 
 function filteredByCategory(list){
-  if(homeCategory === "serial") return list.filter(w => w.type === "serial");
-  if(homeCategory === "movie") return list.filter(w => w.type === "movie");
-  return list.slice();
+  const publicList = (list || []).filter(w => !isRestrictedWork(w));
+  if(homeCategory === "serial") return publicList.filter(w => w.type === "serial");
+  if(homeCategory === "movie") return publicList.filter(w => w.type === "movie");
+  return publicList.slice();
 }
 
 function createBookCard(work, showAiringBadge = false){
@@ -9098,7 +9154,7 @@ function getHeroWorks(){
   /* اولویت بنر مستقل از تاریخ انتشار است؛ تاریخ واقعی انیمه هرگز تغییر نمی‌کند. */
   const priority = (window.__AA_CONTROLS_STATE && window.__AA_CONTROLS_STATE.priority) || {};
   return (allWorks || [])
-    .filter(w => w && !w.unpublished && !w.isDraft)
+    .filter(w => w && !w.unpublished && !w.isDraft && !isRestrictedWork(w))
     .slice()
     .sort((a,b)=>{
       const atA = Math.max(Number(a.createdAt)||0, Number(priority[String(a.id)])||0);
@@ -9439,11 +9495,11 @@ function renderHome(){
   fillBooksStrip("forYou", built[2], "برای شروع چند انیمه ببینید.");
 
   /* سریالی — ترتیب تصادفی در هر ورود */
-  const serials = shuffleArray(allWorks.filter(w => w && w.type === "serial" && !w.unpublished && !w.isDraft));
+  const serials = shuffleArray(allWorks.filter(w => w && w.type === "serial" && !w.unpublished && !w.isDraft && !isRestrictedWork(w)));
   fillBooksStrip("serialSectionBooks", serials.slice(0, 10), "انیمه سریالی موجود نیست.");
 
   /* سینمایی — ترتیب تصادفی در هر ورود */
-  const movies = shuffleArray(allWorks.filter(w => w && w.type === "movie" && !w.unpublished && !w.isDraft));
+  const movies = shuffleArray(allWorks.filter(w => w && w.type === "movie" && !w.unpublished && !w.isDraft && !isRestrictedWork(w)));
   fillBooksStrip("movieSectionBooks", movies.slice(0, 10), "انیمه سینمایی موجود نیست.");
 
   const titleEl = $("latestSectionTitle");
@@ -9985,7 +10041,7 @@ function renderSearch(){
   if(!q){
     if(studiosBox) studiosBox.style.display = "none";
     if(studiosTrack) studiosTrack.innerHTML = "";
-    const all = allWorks.filter(w => w && !w.isDraft && !w.unpublished).slice().sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+    const all = allWorks.filter(w => w && !w.isDraft && !w.unpublished && !isRestrictedWork(w)).slice().sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
     if(!all.length){
       showEmpty(box, "هنوز انیمه‌ای منتشر نشده است.");
       return;
@@ -10008,6 +10064,7 @@ function renderSearch(){
 
   /* نتایج انیمه — همزمان با استودیو */
   const scored = allWorks
+    .filter(w => w && !isRestrictedWork(w))
     .map(w => ({ w, s: searchScore(w, q) }))
     .filter(x => x.s > 0)
     .sort((a,b)=> b.s - a.s || normalizeText(a.w.title).localeCompare(normalizeText(b.w.title), "fa"));
@@ -10042,13 +10099,15 @@ function renderGenres(){
   });
 }
 
-function openGenreDetail(genre){
+async function openGenreDetail(genre){
+  const needsAgeGate = isRestrictedGenreName(genre);
   $("genreDetailTitle").textContent = genre;
   const ng = normalizeText(genre);
   const list = allWorks.filter(w => w && !w.isDraft && !w.unpublished && workGenres(w).some(g => normalizeText(g) === ng));
   $("genreDetailCount").textContent = list.length + " انیمه";
   fillBooksBox("genreDetailBooks", list, "در این ژانر اثری نیست.");
   showPage("genreDetailPage");
+  if(needsAgeGate && !(await requestRestrictedAgeAcceptance())){ navigateBack(); return; }
 }
 $("genreDetailBack")?.addEventListener("click", ()=> navigateBack());
 
@@ -10127,6 +10186,10 @@ function renderDetailStudios(work){
 
 function openDetail(work){
   if(!work) return;
+  if(isRestrictedWork(work) && !hasAcceptedRestrictedAge()){
+    requestRestrictedAgeAcceptance().then(accepted => { if(accepted) openDetail(work); });
+    return;
+  }
   /* انیمه جدید → توقف پخش قبلی */
   try{ closeDetailPlayer(); }catch(e){}
   currentWork = work;
@@ -10604,6 +10667,7 @@ function formatClock(totalSeconds){
 }
 
 function playCostForWork(work){
+  if(isRestrictedWork(work)) return 7;
   return (work && work.type === "movie") ? PLAY_COST_MOVIE : PLAY_COST_SERIAL_EP;
 }
 
@@ -11636,7 +11700,7 @@ function renderSimilar(work){
   if(!box) return;
   box.innerHTML = "";
   const scored = allWorks
-    .filter(w => w && w.id !== work.id && !w.isDraft && !w.unpublished)
+    .filter(w => w && w.id !== work.id && !w.isDraft && !w.unpublished && !isRestrictedWork(w))
     .map(w => {
       const overlap = genreOverlapScore(work, w);
       const typeBonus = w.type === work.type ? 0.3 : 0;
@@ -11646,7 +11710,7 @@ function renderSimilar(work){
     .filter(x => x.score > 0)
     .sort((a,b)=> b.score - a.score || (b.w.createdAt||0)-(a.w.createdAt||0));
   let list = scored.map(x => x.w).slice(0, 24);
-  if(!list.length) list = allWorks.filter(w => w && !w.isDraft && !w.unpublished && w.id !== work.id).slice(0, 12);
+  if(!list.length) list = allWorks.filter(w => w && !w.isDraft && !w.unpublished && !isRestrictedWork(w) && w.id !== work.id).slice(0, 12);
   const ordered=window.aaCollectionPriority?.(work)||[];
   list=[...ordered,...list.filter(w=>!ordered.some(x=>String(x.$id||x.id)===String(w.$id||w.id)))].slice(0,24);
   window.aaInsertCollectionCards?.(work,box);
@@ -13032,6 +13096,7 @@ document.querySelectorAll("[data-admin-tab]").forEach(btn => {
     if(tab === "genres"){
       $("adminGenres").classList.add("active");
       loadGenresFromServer().then(()=>{ fillGenreSelect(); renderGenreAdmin(); renderGenres(); }).catch(()=> renderGenreAdmin());
+      loadRestrictedGenreSettings().then(()=>{ renderGenreAdmin(); renderGenres(); }).catch(()=>{});
     }
     if(tab === "published"){ $("adminPublished").classList.add("active"); renderPublishedWorks(); syncBrokenLinksFromServer().then(()=>{ if(isAdminMode) renderPublishedWorks(); }); }
     if(tab === "requests"){
@@ -13765,7 +13830,9 @@ $("addGenreBtn")?.addEventListener("click", async ()=>{
     showToast("این ژانر وجود دارد"); return;
   }
   genres.push(name);
+  if($("newGenreRestricted")?.checked) await saveRestrictedGenreSettings([...getRestrictedGenreNames(), name]);
   $("newGenre").value = "";
+  if($("newGenreRestricted")) $("newGenreRestricted").checked = false;
   await saveGenres(genres);
   renderGenres();
   fillGenreSelect();
@@ -13782,6 +13849,11 @@ function renderGenreAdmin(){
     const item = document.createElement("div");
     item.className = "genreAdminItem";
     item.innerHTML = `<span>${escapeHtml(g)}</span>`;
+    const restrictedLabel=document.createElement("label"); restrictedLabel.style.cssText="display:flex;align-items:center;gap:6px;font-size:11px;margin-inline-start:auto;margin-inline-end:8px;cursor:pointer";
+    const restrictedToggle=document.createElement("input"); restrictedToggle.type="checkbox"; restrictedToggle.checked=isRestrictedGenreName(g); restrictedToggle.style.cssText="width:16px;height:16px;accent-color:var(--orange)";
+    restrictedLabel.append(restrictedToggle,document.createTextNode("۱۸+"));
+    restrictedToggle.addEventListener("change",async()=>{if(!(await requireAdminAction())){restrictedToggle.checked=!restrictedToggle.checked;return;}const current=getRestrictedGenreNames().filter(x=>normalizeGenreKey(x)!==normalizeGenreKey(g));if(restrictedToggle.checked)current.push(g);await saveRestrictedGenreSettings(current);renderGenres();});
+    item.appendChild(restrictedLabel);
     const del = document.createElement("button");
     del.type = "button";
     del.className = "delete";
@@ -13793,6 +13865,7 @@ function renderGenreAdmin(){
       const idx = list.findIndex(x => normalizeText(x) === normalizeText(g));
       if(idx < 0) return;
       list.splice(idx, 1);
+      await saveRestrictedGenreSettings(getRestrictedGenreNames().filter(x=>normalizeGenreKey(x)!==normalizeGenreKey(g)));
       await saveGenres(list);
       renderGenres();
       fillGenreSelect();
@@ -20635,7 +20708,7 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
   const isLoggedIn = () => !!(currentUser && currentUser.id);
   const myId = () => String(currentUser?.id || "");
   const myName = () => String(currentUser?.name || (currentUser?.email || "").split("@")[0] || "").trim().slice(0, 50);
-  const nameOf = i => i.is_anonymous ? "Anonymous" : (i.display_name || "کاربر");
+  const nameOf = i => i.is_anonymous ? "ناشناس" : (i.display_name || "کاربر");
   const isMine = i => isLoggedIn() && i.user_id === myId();
   const closeMenus = () => document.querySelectorAll("#aaCommentsPage .aaMoreWrap.open").forEach(m => m.classList.remove("open"));
   document.addEventListener("click", e => { if (!e.target.closest("#aaCommentsPage .aaMoreWrap")) closeMenus(); });
@@ -20709,7 +20782,9 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
       const mineC = isMine(item), card = node("article", "aaCommentCard " + (mineC ? "aaMine" : "aaOther"));
       const head = node("div", "aaUser"), info = node("div"), nm = nameOf(item), avatar = node("div", "aaAvatar", nm.trim().slice(0, 1));
       if (mineC && !item.is_anonymous) { try { const social = JSON.parse(localStorage.getItem("aa_elegant_profile_v2_" + myId()) || "{}"); const src = social.avatar || (typeof getProfile === "function" ? getProfile()?.avatar : "") || ""; if (src) { avatar.textContent = ""; const pic = document.createElement("img"); pic.src = src; pic.alt = "تصویر پروفایل"; pic.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"; avatar.append(pic); } } catch (e) {} }
-      info.append(node("strong", "", nm), node("div", "aaDate", dateStr(item.createdAt) + (item.is_edited ? " · ویرایش‌شده" : "")));
+      info.append(node("strong", "", nm));
+      if(item.is_anonymous) info.append(node("span", "aaAnonymousMark", "ناشناس"));
+      info.append(node("div", "aaDate", dateStr(item.createdAt) + (item.is_edited ? " · ویرایش‌شده" : "")));
       head.append(avatar, info); card.append(head);
       if (item.is_spoiler) {
         const sp = node("div", "aaSpoilerContent"); sp.append(node("div", "", "⚠️ این نظر بخش‌هایی از داستان را فاش می‌کند."));
@@ -20730,7 +20805,9 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
         const exp = node("button", "aaExpandReplies", label(open)); exp.type = "button";
         for (const r of replies) {
           const box = node("div", "aaReply"), rh = node("div", "aaReplyHead"), rn = nameOf(r), meta = node("div", "aaReplyMeta");
-          meta.append(node("strong", "", rn), node("small", "", dateStr(r.createdAt) + (r.is_edited ? " · ویرایش‌شده" : "")));
+          meta.append(node("strong", "", rn));
+          if(r.is_anonymous) meta.append(node("span", "aaAnonymousMark", "ناشناس"));
+          meta.append(node("small", "", dateStr(r.createdAt) + (r.is_edited ? " · ویرایش‌شده" : "")));
           rh.append(node("span", "aaReplyAvatar", rn.trim().slice(0, 1)), meta); box.append(rh);
           if (r.reply_to_name) box.append(node("div", "aaReplyTo", "↪ در پاسخ به " + r.reply_to_name));
           box.append(node("p", "", r.content));
@@ -20762,7 +20839,6 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
     const poster = $("aaCommentsPoster");
     if (poster) { poster.replaceChildren(); const url = w.cover || w.coverUrl || w.image || w.imageUrl || w.poster || ""; if (url) { const img = node("img"); img.src = url; img.alt = "جلد " + title; img.loading = "lazy"; poster.append(img); } else poster.append(node("div", "", "🎬")); }
     updateIdentity();
-    const dn = $("aaCommentDisplayName"); if (dn && !dn.value && isLoggedIn()) dn.value = myName();
     $("aaComposerPanel")?.classList.remove("isOpen");
     showPage("aaCommentsPage");
     refresh().then(scrollLatest); scrollLatest();
@@ -20770,7 +20846,6 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
   function openComposer() {
     if (needLogin()) return;
     updateIdentity();
-    const dn = $("aaCommentDisplayName"); if (dn && !dn.value) dn.value = myName();
     $("aaComposerPanel")?.classList.add("isOpen");
     setTimeout(() => $("aaCommentText")?.focus(), 180);
   }
@@ -20779,15 +20854,13 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
     if (!workId()) { showToast("انیمه مشخص نیست"); return; }
     if (needLogin()) return;
     if (!commentsReady || !commentsTablesDB) { showToast("سیستم نظرات در دسترس نیست"); return; }
-    const displayName = String($("aaCommentDisplayName")?.value || "").trim().slice(0, 50);
     const isAnon = !!$("aaCommentAnonymous")?.checked, content = String($("aaCommentText")?.value || "").trim();
     if (!content) { showToast("متن نظر را بنویس"); return; }
     if (content.length > 2000) { showToast("متن نظر بیش از حد طولانی است"); return; }
-    if (!isAnon && !displayName) { showToast("نام نمایشی را وارد کنید یا گزینه ناشناس را فعال کنید"); return; }
     submitting = true;
     const btn = $("aaCommentSubmit"); if (btn) { btn.disabled = true; btn.textContent = "در حال ارسال..."; }
     try {
-      await createRow({ display_name: displayName || "Anonymous", is_anonymous: isAnon, content, is_spoiler: !!$("aaCommentSpoiler")?.checked });
+      await createRow({ display_name: isAnon ? "ناشناس" : (myName() || "کاربر"), is_anonymous: isAnon, content, is_spoiler: !!$("aaCommentSpoiler")?.checked });
       if ($("aaCommentText")) $("aaCommentText").value = "";
       if ($("aaCommentAnonymous")) $("aaCommentAnonymous").checked = false;
       if ($("aaCommentSpoiler")) $("aaCommentSpoiler").checked = false;
@@ -20886,7 +20959,7 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
  const T={databaseId:COMMENTS_DATABASE_ID,tableId:COMMENTS_TABLE_ID};let rows=[];
  try{const {Query}=Appwrite;const res=await commentsTablesDB.listRows({...T,queries:[Query.orderAsc('$createdAt'),Query.limit(1000)]});rows=res.rows||res.documents||[]}catch(e){console.error(e);root.replaceChildren(el('div','aaAdminEmpty','خطا در دریافت نظرها'));return}
  const del=async(r,withKids)=>{if(typeof isAdminMode==='undefined'||!isAdminMode){notice('فقط ادمین می‌تواند این کار را انجام دهد');return}if(!await confirmDel(withKids?'این نظر و تمام پاسخ‌هایش حذف شوند؟':'این پاسخ حذف شود؟'))return;try{if(withKids)await Promise.all(rows.filter(x=>x.parent_id===r.$id).map(x=>commentsTablesDB.deleteRow({...T,rowId:x.$id})));await commentsTablesDB.deleteRow({...T,rowId:r.$id});notice('حذف شد')}catch(e){console.error(e);notice('حذف انجام نشد؛ دسترسی جدول را بررسی کن')}window.aaRenderAdminComments()};
- const who=r=>r.is_anonymous?'Anonymous':(r.display_name||'کاربر');root.replaceChildren();
+ const who=r=>r.is_anonymous?'ناشناس':(r.display_name||'کاربر');root.replaceChildren();
  if(adminAnime){const h=el('div','aaCollHeader');h.append(btn('→ بازگشت',()=>{adminAnime=null;window.aaRenderAdminComments()}),el('strong','',name(workFor(adminAnime))));root.append(h);
   for(const r of rows.filter(x=>x.anime_id===adminAnime&&!x.parent_id)){const box=el('div','aaAdminCommentRow');box.append(el('strong','',who(r)+(r.is_spoiler?' ⚠️':'')),el('p','',r.content||''),btn('حذف نظر',()=>del(r,true),'aaMiniBtn danger'));
    rows.filter(x=>x.parent_id===r.$id).forEach(rep=>{const c=el('div','aaAdminCommentRow');c.append(el('strong','','↳ '+who(rep)),el('p','',rep.content||''),btn('حذف پاسخ',()=>del(rep,false),'aaMiniBtn danger'));box.append(c)});root.append(box)}return}
