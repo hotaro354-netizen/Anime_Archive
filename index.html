@@ -21,7 +21,7 @@
 
 // Keep the "currently airing" switch at the bottom of each add/edit form.
 document.addEventListener("DOMContentLoaded", ()=>{
-  ["adminCurrentlyAiring","editCurrentlyAiring"].forEach(id=>{
+  ["adminCurrentlyAiring","adminCommentsEnabled","editCurrentlyAiring","editCommentsEnabled"].forEach(id=>{
     const input = document.getElementById(id);
     const label = input?.closest("label");
     const form = label?.parentElement;
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
   });
 });
 </script>
-<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="https://example.com/anime-archive/">
 
@@ -4762,6 +4762,25 @@ html.theme-light .aaProfileListPage{background:#f4f2ef}html.theme-brown .aaProfi
 
 @media(max-width:420px){#profilePage #profileCoinBox{gap:9px!important}}
 </style><style id="aaAnonymousMarkStyle">.aaAnonymousMark{display:inline-flex;align-items:center;margin-inline-start:6px;padding:2px 6px;border-radius:999px;font-size:10px;line-height:1.4;color:var(--muted);background:var(--bg2);border:1px solid var(--line);vertical-align:middle}</style>
+
+<style id="aaPatchCss">
+/* performance: lighter lists / rows */
+.booksStrip .book{contain:layout style}
+.books .book{content-visibility:auto;contain-intrinsic-size:auto 190px}
+.genreMosaic{content-visibility:auto;contain-intrinsic-size:auto 120px}
+/* clickable genre tags in anime details */
+.detailGenreTags span{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s,opacity .12s}
+.detailGenreTags span:active{transform:scale(.94);opacity:.8}
+/* 18+ censored cover (search) */
+.cover.aaCensored img{filter:blur(16px) brightness(.75);transform:scale(1.18);transition:filter .2s}
+.cover.aaCensored.aaRevealed img{filter:none;transform:none}
+.aaEyeBtn{position:absolute;bottom:6px;left:6px;z-index:6;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(10,10,12,.72);color:#fff;display:grid;place-items:center;padding:0}
+.aaAdultTag{position:absolute;bottom:6px;right:6px;z-index:6;font-size:9px;font-weight:800;padding:3px 7px;border-radius:999px;background:#c0392b;color:#fff}
+.form label.aaCommentsSwitch,label.aaCommentsSwitch{display:flex !important;flex-direction:row;align-items:center;gap:10px;margin:12px 4px !important;padding:12px !important;font-size:13px !important;color:var(--text,#f0ebe3) !important;border:1px solid #493a25;border-radius:12px;background:#17130e;cursor:pointer;width:auto}
+.form label.aaCommentsSwitch input[type=checkbox],label.aaCommentsSwitch input[type=checkbox]{flex:0 0 18px;width:18px !important;height:18px !important;min-width:18px;margin:0 !important;padding:0 !important;position:static !important;accent-color:var(--orange)}
+label.aaCommentsSwitch span{flex:1 1 auto;min-width:0;line-height:1.6}
+.aaMoreBtn{width:100%;margin:12px 0;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text)}
+</style>
 </head>
 <body>
 
@@ -5634,6 +5653,7 @@ html.theme-light .aaProfileListPage{background:#f4f2ef}html.theme-brown .aaProfi
           <input id="adminCurrentlyAiring" type="checkbox" style="width:18px;height:18px;margin:0;accent-color:var(--orange)">
           <span>فعال‌سازی وضعیت «در حال پخش»</span>
         </label>
+        <label class="aaCommentsSwitch"><input id="adminCommentsEnabled" type="checkbox" checked><span>فعال بودن بخش نظرات برای این انیمه</span></label>
 
         <label>توضیحات</label>
         <textarea id="adminDescription" placeholder="خلاصه داستان..."></textarea>
@@ -6112,6 +6132,7 @@ html.theme-light .aaProfileListPage{background:#f4f2ef}html.theme-brown .aaProfi
         <input id="editCurrentlyAiring" type="checkbox" style="width:18px;height:18px;margin:0;accent-color:var(--orange)">
         <span>فعال‌سازی وضعیت «در حال پخش»</span>
       </label>
+        <label class="aaCommentsSwitch"><input id="editCommentsEnabled" type="checkbox" checked><span>فعال بودن بخش نظرات برای این انیمه</span></label>
 
       <label style="margin-top:14px">نوع محتوا</label>
       <div class="segment" id="editContentKindSeg" style="margin-bottom:12px">
@@ -6808,6 +6829,15 @@ function escapeHtml(v){
 }
 
 function normalizeText(s){
+  if(typeof s === "string" && s.length < 160){
+    const m = window.__ntMemo || (window.__ntMemo = new Map());
+    let r = m.get(s);
+    if(r === undefined){ r = __normalizeTextRaw(s); if(m.size > 6000) m.clear(); m.set(s, r); }
+    return r;
+  }
+  return __normalizeTextRaw(s);
+}
+function __normalizeTextRaw(s){
   return String(s || "").toLowerCase().trim()
     .replace(/ي/g,"ی").replace(/ك/g,"ک")
     .replace(/ة/g,"ه").replace(/ؤ/g,"و").replace(/ئ/g,"ی").replace(/أ|إ|آ/g,"ا")
@@ -7244,22 +7274,59 @@ function applyUserToSession(u){
   }
 }
 
-async function hashPassword(pass){
+function __hex(u8){ return Array.from(u8).map(b => b.toString(16).padStart(2, "0")).join(""); }
+function __ctEq(a, b){
+  a = String(a); b = String(b);
+  if(a.length !== b.length) return false;
+  let d = 0;
+  for(let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return d === 0;
+}
+async function __legacySha(pass){
   try{
     const data = new TextEncoder().encode("animearchive:" + String(pass || ""));
     const buf = await crypto.subtle.digest("SHA-256", data);
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
-  }catch(e){
-    return "plain:" + String(pass || "");
-  }
+    return __hex(new Uint8Array(buf));
+  }catch(e){ return "plain:" + String(pass || ""); }
 }
-
+async function __pbkdf2(pass, salt){
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(String(pass || "")), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: 120000, hash: "SHA-256" }, key, 128);
+  return new Uint8Array(bits);
+}
+/* فرمت جدید: p1$<salt>$<hash> — سالت تصادفی برای هر کاربر + PBKDF2 (طول ۵۲ کاراکتر، سازگار با ستون قبلی) */
+async function hashPassword(pass){
+  try{
+    const salt = crypto.getRandomValues(new Uint8Array(8));
+    return "p1$" + __hex(salt) + "$" + __hex(await __pbkdf2(pass, salt));
+  }catch(e){ return await __legacySha(pass); }
+}
+function __needsRehash(stored){ return !String(stored || "").startsWith("p1$"); }
 async function passwordMatches(stored, pass){
   if(!stored) return false;
-  if(stored === pass) return true; /* legacy plain */
-  const h = await hashPassword(pass);
-  return stored === h;
+  stored = String(stored);
+  if(stored.startsWith("p1$")){
+    const parts = stored.split("$");
+    if(parts.length !== 3 || !/^[0-9a-f]{16}$/.test(parts[1])) return false;
+    const salt = new Uint8Array(parts[1].match(/../g).map(h => parseInt(h, 16)));
+    return __ctEq(__hex(await __pbkdf2(pass, salt)), parts[2]);
+  }
+  if(stored === pass) return true; /* قدیمی (متن ساده) — بعد از ورود ارتقا پیدا می‌کند */
+  return __ctEq(stored, await __legacySha(pass));
 }
+/* محدودیت تلاش ورود (سمت مرورگر) */
+function __loginLockLeft(){
+  try{ const o = JSON.parse(localStorage.getItem("aa_login_fail") || "{}"); return Math.max(0, (o.until || 0) - Date.now()); }catch(e){ return 0; }
+}
+function __loginFail(){
+  try{
+    const o = JSON.parse(localStorage.getItem("aa_login_fail") || "{}");
+    o.n = (o.n || 0) + 1;
+    if(o.n >= 5){ o.until = Date.now() + Math.min(900000, 30000 * Math.pow(2, o.n - 5)); }
+    localStorage.setItem("aa_login_fail", JSON.stringify(o));
+  }catch(e){}
+}
+function __loginOk(){ try{ localStorage.removeItem("aa_login_fail"); }catch(e){} }
 
 function formatRemain(ms){
   if(ms <= 0) return "منقضی";
@@ -7655,7 +7722,17 @@ function showVpnDownloadBannerThen(action, opts){
   const titleEl = banner ? banner.querySelector("h3") : null;
   const pEl = banner ? banner.querySelector("p") : null;
   const btnEl = $("vpnDownloadOk");
-  const o = opts && typeof opts === "object" ? opts : null;
+  let o = opts && typeof opts === "object" ? opts : null;
+  try{
+    const inWork = ["detailPage","watchPage","mangaPage","playerPage"].some(p => $(p)?.classList.contains("active"));
+    if(inWork && currentWork && isRestrictedWork(currentWork) && !(o && o.keep)){
+      o = {
+        title: "VPN را روشن کنید",
+        html: "برای پخش و دانلود این محتوا، لطفاً <b>VPN / فیلترشکن</b> خود را <b>روشن</b> کنید، سپس تأیید کنید.",
+        btn: "تأیید — VPN روشن است"
+      };
+    }
+  }catch(e){}
   if(titleEl){
     titleEl.textContent = (o && o.title) ? o.title : "قبل از دانلود";
   }
@@ -7787,6 +7864,23 @@ async function confirmBulkGrantCoins(){
   }
 }
 
+let __aaUsersCache = null, __aaUsersTs = 0, __aaLastAccQ = "";
+async function aaFetchAllUserDocs(useCache){
+  if(useCache && __aaUsersCache && Date.now() - __aaUsersTs < 20000) return __aaUsersCache;
+  const out = [];
+  let cursor = null;
+  for(let page = 0; page < 500; page++){
+    const q = [ appwriteQuery.orderDesc("$createdAt"), appwriteQuery.limit(100) ];
+    if(cursor) q.push(appwriteQuery.cursorAfter(cursor));
+    const res = await databases.listDocuments(DATABASE_ID, COLLECTION_USERS, q);
+    const docs = (res && res.documents) || [];
+    for(const d of docs) out.push(d);
+    if(docs.length < 100) break;
+    cursor = docs[docs.length - 1].$id;
+  }
+  __aaUsersCache = out; __aaUsersTs = Date.now();
+  return out;
+}
 async function renderAdminAccounts(){
   const box = $("adminAccountsList");
   if(!box) return;
@@ -7797,12 +7891,10 @@ async function renderAdminAccounts(){
     return;
   }
   try{
-    const res = await databases.listDocuments(
-      DATABASE_ID,
-      COLLECTION_USERS,
-      [ appwriteQuery.orderDesc("$createdAt"), appwriteQuery.limit(100) ]
-    );
-    let list = (res.documents || []).map(mapUserDoc).filter(Boolean);
+    const __qNow = normalizeText($("accountsSearchInput")?.value || "");
+    if(__qNow !== __aaLastAccQ){ window.__aaAccCap = 60; __aaLastAccQ = __qNow; }
+    const allDocs = await aaFetchAllUserDocs(!!__qNow);
+    let list = allDocs.map(mapUserDoc).filter(Boolean);
     /* پسورد در لیست ادمین نیاز نیست — حذف از حافظه */
     list.forEach(u => { try{ delete u.password; }catch(_){ } });
     const q = normalizeText($("accountsSearchInput")?.value || "");
@@ -7813,7 +7905,8 @@ async function renderAdminAccounts(){
     box.innerHTML = "";
     if(!list.length){ showEmpty(box, "اکانتی نیست."); return; }
     try{ pendingRequestsCache = await srvListByKey(KEY_ANIME_REQ); updateAdminBadges(); }catch(e){}
-    list.forEach(u => {
+    const __cap = window.__aaAccCap || 60;
+    list.slice(0, __cap).forEach(u => {
       const item = document.createElement("div");
       item.className = "accountItem";
       let status = u.coins + " سکه";
@@ -7866,6 +7959,13 @@ async function renderAdminAccounts(){
       });
       box.appendChild(item);
     });
+    if(list.length > __cap){
+      const more = document.createElement("button");
+      more.type = "button"; more.className = "aaMoreBtn";
+      more.textContent = "نمایش بیشتر (" + (list.length - __cap) + " اکانت دیگر)";
+      more.addEventListener("click", ()=>{ window.__aaAccCap = __cap + 100; renderAdminAccounts(); });
+      box.appendChild(more);
+    }
   }catch(e){
     console.error(e);
     showEmpty(box, "خطا در دریافت اکانت‌ها — Collection app_users را بسازید");
@@ -8010,7 +8110,7 @@ async function requestRestrictedAgeAcceptance(){
     let overlay=document.getElementById("aaAgeGateOverlay");
     if(!overlay){
       overlay=document.createElement("div"); overlay.id="aaAgeGateOverlay";
-      overlay.innerHTML=`<div class="aaAgeGateCard" role="dialog" aria-modal="true" aria-labelledby="aaAgeGateTitle"><div class="aaAgeGateBadge">۱۸+</div><h2 id="aaAgeGateTitle">تأیید رده‌بندی سنی</h2><p>این ژانر ممکن است شامل صحنه‌های خشن، ترسناک یا موضوعات بزرگسالانه باشد. برای ورود باید ۱۸ سال یا بیشتر داشته باشید و قوانین نمایش محتوا را بپذیرید.</p><label class="aaAgeGateCheck"><input id="aaAgeGateAccept" type="checkbox"><span>تأیید می‌کنم ۱۸ سال یا بیشتر دارم و قوانین را می‌پذیرم.</span></label><div class="aaAgeGateActions"><button type="button" id="aaAgeGateCancel">بازگشت</button><button type="button" id="aaAgeGateEnter" disabled>تأیید و ورود</button></div></div>`;
+      overlay.innerHTML=`<div class="aaAgeGateCard" role="dialog" aria-modal="true" aria-labelledby="aaAgeGateTitle"><div class="aaAgeGateBadge">۱۸+</div><h2 id="aaAgeGateTitle">تأیید رده‌بندی سنی</h2><p>این محتوا ممکن است شامل صحنه‌های خشن، ترسناک یا موضوعات بزرگسالانه باشد. برای ورود باید ۱۸ سال یا بیشتر داشته باشید و قوانین نمایش محتوا را بپذیرید.</p><label class="aaAgeGateCheck"><input id="aaAgeGateAccept" type="checkbox"><span>تأیید می‌کنم ۱۸ سال یا بیشتر دارم و قوانین را می‌پذیرم.</span></label><div class="aaAgeGateActions"><button type="button" id="aaAgeGateCancel">بازگشت</button><button type="button" id="aaAgeGateEnter" disabled>تأیید و ورود</button></div></div>`;
       document.body.appendChild(overlay);
       overlay.querySelector("#aaAgeGateAccept").addEventListener("change",e=>overlay.querySelector("#aaAgeGateEnter").disabled=!e.target.checked);
     }
@@ -8637,6 +8737,12 @@ function pushHistory(id){
 function showPage(id, fromPop){
   if(!id) id = "homePage";
   const previousPage = appPageStack[appPageStack.length - 1] || "homePage";
+  try{
+    const __from = document.querySelector(".page.active")?.id;
+    if(id === "genreDetailPage" && fromPop && __from !== "genreDetailPage") aaRenderGenreEntry(genreNavStack[genreNavStack.length - 1]);
+    if(__from === "genreDetailPage" && id !== "genreDetailPage" && fromPop) genreNavStack.pop();
+    if(!fromPop && ["homePage","searchPage","genresPage","savedPage","explorePage","profilePage"].includes(id)) genreNavStack.length = 0;
+  }catch(e){}
   if(previousPage === "genreDetailPage" && id !== "detailPage" && id !== "watchPage" && id !== "mangaPage") restrictedAgeAcceptedForCurrentGenre = false;
   if((id === "homePage" || id === "searchPage" || id === "genresPage") && previousPage !== "genreDetailPage") restrictedAgeAcceptedForCurrentGenre = false;
 
@@ -8923,7 +9029,7 @@ function filteredByCategory(list){
   return publicList.slice();
 }
 
-function createBookCard(work, showAiringBadge = false){
+function createBookCard(work, showAiringBadge = false, cardOpts){
   const el = document.createElement("div");
   el.className = "book";
   if(!work) return el;
@@ -8978,6 +9084,24 @@ function createBookCard(work, showAiringBadge = false){
   });
   cover.appendChild(star);
 
+  if(cardOpts && cardOpts.censor && isRestrictedWork(work)){
+    const EYE = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+    const EYE_OFF = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="3" x2="21" y2="21"/></svg>';
+    cover.classList.add("aaCensored");
+    const tag = document.createElement("span");
+    tag.className = "aaAdultTag"; tag.textContent = "۱۸+";
+    cover.appendChild(tag);
+    const eye = document.createElement("button");
+    eye.type = "button"; eye.className = "aaEyeBtn";
+    eye.setAttribute("aria-label", "نمایش جلد"); eye.innerHTML = EYE_OFF;
+    eye.addEventListener("click", ev => {
+      ev.stopPropagation();
+      const on = cover.classList.toggle("aaRevealed");
+      eye.innerHTML = on ? EYE : EYE_OFF;
+    });
+    cover.appendChild(eye);
+  }
+
   const title = document.createElement("div");
   title.className = "bookTitle";
   title.textContent = work.title || "بدون عنوان";
@@ -8997,17 +9121,38 @@ function showEmpty(box, text){
   box.innerHTML = `<div class="empty"><div class="emptyIcon">◇</div>${escapeHtml(text)}</div>`;
 }
 
-function fillBooksBox(boxId, list, emptyText){
+function fillBooksBox(boxId, list, emptyText, cardOpts){
   const box = $(boxId);
   if(!box) return;
+  try{ if(box.__aaIO){ box.__aaIO.disconnect(); box.__aaIO = null; } }catch(e){}
   box.innerHTML = "";
   if(!Array.isArray(list) || !list.length){
     showEmpty(box, emptyText || "موردی نیست.");
     return;
   }
-  const frag = document.createDocumentFragment();
-  list.forEach(w => { if(w) frag.appendChild(createBookCard(w)); });
-  box.appendChild(frag);
+  const CH = 30;
+  let idx = 0;
+  const addChunk = ()=>{
+    const frag = document.createDocumentFragment();
+    const end = Math.min(list.length, idx + CH);
+    for(; idx < end; idx++){ const w = list[idx]; if(w) frag.appendChild(createBookCard(w, false, cardOpts)); }
+    return frag;
+  };
+  box.appendChild(addChunk());
+  if(idx >= list.length || typeof IntersectionObserver === "undefined"){
+    while(idx < list.length) box.appendChild(addChunk());
+    return;
+  }
+  const sentinel = document.createElement("div");
+  sentinel.style.cssText = "grid-column:1/-1;height:1px";
+  box.appendChild(sentinel);
+  const io = new IntersectionObserver(entries => {
+    if(!entries.some(en => en.isIntersecting)) return;
+    box.insertBefore(addChunk(), sentinel);
+    if(idx >= list.length){ io.disconnect(); box.__aaIO = null; sentinel.remove(); }
+  }, { rootMargin: "700px 0px" });
+  box.__aaIO = io;
+  io.observe(sentinel);
 }
 
 function fillBooksStrip(boxId, list, emptyText){
@@ -9459,16 +9604,18 @@ function moveHero(direction){
 })();
 
 
+const __airingRand = new Map();
+/* ترتیب ردیف «در حال پخش» در هر بار ورود به سایت تصادفی است (در طول همان بازدید ثابت می‌ماند تا ردیف نپرد) */
 function getCurrentlyAiringWorks(list){
   return (Array.isArray(list) ? list : [])
     .filter(w => w && w.currentlyAiring === true && !w.unpublished && !w.isDraft)
-    .slice()
-    /* ترتیب فعال‌سازی تیک حفظ می‌شود: قدیمی‌ترین فعال‌سازی اول، از راست به چپ. */
-    .sort((a,b) => {
-      const ta = Number(a.currentlyAiringAt) || Number(a.createdAt) || 0;
-      const tb = Number(b.currentlyAiringAt) || Number(b.createdAt) || 0;
-      return ta - tb;
-    });
+    .map(w => {
+      const k = String(w.id);
+      if(!__airingRand.has(k)) __airingRand.set(k, Math.random());
+      return { w, r: __airingRand.get(k) };
+    })
+    .sort((a, b) => a.r - b.r)
+    .map(x => x.w);
 }
 
 function renderHome(){
@@ -9542,11 +9689,11 @@ $("newArrow")?.addEventListener("click", ()=>{
 });
 
 $("serialSectionArrow")?.addEventListener("click", ()=>{
-  const list = shuffleArray(allWorks.filter(w => w && w.type === "serial" && !w.unpublished && !w.isDraft));
+  const list = shuffleArray(allWorks.filter(w => w && w.type === "serial" && !w.unpublished && !w.isDraft && !isRestrictedWork(w)));
   openListPage("سریالی", list);
 });
 $("movieSectionArrow")?.addEventListener("click", ()=>{
-  const list = shuffleArray(allWorks.filter(w => w && w.type === "movie" && !w.unpublished && !w.isDraft));
+  const list = shuffleArray(allWorks.filter(w => w && w.type === "movie" && !w.unpublished && !w.isDraft && !isRestrictedWork(w)));
   openListPage("سینمایی", list);
 });
 $("homeSearchEntry")?.addEventListener("click", ()=> showPage("searchPage"));
@@ -10064,7 +10211,7 @@ function renderSearch(){
 
   /* نتایج انیمه — همزمان با استودیو */
   const scored = allWorks
-    .filter(w => w && !isRestrictedWork(w))
+    .filter(w => w && !w.isDraft)
     .map(w => ({ w, s: searchScore(w, q) }))
     .filter(x => x.s > 0)
     .sort((a,b)=> b.s - a.s || normalizeText(a.w.title).localeCompare(normalizeText(b.w.title), "fa"));
@@ -10073,7 +10220,9 @@ function renderSearch(){
     if(!studioHits.length) showEmpty(box, "نتیجه‌ای پیدا نشد.");
     return;
   }
-  scored.forEach(x => box.appendChild(createBookCard(x.w)));
+  const __frag = document.createDocumentFragment();
+  scored.slice(0, 120).forEach(x => __frag.appendChild(createBookCard(x.w, false, { censor: true })));
+  box.appendChild(__frag);
 }
 $("searchInput")?.addEventListener("input", debounce(renderSearch, 180));
 $("clearSearch")?.addEventListener("click", ()=>{
@@ -10099,15 +10248,31 @@ function renderGenres(){
   });
 }
 
-async function openGenreDetail(genre){
-  const needsAgeGate = isRestrictedGenreName(genre);
-  $("genreDetailTitle").textContent = genre;
+const genreNavStack = [];
+function aaGenreList(genre, restrictedCtx){
   const ng = normalizeText(genre);
-  const list = allWorks.filter(w => w && !w.isDraft && !w.unpublished && workGenres(w).some(g => normalizeText(g) === ng));
+  const base = allWorks.filter(w => w && !w.isDraft && !w.unpublished && workGenres(w).some(g => normalizeText(g) === ng));
+  return restrictedCtx ? base.filter(isRestrictedWork) : base.filter(w => !isRestrictedWork(w));
+}
+function aaRenderGenreEntry(entry){
+  if(!entry) return;
+  const list = aaGenreList(entry.genre, entry.restricted);
+  $("genreDetailTitle").textContent = entry.genre;
   $("genreDetailCount").textContent = list.length + " انیمه";
   fillBooksBox("genreDetailBooks", list, "در این ژانر اثری نیست.");
+}
+async function openGenreDetail(genre){
+  try{ closeDetailPlayer(); }catch(e){}
+  const detailActive = $("detailPage")?.classList.contains("active");
+  /* از صفحهٔ یک انیمهٔ ۱۸+ → فقط انیمه‌های ۱۸+ همان ژانر؛ ژانر ۱۸+ → فقط ۱۸+ */
+  const restrictedCtx = isRestrictedGenreName(genre) || !!(detailActive && currentWork && isRestrictedWork(currentWork));
+  if(restrictedCtx && !hasAcceptedRestrictedAge()){
+    if(!(await requestRestrictedAgeAcceptance())) return;
+  }
+  const entry = { genre, restricted: restrictedCtx };
+  genreNavStack.push(entry);
+  aaRenderGenreEntry(entry);
   showPage("genreDetailPage");
-  if(needsAgeGate && !(await requestRestrictedAgeAcceptance())){ navigateBack(); return; }
 }
 $("genreDetailBack")?.addEventListener("click", ()=> navigateBack());
 
@@ -10116,7 +10281,7 @@ function renderSaved(){
   if(!box) return;
   box.style.display = "";
   if($("historyBooks")) $("historyBooks").style.display = "none";
-  const list = getSavedIds().map(id => allWorks.find(w => w.id === id)).filter(Boolean);
+  const list = getSavedIds().map(id => allWorks.find(w => w.id === id)).filter(w => w && !isRestrictedWork(w));
   fillBooksBox("savedBooks", list, "هنوز چیزی نشان‌گذاری نکرده‌اید.");
 }
 function renderHistory(){
@@ -10124,7 +10289,7 @@ function renderHistory(){
   if(!box) return;
   box.style.display = "";
   if($("savedBooks")) $("savedBooks").style.display = "none";
-  const list = getHistoryIds().map(id => allWorks.find(w => w.id === id)).filter(Boolean);
+  const list = getHistoryIds().map(id => allWorks.find(w => w.id === id)).filter(w => w && !isRestrictedWork(w));
   fillBooksBox("historyBooks", list, "تاریخچه‌ای وجود ندارد.");
 }
 $("savedMarkedTab")?.addEventListener("click", ()=>{
@@ -10233,9 +10398,14 @@ function openDetail(work){
     genres.slice(0, 6).forEach(g => {
       const sp = document.createElement("span");
       sp.innerHTML = '<span class="hash">#</span> ' + escapeHtml(g);
+      sp.setAttribute("role", "button"); sp.tabIndex = 0;
+      const go = ()=> openGenreDetail(g);
+      sp.addEventListener("click", go);
+      sp.addEventListener("keydown", ev => { if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); go(); } });
       tagsEl.appendChild(sp);
     });
   }
+  try{ window.aaApplyCommentsVisibility && window.aaApplyCommentsVisibility(work); }catch(e){}
 
   /* چیدمان دکمه‌ها با قانون «انتشار نشده»:
      - تماشا هرگز وقتی unpublished است
@@ -11485,7 +11655,7 @@ async function startEpisodeDownload(ep, idx, rowEl){
     if(busy){ dlBtn.setAttribute("aria-busy", "true"); dlBtn.textContent = "در حال آماده‌سازی..."; }
     else{
       dlBtn.removeAttribute("aria-busy");
-      dlBtn.textContent = done ? "✓ دانلود شده" : (rowEl && rowEl.dataset.combinedDownloadPlay === "1" ? "⬇ دانلود و پخش" : "⬇ دانلود");
+      dlBtn.textContent = isTelegramUrl(ep && ep.link) ? ((done || hasActiveUnlimited(currentUser)) ? "✈ کانال تلگرام" : "✈ کانال تلگرام · " + COST_TELEGRAM + "🪙") : done ? "✓ دانلود شده" : (rowEl && rowEl.dataset.combinedDownloadPlay === "1" ? "⬇ دانلود و پخش" : "⬇ دانلود");
     }
   };
   await runDownloadFlow({
@@ -11516,15 +11686,18 @@ function renderEpisodesList(episodes){
   const playCost = playCostForWork(currentWork);
   const activeSeason = (currentWork && currentWork.type !== "movie" && Array.isArray(currentWork.seasons))
     ? currentWork.seasons[selectedDetailSeasonIdx] : null;
-  const combinedDownloadPlay = isSeasonDownloadPlayEnabled(activeSeason);
+  const combinedDownloadPlayBase = isSeasonDownloadPlayEnabled(activeSeason);
   episodes.forEach((ep, idx) => {
+    const tgDl = isTelegramUrl(ep && ep.link);
+    const tgPlay = isTelegramUrl(episodePlayUrl(ep));
+    const combinedDownloadPlay = combinedDownloadPlayBase && !tgDl;
     const row = document.createElement("div");
     row.className = "chapterItem";
     const locked = !(currentUser && currentUser.email);
     const downloaded = isEpisodeDownloaded(currentWork, ep, idx);
     const played = isEpisodePlayed(currentWork, ep, idx);
     const unlimited = hasActiveUnlimited(currentUser);
-    const onlineOn = isOnlinePlaybackEnabled(ep);
+    const onlineOn = isOnlinePlaybackEnabled(ep) && !tgPlay;
 
     const watchSec = (!locked && currentUser) ? getWatchPosition(currentWork, ep, idx) : 0;
     const watchHtml = (onlineOn && !combinedDownloadPlay && watchSec >= 1)
@@ -11539,7 +11712,7 @@ function renderEpisodesList(episodes){
         <button type="button" class="epBtn epBtnLocked" data-act="login">🔒 ورود</button>
       </div>`;
     }else{
-      const dlLabel = downloaded ? "✓ دانلود شده" : "⬇ دانلود";
+      const dlLabel = tgDl ? ((downloaded || unlimited) ? "✈ کانال تلگرام" : "✈ کانال تلگرام · " + COST_TELEGRAM + "🪙") : (downloaded ? "✓ دانلود شده" : "⬇ دانلود");
       if(combinedDownloadPlay){
         actionsHtml = `<div class="epActions">
           <button type="button" class="epBtn epBtnDl ${downloaded ? "downloaded" : ""}" data-act="download">${downloaded ? "✓ دانلود شده" : "⬇ دانلود و پخش"}</button>
@@ -11699,6 +11872,20 @@ function renderSimilar(work){
   const box = $("similarBooks");
   if(!box) return;
   box.innerHTML = "";
+  let list;
+  if(isRestrictedWork(work)){
+    /* انیمهٔ ۱۸+ : فقط انیمه‌های ۱۸+ که حداقل یک ژانر مشترک دارند (چه ۲ تا باشد چه ۱۰۰ تا) */
+    list = allWorks
+      .filter(w => w && w.id !== work.id && !w.isDraft && !w.unpublished && isRestrictedWork(w) && genreOverlapScore(work, w) > 0)
+      .map(w => ({ w, s: genreOverlapScore(work, w) + (w.type === work.type ? 0.3 : 0) }))
+      .sort((a,b)=> b.s - a.s || (b.w.createdAt||0)-(a.w.createdAt||0))
+      .map(x => x.w);
+    if(!list.length){ showEmpty(box, "مورد مشابهی نیست."); return; }
+    const frag = document.createDocumentFragment();
+    list.forEach(w => frag.appendChild(createBookCard(w)));
+    box.appendChild(frag);
+    return;
+  }
   const scored = allWorks
     .filter(w => w && w.id !== work.id && !w.isDraft && !w.unpublished && !isRestrictedWork(w))
     .map(w => {
@@ -11709,11 +11896,11 @@ function renderSimilar(work){
     })
     .filter(x => x.score > 0)
     .sort((a,b)=> b.score - a.score || (b.w.createdAt||0)-(a.w.createdAt||0));
-  let list = scored.map(x => x.w).slice(0, 24);
+  list = scored.map(x => x.w).slice(0, 24);
   if(!list.length) list = allWorks.filter(w => w && !w.isDraft && !w.unpublished && !isRestrictedWork(w) && w.id !== work.id).slice(0, 12);
-  const ordered=window.aaCollectionPriority?.(work)||[];
-  list=[...ordered,...list.filter(w=>!ordered.some(x=>String(x.$id||x.id)===String(w.$id||w.id)))].slice(0,24);
-  window.aaInsertCollectionCards?.(work,box);
+  const ordered = (window.aaCollectionPriority?.(work) || []).filter(w => w && !isRestrictedWork(w));
+  list = [...ordered, ...list.filter(w => !ordered.some(x => String(x.$id||x.id) === String(w.$id||w.id)))].slice(0, 24);
+  window.aaInsertCollectionCards?.(work, box);
   if(!list.length){ showEmpty(box, "مورد مشابهی نیست."); return; }
   list.forEach(w => box.appendChild(createBookCard(w)));
 }
@@ -11941,6 +12128,31 @@ function tryNativeDownload(url, filename){
 }
 
 /** پاک‌سازی و استاندارد کردن لینک دانلود: فاصله/خط جدید/نویسه‌های نامرئی، کدگذاری درست، فقط http/https */
+const COST_TELEGRAM = 5;
+function aaSpendFixedCoins(cost){
+  if(!currentUser || !currentUser.email) return false;
+  if(hasActiveUnlimited(currentUser)) return true;
+  if(cost <= 0) return true;
+  const have = toInt(currentUser.coins, 0);
+  if(have < cost){ showToast("سکه کافی نیست (موجودی: " + have + " — نیاز: " + cost + ")"); return false; }
+  const left = Math.max(0, have - cost);
+  currentUser.coins = left;
+  updateCoinUI();
+  saveCoinsAfterDownload(left);
+  return true;
+}
+function isTelegramUrl(raw){
+  try{
+    const u = new URL(String(raw || "").trim());
+    if(u.protocol !== "https:" && u.protocol !== "http:") return false;
+    return /^(www\.)?(t\.me|telegram\.me|telegram\.dog)$/i.test(u.hostname);
+  }catch(e){ return false; }
+}
+function aaOpenExternal(url){
+  const a = document.createElement("a");
+  a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer";
+  document.body.appendChild(a); a.click(); a.remove();
+}
 function normalizeDownloadUrl(raw){
   let u = String(raw == null ? "" : raw)
     .replace(/[\u200b-\u200f\u202a-\u202e\u2060\ufeff]/g, "")
@@ -12243,6 +12455,32 @@ async function runDownloadFlow(o){
   if(__downloadInFlight) return;
   if(!requireLoginForDownload()) return;
 
+  /* لینک کانال تلگرام: فایل مستقیم نیست — ورود به کانال با هزینهٔ ثابت (۵ سکه)؛ کاربر نامحدود و کسی که قبلاً پرداخت کرده رایگان */
+  if(isTelegramUrl(o.link)){
+    const tgUrl = String(o.link).trim();
+    const tgPaid = !!o.isDownloaded();
+    const tgFree = tgPaid || hasActiveUnlimited(currentUser);
+    if(!tgFree){
+      const have = toInt(currentUser && currentUser.coins, 0);
+      if(have < COST_TELEGRAM){ showToast("سکه کافی نیست (موجودی: " + have + " — نیاز: " + COST_TELEGRAM + ")"); return; }
+      const okTg = await appConfirm("برای ورود به کانال تلگرام و دانلود این قسمت " + COST_TELEGRAM + " سکه از شما کم می‌شود. تأیید می‌کنید؟", { title: "تأیید دانلود", okText: "ادامه", cancelText: "انصراف" });
+      if(!okTg) return;
+    }
+    showVpnDownloadBannerThen(() => {
+      try{
+        if(!tgFree && !aaSpendFixedCoins(COST_TELEGRAM)) return;
+        aaOpenExternal(tgUrl);
+        if(!tgPaid) o.markDone();
+      }catch(e){ console.error(e); showToast("خطا در باز کردن کانال"); }
+    }, {
+      keep: true,
+      title: "دانلود از کانال تلگرام",
+      html: "این قسمت از طریق <b>کانال تلگرام</b> ارائه می‌شود. با زدن دکمه وارد کانال شوید و فایل را همان‌جا دانلود کنید. اگر تلگرام باز نشد، <b>VPN</b> را روشن کنید." + (tgFree ? "" : " هزینه: <b>" + COST_TELEGRAM + " سکه</b>."),
+      btn: "ورود به کانال تلگرام"
+    });
+    return;
+  }
+
   const pre = validateDownloadLink(o.link);
   if(!pre.ok){ reportDownloadFailure(pre, null); return; }
   if(dlIsOffline()){
@@ -12510,6 +12748,8 @@ $("doLoginBtn")?.addEventListener("click", async ()=>{
   const pass = $("loginPassword").value || "";
   if(!email || !pass){ showToast("ایمیل و رمز را وارد کنید"); return; }
   if(!appwriteReady){ showToast("اتصال برقرار نیست"); return; }
+  const __lk = __loginLockLeft();
+  if(__lk > 0){ showToast("تلاش‌های ناموفق زیاد بود؛ " + Math.ceil(__lk / 1000) + " ثانیه صبر کنید"); return; }
   const btn = $("doLoginBtn");
   const old = btn ? btn.textContent : "";
   __authInFlight = true;
@@ -12529,9 +12769,12 @@ $("doLoginBtn")?.addEventListener("click", async ()=>{
       return;
     }
     if(!(await passwordMatches(u.password, pass))){
+      __loginFail();
       showToast("رمز عبور اشتباه است");
       return;
     }
+    __loginOk();
+    try{ if(__needsRehash(u.password)){ const nh = await hashPassword(pass); if(nh.startsWith("p1$")) await updateUserDoc(u.id, { password: nh }); } }catch(e){ console.warn("rehash", e); }
     await expireUnlimitedIfNeeded(u);
     applyUserToSession(u);
     $("loginModal").classList.remove("active");
@@ -13778,6 +14021,14 @@ async function createWorkFromAdmin(asDraft){
     pendingSeasons = [];
     pendingMangaItems = [];
     selectedAdminSeasonIdx = -1;
+    try{
+      const __newId = createdWorkDoc && (createdWorkDoc.$id || createdWorkDoc.id);
+      if(__newId && $("adminCommentsEnabled") && !$("adminCommentsEnabled").checked){
+        const __ok = await window.aaPersistWorkSettings(__newId, { commentsDisabled: true });
+        if(!__ok) showToast("انیمه ثبت شد؛ ولی تنظیم نظرات روی سرور ذخیره نشد");
+      }
+      if($("adminCommentsEnabled")) $("adminCommentsEnabled").checked = true;
+    }catch(e){ console.warn("comments setting", e); }
     renderPendingChapters();
     renderPendingMangaItems();
     renderAdminSeasonsUI();
@@ -14673,7 +14924,8 @@ $("saveEditWorkBtn")?.addEventListener("click", async ()=>{
 
     /* فقط اولویت بنر جدا از سند انیمه ذخیره می‌شود؛ createdAt دست‌نخورده می‌ماند. */
     try{
-      await aaPersistWorkSettings(editingWork.id, {}, !!document.getElementById("aaEditBannerPriority")?.checked);
+      const __cok = await aaPersistWorkSettings(editingWork.id, { commentsDisabled: !($("editCommentsEnabled")?.checked) }, !!document.getElementById("aaEditBannerPriority")?.checked);
+      if(!__cok) showToast("اطلاعات ذخیره شد؛ تنظیم نظرات روی سرور ذخیره نشد");
     }catch(settingsErr){ console.warn("Anime banner priority save:", settingsErr); showToast("اطلاعات انیمه ذخیره شد؛ اولویت بنر همگام نشد"); }
 
     try{ await clearBrokenLinksForWork(editingWork.id); }catch(e){ console.warn(e); }
@@ -16339,6 +16591,7 @@ function worksForStudio(studio){
   const en = normalizeText(studio.nameEn);
   const fa = normalizeText(studio.nameFa);
   return allWorks.filter(w => {
+    if(isRestrictedWork(w)) return false;
     const a = normalizeText(w.Author);
     if(!a) return false;
     if(en && (a === en || a.includes(en) || en.includes(a))) return true;
@@ -19464,6 +19717,7 @@ function extractUrlsFromBulkText(raw){
 
 function initBulkLinksPanel(){
   fillBulkWorkSelect();
+  loadBulkDrafts().then(() => fillBulkWorkSelect($("bulkWorkSearch")?.value || ""));
   const sel = $("bulkWorkSelect");
   if(sel && !sel._bulkBound){
     sel._bulkBound = true;
@@ -19489,27 +19743,48 @@ function initBulkLinksPanel(){
   }
 }
 
+let __bulkDraftRows = [];
+async function loadBulkDrafts(){
+  try{ if(typeof srvOk === "function" && srvOk()) __bulkDraftRows = await srvListByKey("work_draft"); }
+  catch(e){ console.warn("bulk drafts", e); }
+}
+function bulkDraftWork(row){
+  const d = (row && row.data) || {};
+  const type = d.type === "movie" ? "movie" : "serial";
+  let seasons = [], flat = [];
+  try{ const n = normalizeWorkSeasons(d.episodes, type); seasons = n.seasons || []; flat = n.flatEpisodes || []; }catch(e){}
+  return { id: "draft:" + row.id, title: d.title || d.draftTitle || "بدون عنوان", Author: d.Author || "", type, seasons, episodes: type === "movie" ? flat : [], isBulkDraft: true };
+}
+function bulkFindWork(id){
+  id = String(id || "");
+  if(id.startsWith("draft:")){
+    const r = __bulkDraftRows.find(x => "draft:" + x.id === id);
+    return r ? bulkDraftWork(r) : null;
+  }
+  return (typeof allWorks !== "undefined" ? allWorks : []).find(w => w && w.id === id) || null;
+}
 function fillBulkWorkSelect(q){
   const sel = $("bulkWorkSelect");
   if(!sel) return;
   const prev = sel.value;
   const query = String(q || "").trim().toLowerCase();
-  const list = (typeof allWorks !== "undefined" && Array.isArray(allWorks) ? allWorks : [])
-    .filter(w => w && !w.isDraft && !w.unpublished)
-    .filter(w => {
-      if(!query) return true;
-      const t = String(w.title || "").toLowerCase();
-      const a = String(w.Author || "").toLowerCase();
-      return t.includes(query) || a.includes(query);
-    })
-    .slice()
-    .sort((a,b)=> String(a.title||"").localeCompare(String(b.title||""), "fa"));
+  const match = w => {
+    if(!query) return true;
+    return String(w.title || "").toLowerCase().includes(query) || String(w.Author || "").toLowerCase().includes(query);
+  };
+  const published = (typeof allWorks !== "undefined" && Array.isArray(allWorks) ? allWorks : [])
+    .filter(w => w && !w.isDraft && !w.unpublished).map(w => ({ w, draft: false }));
+  const drafts = __bulkDraftRows.map(r => ({ w: bulkDraftWork(r), draft: true }));
+  const list = published.concat(drafts)
+    .filter(x => match(x.w))
+    .sort((a, b) => String(a.w.title || "").localeCompare(String(b.w.title || ""), "fa"));
   sel.innerHTML = '<option value="">— انتخاب انیمه —</option>';
-  list.forEach(w => {
+  list.forEach(x => {
+    const w = x.w;
     const opt = document.createElement("option");
     opt.value = w.id;
     const kind = w.type === "movie" ? "سینمایی" : "سریالی";
-    opt.textContent = (w.title || "بدون عنوان") + " · " + kind;
+    opt.textContent = (x.draft ? "📝 پیش‌نویس · " : "") + (w.title || "بدون عنوان") + " · " + kind;
     sel.appendChild(opt);
   });
   if(prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
@@ -19518,7 +19793,7 @@ function fillBulkWorkSelect(q){
 
 function onBulkWorkChange(){
   const id = ($("bulkWorkSelect")?.value || "");
-  const work = (typeof allWorks !== "undefined" ? allWorks : []).find(w => w && w.id === id);
+  const work = bulkFindWork(id);
   const meta = $("bulkWorkMeta");
   const seasonWrap = $("bulkSeasonWrap");
   const seasonSel = $("bulkSeasonSelect");
@@ -19531,7 +19806,7 @@ function onBulkWorkChange(){
     ? (work.episodes || []).length
     : (work.seasons || []).reduce((n,s)=> n + ((s.episodes||[]).length), 0);
   if(meta){
-    meta.textContent = (work.type === "movie" ? "سینمایی" : "سریالی")
+    meta.textContent = (work.isBulkDraft ? "پیش‌نویس · " : "") + (work.type === "movie" ? "سینمایی" : "سریالی")
       + " · " + epCount + " قسمت موجود"
       + (work.Author ? " · " + work.Author : "");
   }
@@ -19653,7 +19928,16 @@ async function bulkApplyLinks(){
 
   try{
     /* همیشه از سرور تازه بخوان تا با دادهٔ واقعی کار کنیم */
-    const rawDoc = await databases.getDocument(DATABASE_ID, COLLECTION_WORKS, workId);
+    const isDraftTarget = String(workId).startsWith("draft:");
+    const draftSettingsId = isDraftTarget ? String(workId).slice(6) : "";
+    let draftData = null, rawDoc;
+    if(isDraftTarget){
+      const sd = await databases.getDocument(DATABASE_ID, COLLECTION_SETTINGS, draftSettingsId);
+      try{ draftData = JSON.parse(sd.value || "{}") || {}; }catch(e){ draftData = {}; }
+      rawDoc = draftData;
+    }else{
+      rawDoc = await databases.getDocument(DATABASE_ID, COLLECTION_WORKS, workId);
+    }
     const type = rawDoc.type === "movie" ? "movie" : "serial";
     const norm = normalizeWorkSeasons(rawDoc.episodes, type);
 
@@ -19783,14 +20067,18 @@ async function bulkApplyLinks(){
     if($("bulkProgressFill")) $("bulkProgressFill").style.width = "90%";
     if($("bulkProgressMeta")) $("bulkProgressMeta").textContent = "updateDocument → episodes";
 
-    await databases.updateDocument(DATABASE_ID, COLLECTION_WORKS, workId, {
-      episodes: JSON.stringify(episodesPayload)
-    });
+    if(isDraftTarget){
+      await srvUpdate(draftSettingsId, Object.assign({}, draftData, { episodes: JSON.stringify(episodesPayload) }));
+    }else{
+      await databases.updateDocument(DATABASE_ID, COLLECTION_WORKS, workId, {
+        episodes: JSON.stringify(episodesPayload)
+      });
+    }
 
     if($("bulkProgressFill")) $("bulkProgressFill").style.width = "100%";
     if($("bulkProgressTitle")) $("bulkProgressTitle").textContent = "ذخیره شد";
 
-    await loadWorks();
+    if(isDraftTarget) await loadBulkDrafts(); else await loadWorks();
     onBulkWorkChange();
 
     const workTitle = (rawDoc.title || workId);
@@ -19800,7 +20088,7 @@ async function bulkApplyLinks(){
       res.style.display = "block";
       let html = "<b style='color:var(--orange)'>ذخیره در سرور انجام شد</b><br>"
         + "اثر: <b>" + escapeHtml(workTitle) + "</b><br>"
-        + "محل: جدول <b>works</b> → فیلد <b>episodes</b> → فیلد <b>link</b> هر قسمت<br>"
+        + (isDraftTarget ? "محل: <b>پیش‌نویس</b> → فیلد <b>episodes</b> → فیلد <b>link</b> هر قسمت (هنوز منتشر نشده)<br>" : "محل: جدول <b>works</b> → فیلد <b>episodes</b> → فیلد <b>link</b> هر قسمت<br>")
         + "محدوده: " + escapeHtml(seasonLabel) + "<br>"
         + "جدید: <b>" + created + "</b> · جایگزین/پر شد: <b>" + updated + "</b> · رد (لینک قبلی): <b>" + skipped + "</b> · خطا: <b>" + failed + "</b>"
         + (overwrite ? (" · حذف لینک‌های خارج از لیست: <b>" + cleared + "</b>") : "");
@@ -21011,7 +21299,8 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
   const shuffleArray=a=>{const out=a.slice();for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out;};
   function cleanState(raw){
     const priority=raw&&raw.priority&&typeof raw.priority==="object"?raw.priority:{};
-    return {priority:{...priority}};
+    const off=raw&&raw.commentsOff&&typeof raw.commentsOff==="object"?raw.commentsOff:{};
+    return {priority:{...priority},commentsOff:{...off}};
   }
   function localRead(){
     try{return cleanState(JSON.parse(localStorage.getItem(AA_LOCAL_KEY)||"{}"));}
@@ -21058,49 +21347,86 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
   async function persistWork(id,config,priorityChecked){
     if(!loaded)await loadState();
     const key=String(id||"");if(!key)return false;
-    if(priorityChecked){
-      if(!Object.prototype.hasOwnProperty.call(state.priority,key))state.priority[key]=Date.now();
-    }else delete state.priority[key];
+    if(priorityChecked!==undefined){
+      if(priorityChecked){
+        if(!Object.prototype.hasOwnProperty.call(state.priority,key))state.priority[key]=Date.now();
+      }else delete state.priority[key];
+    }
+    state.commentsOff=state.commentsOff||{};
+    if(config&&typeof config==="object"&&"commentsDisabled" in config){
+      if(config.commentsDisabled)state.commentsOff[key]=1;else delete state.commentsOff[key];
+    }
     const ok=await saveState();
+    try{window.aaApplyCommentsVisibility&&typeof currentWork!=="undefined"&&currentWork&&window.aaApplyCommentsVisibility(currentWork);}catch(e){}
     if(typeof renderHero==="function")try{renderHero(false);}catch(e){}
     return ok;
   }
   window.__AA_CONTROLS_STATE=state;
   window.aaPersistWorkSettings=persistWork;
+  window.aaCommentsEnabled=function(id){return !(state.commentsOff&&state.commentsOff[String(id)]);};
+  window.aaApplyCommentsVisibility=function(work){
+    const b=$("aaOpenComments");if(!b)return;
+    const on=!work||window.aaCommentsEnabled(work.id);
+    if(on)b.style.removeProperty("display");else b.style.setProperty("display","none","important");
+  };
   window.aaLoadAnimeControls=loadState;
 
   /* Randomize poster combinations once per page visit; navigation re-renders reuse the same picks. */
+  let gIdx=null,gIdxFor=null,gIdxKey="";
+  function genreIndex(){
+    const works=(typeof allWorks!=="undefined"&&Array.isArray(allWorks))?allWorks:[];
+    const key=(typeof getRestrictedGenreNames==="function"?getRestrictedGenreNames().join(","):"");
+    if(gIdx&&gIdxFor===works&&gIdxKey===key)return gIdx;
+    const idx=new Map();
+    for(const w of works){
+      if(!w||w.isDraft||w.unpublished)continue;
+      const r=isRestrictedWork(w);
+      const seen=new Set();
+      for(const g of workGenres(w)){
+        const k=normalizeText(g);if(!k||seen.has(k))continue;seen.add(k);
+        let e=idx.get(k);if(!e){e={pub:[],adult:[]};idx.set(k,e);}
+        (r?e.adult:e.pub).push(w);
+      }
+    }
+    genrePosterCache.clear();
+    gIdx=idx;gIdxFor=works;gIdxKey=key;return idx;
+  }
   window.renderGenres=function(){
     const box=$("genres");if(!box)return;
-    box.innerHTML="";
-    const works=(typeof allWorks!=="undefined"&&Array.isArray(allWorks)?allWorks:[]).filter(w=>w&&!w.isDraft&&!w.unpublished);
-    if(!works.length){return;}
+    const idx=genreIndex();
+    const frag=document.createDocumentFragment();
     getGenres().forEach(genre=>{
-      const normalized=normalizeText(genre);
-      const matching=works.filter(w=>workGenres(w).some(g=>normalizeText(g)===normalized));
-      let picks=genrePosterCache.get(normalized);
-      if(!picks){
-        const pool=shuffleArray(matching.filter(w=>w.coverUrl&&isValidUrl(w.coverUrl)));
-        picks=pool.slice(0,3).map(w=>({id:String(w.id),coverUrl:w.coverUrl}));
-        genrePosterCache.set(normalized,picks);
-      }
+      const k=normalizeText(genre);
+      const e=idx.get(k)||{pub:[],adult:[]};
+      const adult=isRestrictedGenreName(genre);
+      const matching=adult?e.adult:e.pub;
       const btn=document.createElement("button");btn.type="button";btn.className="genre genreMosaic";
       const art=document.createElement("span");art.className="genreMosaicArt";
+      let picks=[];
+      if(!adult){
+        picks=genrePosterCache.get(k);
+        if(!picks){
+          const pool=shuffleArray(matching.filter(w=>w.coverUrl&&isValidUrl(w.coverUrl)));
+          picks=pool.slice(0,3).map(w=>({id:String(w.id),coverUrl:w.coverUrl}));
+          genrePosterCache.set(k,picks);
+        }
+      }
       if(picks.length){
         picks.forEach(w=>{
-          const img=document.createElement("img");img.src=w.coverUrl;img.alt="";img.loading="lazy";img.draggable=false;
-          img.onerror=()=>img.remove();art.appendChild(img);
+          const img=document.createElement("img");img.src=w.coverUrl;img.alt="";img.loading="lazy";img.decoding="async";img.draggable=false;
+          img.referrerPolicy="no-referrer";img.onerror=()=>img.remove();art.appendChild(img);
         });
       }else{
-        const fallback=document.createElement("span");fallback.className="genreMosaicFallback";fallback.textContent="✦";art.appendChild(fallback);
+        const fallback=document.createElement("span");fallback.className="genreMosaicFallback";fallback.textContent=adult?"۱۸+":"✦";art.appendChild(fallback);
       }
       const shade=document.createElement("span");shade.className="genreMosaicShade";
       const info=document.createElement("span");info.className="genreMosaicInfo";
       const name=document.createElement("strong");name.textContent=genre;
       const count=document.createElement("small");count.textContent=matching.length+" اثر";
       info.append(name,count);btn.append(art,shade,info);
-      btn.addEventListener("click",()=>openGenreDetail(genre));box.appendChild(btn);
+      btn.addEventListener("click",()=>openGenreDetail(genre));frag.appendChild(btn);
     });
+    box.replaceChildren(frag);
   };
 
   function addBannerPriorityControl(){
@@ -21119,7 +21445,9 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
     const original=window.openEditWork;
     const wrapped=function(work,draftRow){
       const result=original.apply(this,arguments);
-      addBannerPriorityControl();syncBannerPriority(work);return result;
+      addBannerPriorityControl();syncBannerPriority(work);
+      if($("editCommentsEnabled"))$("editCommentsEnabled").checked=!work||window.aaCommentsEnabled(work.id);
+      return result;
     };
     wrapped.__aaPriorityWrapped=true;window.openEditWork=wrapped;
   }
@@ -21137,6 +21465,7 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
       wrapped.__aaPriorityWrapped=true;window.loadWorks=wrapped;
     }
     if(typeof renderHero==="function")try{renderHero(false);}catch(e){}
+    try{if(typeof currentWork!=="undefined"&&currentWork)window.aaApplyCommentsVisibility(currentWork);}catch(e){}
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
