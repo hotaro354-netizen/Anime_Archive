@@ -4781,6 +4781,39 @@ html.theme-light .aaProfileListPage{background:#f4f2ef}html.theme-brown .aaProfi
 label.aaCommentsSwitch span{flex:1 1 auto;min-width:0;line-height:1.6}
 .aaMoreBtn{width:100%;margin:12px 0;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text)}
 </style>
+<style id="aaPatchStyle">
+.aaSubBadge{display:inline-flex;align-items:center;margin-inline-start:6px;padding:2px 7px;border-radius:999px;font-size:10px;line-height:1.4;font-weight:700;color:var(--orange);border:1px solid var(--orange);background:color-mix(in srgb,var(--orange) 14%,transparent);vertical-align:middle;white-space:nowrap}
+@keyframes aaFlashKf{0%,65%{box-shadow:0 0 0 2px var(--orange),0 0 22px var(--accent-glow)}100%{box-shadow:0 0 0 0 transparent}}
+.aaCommentCard.aaFlash,.aaReply.aaFlash{animation:aaFlashKf 2.6s ease-out}
+.userNotifCard .unBtns{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.userNotifCard .unBtns button{margin-top:0}
+html[class] .userNotifCard button.unGhost,html .userNotifCard button.unGhost{background:transparent !important;color:var(--text,#f0ebe3) !important;border:1px solid var(--line,#2a2a30) !important}
+.aaPList .aaPItem:not(.aaPAdd){display:block;width:100%;min-width:0;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aaAdvBtn{flex:none;width:34px;height:34px;padding:0;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--orange);display:grid;place-items:center;cursor:pointer}
+.aaAdvBtn svg{width:18px;height:18px;display:block}
+.aaAdvBtnHome{width:38px;height:38px;margin-right:auto}
+.aaAdvSub{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.aaAdvSub[hidden]{display:none}
+.aaAdvOverlay{position:fixed;inset:0;z-index:5200;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
+.aaAdvOverlay.open{display:flex}
+.aaAdvSheet{width:100%;max-width:560px;max-height:88vh;display:flex;flex-direction:column;background:var(--modal-bg,var(--card));color:var(--text);border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0;direction:rtl;text-align:right}
+.aaAdvHead{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 8px}
+.aaAdvHead strong{font-size:15px;color:var(--orange)}
+.aaAdvHead button{background:transparent;border:0;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px}
+.aaAdvBody{padding:4px 18px 10px;overflow:auto;-webkit-overflow-scrolling:touch}
+.aaAdvGroup{margin:12px 0}
+.aaAdvGroup>label{display:block;font-size:12px;font-weight:700;margin-bottom:7px;color:var(--text)}
+.aaAdvGroup>label small{font-weight:500;color:var(--muted);margin-inline-start:6px}
+.aaAdvGroup select,.aaAdvGroup input[type=search]{width:100%;box-sizing:border-box;background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:13px}
+.aaAdvGroup input[type=search]{margin-bottom:8px}
+.aaAdvChips{display:flex;flex-wrap:wrap;gap:7px}
+.aaAdvScroll{max-height:150px;overflow:auto}
+.aaAdvChips button{background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font:inherit;font-size:12px;cursor:pointer}
+.aaAdvChips button.sel{border-color:var(--orange);color:var(--orange);background:color-mix(in srgb,var(--orange) 14%,transparent)}
+.aaAdvFoot{display:flex;gap:10px;padding:12px 18px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+.aaAdvFoot button{flex:1;border-radius:14px;padding:13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--text)}
+.aaAdvFoot button#aaAdvGo{flex:2;background:var(--orange);color:#1a1008;border-color:var(--orange)}
+</style>
 </head>
 <body>
 
@@ -4821,6 +4854,7 @@ label.aaCommentsSwitch span{flex:1 1 auto;min-width:0;line-height:1.6}
   <div class="homeSearchEntry" id="homeSearchEntry" role="button" tabindex="0" aria-label="جستجو">
     <div class="hsIcon">⌕</div>
     <div class="hsText"><span class="hsAnim" id="homeSearchPlaceholder">جستجو در آرشیو انیمه...</span></div>
+    <button type="button" id="aaAdvBtnHome" class="aaAdvBtn aaAdvBtnHome" aria-label="جستجوی پیشرفته"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
   </div>
 
   <!-- اسلایدر ۱۵ پوستر برتر -->
@@ -4915,6 +4949,7 @@ label.aaCommentsSwitch span{flex:1 1 auto;min-width:0;line-height:1.6}
     <span>🔍</span>
     <input id="searchInput" placeholder="نام انیمه، استودیو یا کلیدواژه..." autocomplete="off">
     <span id="clearSearch" style="cursor:pointer">×</span>
+    <button type="button" id="aaAdvBtn" class="aaAdvBtn" aria-label="جستجوی پیشرفته"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
   </div>
   <div id="searchStudiosBox" style="display:none;margin:4px 0 6px">
     <div class="sectionHead" style="margin:2px 0 4px"><h3 style="font-size:12px">استودیوها</h3></div>
@@ -6176,6 +6211,12 @@ label.aaCommentsSwitch span{flex:1 1 auto;min-width:0;line-height:1.6}
         <label>قسمت‌ها / بخش‌ها</label>
         <div id="editChaptersList"></div>
         <button class="addBtn" id="addEditChapterBtn" type="button">+ افزودن قسمت</button>
+        <div style="border:1px dashed var(--line);border-radius:12px;padding:8px;margin-top:8px">
+          <label style="display:block;margin-bottom:6px">زیرنویس سینمایی (یک فایل srt / vtt / ass یا zip؛ به فایل‌های غیر دوبله وصل می‌شود)</label>
+          <input id="editMovieSubFile" type="file" accept=".srt,.vtt,.ass,.ssa,.zip" style="font-size:11px;max-width:100%">
+          <button class="addBtn" id="editMovieSubBtn" type="button" style="width:auto;height:36px;padding:0 10px;margin:6px 0 0;font-size:10px">آپلود و اتصال زیرنویس</button>
+          <div id="editMovieSubStatus" style="font-size:10px;color:var(--muted);margin-top:6px"></div>
+        </div>
         <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
           <input id="editBulkChapterCount" type="number" min="1" max="500" placeholder="تعداد" style="width:90px;margin:0">
           <button class="addBtn" id="editBulkAddChaptersBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">+ ساخت خودکار</button>
@@ -6196,6 +6237,12 @@ label.aaCommentsSwitch span{flex:1 1 auto;min-width:0;line-height:1.6}
             <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
               <input id="editRenameSeasonInput" class="modalInput" style="margin:0;flex:1;min-width:100px" placeholder="نام جدید فصل">
               <button class="addBtn" id="editRenameSeasonBtn" type="button" style="width:auto;height:38px;padding:0 10px;margin:0;font-size:10px">تغییر نام</button>
+            </div>
+            <div style="border:1px dashed var(--line);border-radius:12px;padding:8px;margin-bottom:8px">
+              <label style="display:block;margin-bottom:6px">زیرنویس خودکار این فصل (چند فایل srt / vtt / ass یا یک فایل zip)</label>
+              <input id="editSeasonSubsFiles" type="file" multiple accept=".srt,.vtt,.ass,.ssa,.zip" style="font-size:11px;max-width:100%">
+              <button class="addBtn" id="editSeasonSubsBtn" type="button" style="width:auto;height:36px;padding:0 10px;margin:6px 0 0;font-size:10px">آپلود و اتصال خودکار به قسمت‌ها</button>
+              <div id="editSeasonSubsStatus" style="font-size:10px;color:var(--muted);margin-top:6px"></div>
             </div>
             <label style="margin-top:4px">قسمت‌های این فصل</label>
             <div id="editSeasonEpisodesList"></div>
@@ -6419,6 +6466,22 @@ label.aaCommentsSwitch span{flex:1 1 auto;min-width:0;line-height:1.6}
 </div>
 
 <div id="toast" class="toast">انجام شد</div>
+
+<!-- جستجوی پیشرفته -->
+<div class="aaAdvOverlay" id="aaAdvOverlay" aria-hidden="true">
+  <div class="aaAdvSheet" role="dialog" aria-label="جستجوی پیشرفته">
+    <div class="aaAdvHead"><strong>جستجوی پیشرفته</strong><button type="button" id="aaAdvClose" aria-label="بستن">✕</button></div>
+    <div class="aaAdvBody">
+      <div class="aaAdvGroup"><label>نوع</label><div class="aaAdvChips" id="aaAdvType"></div></div>
+      <div class="aaAdvGroup aaAdvSub" id="aaAdvSerialOnly" hidden><label>تعداد فصل</label><div class="aaAdvChips" id="aaAdvSeasons"></div><label style="margin-top:10px;display:block">تعداد تقریبی قسمت</label><div class="aaAdvChips" id="aaAdvEps"></div></div>
+      <div class="aaAdvGroup"><label for="aaAdvYear">سال ساخت</label><select id="aaAdvYear"></select></div>
+      <div class="aaAdvGroup"><label for="aaAdvImdb">نمره IMDb</label><select id="aaAdvImdb"></select></div>
+      <div class="aaAdvGroup"><label>ژانر <small id="aaAdvGenreCount"></small></label><div class="aaAdvChips" id="aaAdvGenres"></div></div>
+      <div class="aaAdvGroup"><label>استودیو <small id="aaAdvStudioCount"></small></label><input type="search" id="aaAdvStudioFilter" placeholder="جستجوی نام استودیو..." autocomplete="off"><div class="aaAdvChips aaAdvScroll" id="aaAdvStudios"></div></div>
+    </div>
+    <div class="aaAdvFoot"><button type="button" id="aaAdvReset">پاک کردن</button><button type="button" id="aaAdvGo">جستجو</button></div>
+  </div>
+</div>
 
 <!-- بنر هشدار مهم (فیلترشکن) -->
 <div id="importantBanner" class="importantBannerOverlay">
@@ -8772,6 +8835,7 @@ function showPage(id, fromPop){
     try{ stopCinemaLive(); }catch(e){}
   }
 
+  if(id === "listPage" && fromPop){ try{ window.aaAdvRestore && window.aaAdvRestore(); }catch(e){} }
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   const page = $(id);
   if(page) page.classList.add("active");
@@ -9667,6 +9731,7 @@ $("tabSerial")?.addEventListener("click", ()=> setHomeTab("serial"));
 $("tabMovie")?.addEventListener("click", ()=> setHomeTab("movie"));
 
 function openListPage(title, list){
+  window.__aaAdvActive = false;
   $("listTitle").textContent = title;
   fillBooksBox("listBooks", list, "موردی نیست.");
   showPage("listPage");
@@ -11346,7 +11411,12 @@ function openPlayerPage(work, ep, idx){
   };
   updatePlayerNavButtons();
 
-  const title = ep.title || ("قسمت " + (idx + 1));
+  let title = ep.title || ("قسمت " + (idx + 1));
+  if(work.type !== "movie" && !/فصل|season/i.test(title)){
+    const sIdx = playerNavCtx.seasonIdx;
+    const sName = (sIdx >= 0 && seasons[sIdx]) ? (seasons[sIdx].title || ("فصل " + (sIdx + 1))) : "فصل 1";
+    title = sName + " " + title;
+  }
   if($("playerPageTitle")) $("playerPageTitle").textContent = "پخش";
   if($("playerOnlyEpisodeTitle")) $("playerOnlyEpisodeTitle").textContent = title;
   if($("playerOnlyMeta")){
@@ -14688,6 +14758,111 @@ $("editRenameSeasonBtn")?.addEventListener("click", ()=>{
   renderEditSeasonsUI();
   showToast("نام فصل تغییر کرد");
 });
+
+/* آپلود دسته‌ای زیرنویس فصل: شماره قسمت از نام فایل تشخیص داده می‌شود و به subtitleLink همان قسمت وصل می‌شود */
+(function(){
+  const faDigits = t => String(t||"").replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+  function epNumFromName(name){
+    const base = faDigits(name).replace(/\.[a-z0-9]{2,4}$/i, "");
+    let n = null;
+    try{ n = extractEpisodeNumberFromText(base + ".x"); }catch(e){}
+    if(n) return n;
+    const m = base.replace(/(?:480|720|1080|2160)p?|x26[45]|[hH]\.?26[45]|\b(?:19|20)\d{2}\b/g, " ").match(/(\d{1,4})(?!.*\d)/);
+    return m ? parseInt(m[1], 10) : null;
+  }
+  function epNumOfEpisode(ep, idx){
+    const n = extractEpisodeNumberFromText(faDigits(ep.title || ""));
+    if(n) return n;
+    const m = faDigits(ep.title || "").match(/(\d{1,4})/);
+    return m ? parseInt(m[1], 10) : idx + 1;
+  }
+  async function unzipSubFiles(buf){
+    const dv = new DataView(buf), u = new Uint8Array(buf); let e = buf.byteLength - 22;
+    while(e >= 0 && dv.getUint32(e, true) !== 0x06054b50) e--;
+    if(e < 0) return [];
+    let n = dv.getUint16(e + 10, true), o = dv.getUint32(e + 16, true); const out = [];
+    while(n-- > 0 && dv.getUint32(o, true) === 0x02014b50){
+      const m = dv.getUint16(o + 10, true), cs = dv.getUint32(o + 20, true), nl = dv.getUint16(o + 28, true), xl = dv.getUint16(o + 30, true), cl = dv.getUint16(o + 32, true), lo = dv.getUint32(o + 42, true);
+      const name = new TextDecoder().decode(u.subarray(o + 46, o + 46 + nl)); o += 46 + nl + xl + cl;
+      if(!/\.(srt|vtt|ass|ssa)$/i.test(name) || /__MACOSX/.test(name)) continue;
+      const st = lo + 30 + dv.getUint16(lo + 26, true) + dv.getUint16(lo + 28, true); let d = u.subarray(st, st + cs);
+      if(m === 8) d = new Uint8Array(await new Response(new Blob([d]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
+      const base = name.split("/").pop();
+      out.push(new File([d.slice()], base, { type: "text/plain" }));
+    }
+    return out;
+  }
+  async function expandSubFiles(list){
+    const out = [];
+    for(const f of list){
+      if(/\.zip$/i.test(f.name)){ try{ out.push(...await unzipSubFiles(await f.arrayBuffer())); }catch(e){ console.warn("zip", e); } }
+      else out.push(f);
+    }
+    return out;
+  }
+  async function uploadSub(f, bucket){
+    const up = await aaStorage.createFile(bucket, appwriteID.unique(), f);
+    return APPWRITE_ENDPOINT + "/storage/buckets/" + encodeURIComponent(bucket) + "/files/" + encodeURIComponent(up.$id) + "/view?project=" + encodeURIComponent(APPWRITE_PROJECT);
+  }
+  $("editMovieSubBtn")?.addEventListener("click", async ()=>{
+    if(busy) return;
+    const st = $("editMovieSubStatus");
+    const sel = Array.from($("editMovieSubFile")?.files || []);
+    if(!sel.length){ showToast("فایل زیرنویس را انتخاب کنید"); return; }
+    if(!editingChapters.length){ showToast("ابتدا فایل/قسمت سینمایی را اضافه کنید"); return; }
+    if(!isAdminMode || !(await requireAdminAction())) return;
+    if(!aaStorage || !appwriteID){ showToast("Storage متصل نیست"); return; }
+    const bucket = aaBucket(); if(!bucket){ showToast("شناسه Bucket را ثبت کنید"); return; }
+    busy = true;
+    try{
+      if(st) st.textContent = "در حال آپلود...";
+      const files = await expandSubFiles(sel);
+      if(!files.length){ if(st) st.textContent = "فایل زیرنویس معتبری پیدا نشد."; return; }
+      const url = await uploadSub(files[0], bucket);
+      let n = 0;
+      editingChapters.forEach(ch => { if(String(ch.title || "").indexOf("دوبله") === -1){ ch.subtitleLink = url; n++; } });
+      if(!n) editingChapters.forEach(ch => { ch.subtitleLink = url; n++; });
+      if(st) st.textContent = "زیرنویس به " + n + " فایل وصل شد. برای ثبت نهایی، اثر را ذخیره کنید.";
+      $("editMovieSubFile").value = "";
+      renderEditChapters();
+    }catch(e){
+      console.error(e);
+      if(st) st.textContent = "خطا: " + (e.message || "مجوز یا اتصال را بررسی کنید");
+    }finally{ busy = false; }
+  });
+  let busy = false;
+  $("editSeasonSubsBtn")?.addEventListener("click", async ()=>{
+    if(busy) return;
+    const st = $("editSeasonSubsStatus");
+    const season = editingSeasons[selectedEditSeasonIdx];
+    const files = await expandSubFiles(Array.from($("editSeasonSubsFiles")?.files || []));
+    if(!season){ showToast("ابتدا فصل را انتخاب کنید"); return; }
+    if(!files.length){ showToast("فایل‌های زیرنویس را انتخاب کنید"); return; }
+    if(!isAdminMode || !(await requireAdminAction())) return;
+    if(!aaStorage || !appwriteID){ showToast("Storage متصل نیست"); return; }
+    const bucket = aaBucket(); if(!bucket){ showToast("شناسه Bucket را ثبت کنید"); return; }
+    busy = true;
+    let ok = 0, miss = [];
+    try{
+      for(let i = 0; i < files.length; i++){
+        const f = files[i];
+        const num = epNumFromName(f.name);
+        const idx = num == null ? -1 : (season.episodes || []).findIndex((e, k) => epNumOfEpisode(e, k) === num);
+        if(idx < 0){ miss.push(f.name); continue; }
+        if(st) st.textContent = "در حال آپلود " + (i + 1) + " از " + files.length + "...";
+        season.episodes[idx].subtitleLink = await uploadSub(f, bucket);
+        ok++;
+      }
+      if(st) st.textContent = ok + " زیرنویس به قسمت‌ها وصل شد" + (miss.length ? " — بدون تطبیق: " + miss.join("، ") : "") + ". برای ثبت نهایی، اثر را ذخیره کنید.";
+      $("editSeasonSubsFiles").value = "";
+      renderEditSeasonEpisodes();
+    }catch(e){
+      console.error(e);
+      if(st) st.textContent = "خطا: " + (e.message || "مجوز یا اتصال را بررسی کنید") + " (" + ok + " مورد وصل شد)";
+      renderEditSeasonEpisodes();
+    }finally{ busy = false; }
+  });
+})();
 $("editBulkAddChaptersBtn")?.addEventListener("click", ()=>{
   const n = parseInt(($("editBulkChapterCount")?.value || "0"), 10);
   if(!n || n < 1){ showToast("تعداد معتبر نیست"); return; }
@@ -15019,6 +15194,7 @@ function showImportantBanner(){
 }
 function hideImportantBanner(){
   $("importantBanner")?.classList.remove("active");
+  setTimeout(()=>{ try{ checkUserNotifications(); }catch(e){} }, 400);
 }
 $("importantBannerOk")?.addEventListener("click", ()=>{
   hideImportantBanner();
@@ -19283,6 +19459,8 @@ async function renderAdminReports(){
 
 async function checkUserNotifications(){
   if(__notifBusy || !currentUser || !currentUser.id || !srvOk()) return;
+  /* ترتیب: بنر فیلترشکن → اعلان مدیر → پاسخ نظرها */
+  if($("importantBanner")?.classList.contains("active") || $("vpnDownloadBanner")?.classList.contains("active")) return;
   __notifBusy = true;
   let keepBusy = false;
   try{
@@ -19290,7 +19468,7 @@ async function checkUserNotifications(){
     const em = normalizeEmail(currentUser.email);
     const mine = list.filter(n => n.data && (
       n.data.userId === currentUser.id || (em && normalizeEmail(n.data.userEmail) === em)
-    )).sort((a, b) => (a.data.at || 0) - (b.data.at || 0));
+    )).sort((a, b) => ((a.data.kind === "comment_reply") - (b.data.kind === "comment_reply")) || ((a.data.at || 0) - (b.data.at || 0)));
     if(!mine.length) return;
     keepBusy = true;
     showUserNotifQueue(mine);
@@ -19313,7 +19491,7 @@ function showUserNotifQueue(queue){
     card.className = "userNotifCard";
     const ic = document.createElement("div"); ic.className = "unIcon";
     const kind = (n.data && n.data.kind) || "";
-    ic.textContent = (kind === "admin_msg" || kind === "request_reply" || kind === "report_reply") ? "🔔" : (kind.indexOf("report") === 0 ? "🔧" : "🎉");
+    ic.textContent = kind === "comment_reply" ? "💬" : (kind === "admin_msg" || kind === "request_reply" || kind === "report_reply") ? "🔔" : (kind.indexOf("report") === 0 ? "🔧" : "🎉");
     const tx = document.createElement("div"); tx.className = "unText";
     tx.textContent = (n.data && n.data.title) ? n.data.title : "اعلان";
     const tt = document.createElement("div"); tt.className = "unTitle";
@@ -19324,7 +19502,19 @@ function showUserNotifQueue(queue){
       try{ await srvDelete(n.id); }catch(e){ console.warn(e); }
       i++; step();
     });
-    card.appendChild(ic); card.appendChild(tx); if(tt.textContent) card.appendChild(tt); card.appendChild(ok);
+    card.appendChild(ic); card.appendChild(tx); if(tt.textContent) card.appendChild(tt);
+    if(kind === "comment_reply"){
+      ok.textContent = "تأیید"; ok.className = "unGhost";
+      const see = document.createElement("button"); see.type = "button"; see.textContent = "دیدن";
+      see.addEventListener("click", async ()=>{
+        see.disabled = true; ok.disabled = true;
+        try{ await srvDelete(n.id); }catch(e){ console.warn(e); }
+        ov.remove(); __notifBusy = false;
+        try{ window.aaGoToComment && window.aaGoToComment(n.data); }catch(e){ console.warn(e); }
+      });
+      const btns = document.createElement("div"); btns.className = "unBtns"; btns.append(see, ok);
+      card.appendChild(btns);
+    }else card.appendChild(ok);
     ov.appendChild(card);
   };
   step();
@@ -20996,7 +21186,45 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
   const isLoggedIn = () => !!(currentUser && currentUser.id);
   const myId = () => String(currentUser?.id || "");
   const myName = () => String(currentUser?.name || (currentUser?.email || "").split("@")[0] || "").trim().slice(0, 50);
-  const nameOf = i => i.is_anonymous ? "ناشناس" : (i.display_name || "کاربر");
+  const profileCache = new Map();
+  const subActive = p => !!p && (p.mode === "permanent" || (p.mode === "timed" && Number(p.until) > Date.now()));
+  const profileOf = i => {
+    if (i.is_anonymous) return null;
+    if (isLoggedIn() && i.user_id === myId()) return { name: myName(), mode: currentUser.unlimitedMode, until: currentUser.unlimitedUntil };
+    return profileCache.get(String(i.user_id)) || null;
+  };
+  const nameOf = i => { if (i.is_anonymous) return "ناشناس"; const p = profileOf(i); return (p && p.name) || i.display_name || "کاربر"; };
+  const subBadge = () => { const b = node("span", "aaSubBadge", "✦ اشتراک"); b.title = "اشتراک فعال دارد"; return b; };
+  const countVisible = all => { const tops = new Set(all.filter(x => !x.parent_id).map(x => x.id)); return tops.size + all.filter(x => x.parent_id && tops.has(x.parent_id)).length; };
+  let pendingFocus = null;
+  async function loadProfiles(items) {
+    const ids = [...new Set(items.filter(i => !i.is_anonymous && i.user_id).map(i => String(i.user_id)))];
+    if (!ids.length || typeof databases === "undefined" || !databases || typeof appwriteQuery === "undefined" || !appwriteQuery) return;
+    for (let k = 0; k < ids.length; k += 50) {
+      try {
+        const res = await databases.listDocuments(DATABASE_ID, COLLECTION_USERS, [appwriteQuery.equal("$id", ids.slice(k, k + 50)), appwriteQuery.select(["$id", "name", "unlimitedMode", "unlimitedUntil"]), appwriteQuery.limit(50)]);
+        (res.documents || []).forEach(d => profileCache.set(String(d.$id), { name: String(d.name || "").trim(), mode: String(d.unlimitedMode || "none").toLowerCase().trim(), until: Number(d.unlimitedUntil) || 0 }));
+      } catch (e) { console.warn("comment profiles", e); }
+    }
+  }
+  async function notifyReply(row, item, targetUid) {
+    try {
+      if (!row || !targetUid || String(targetUid) === myId() || typeof srvOk !== "function" || !srvOk()) return;
+      const title = String(currentWork?.title || currentWork?.name || "این انیمه");
+      await srvCreate(KEY_USER_NOTIF, { userId: String(targetUid), userEmail: "", title: "پاسخ جدید به نظر شما", text: "در نظرهای «" + title + "»، " + (myName() || "کاربر") + " به نظر شما پاسخ داد.", kind: "comment_reply", workId: workId(), parentId: item.id, replyId: row.$id || "", at: Date.now() }, "n_");
+    } catch (e) { console.warn("notify reply", e); }
+  }
+  function applyFocus() {
+    const f = pendingFocus; if (!f) return;
+    const list = $("aaCommentList"); if (!list) { pendingFocus = null; return; }
+    const find = id => id ? list.querySelector('[data-cid="' + id + '"]') : null;
+    const t = find(f.replyId) || find(f.parentId);
+    if (!t) { pendingFocus = null; return; }
+    const go = () => { try { t.scrollIntoView({ block: "center", behavior: "instant" }); } catch (e) { t.scrollIntoView(); } };
+    go(); [120, 400, 800].forEach(ms => setTimeout(go, ms));
+    t.classList.add("aaFlash"); setTimeout(() => t.classList.remove("aaFlash"), 2800);
+    setTimeout(() => { if (pendingFocus === f) pendingFocus = null; }, 1300);
+  }
   const isMine = i => isLoggedIn() && i.user_id === myId();
   const closeMenus = () => document.querySelectorAll("#aaCommentsPage .aaMoreWrap.open").forEach(m => m.classList.remove("open"));
   document.addEventListener("click", e => { if (!e.target.closest("#aaCommentsPage .aaMoreWrap")) closeMenus(); });
@@ -21011,7 +21239,7 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
     if (c) c.textContent = n ? fmt(n) + " نظر ثبت شده" : "هنوز نظری ثبت نشده";
   }
   function scrollLatest() {
-    const go = () => { if (!$("aaCommentsPage")?.classList.contains("active")) return; window.scrollTo({ top: Math.max(0, Math.max(document.documentElement.scrollHeight, document.body.scrollHeight) - window.innerHeight), left: 0, behavior: "instant" }); };
+    const go = () => { if (pendingFocus || !$("aaCommentsPage")?.classList.contains("active")) return; window.scrollTo({ top: Math.max(0, Math.max(document.documentElement.scrollHeight, document.body.scrollHeight) - window.innerHeight), left: 0, behavior: "instant" }); };
     requestAnimationFrame(() => requestAnimationFrame(go)); [90, 300, 650].forEach(t => setTimeout(go, t));
   }
   function message(icon, text) {
@@ -21062,15 +21290,18 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
   function renderComments(all) {
     const list = $("aaCommentList"); if (!list) return;
     list.replaceChildren();
-    const tops = all.filter(x => !x.parent_id);
-    if ($("aaCommentCount")) $("aaCommentCount").textContent = "نظرها · " + fmt(tops.length);
-    updatePreviewCount(tops.length);
+    if (pendingFocus && pendingFocus.replyId) expanded.add(pendingFocus.parentId);
+    const tops = all.filter(x => !x.parent_id), total = countVisible(all);
+    if ($("aaCommentCount")) $("aaCommentCount").textContent = "نظرها · " + fmt(total);
+    updatePreviewCount(total);
     if (!tops.length) { message("✦", "هنوز نظری برای این انیمه نوشته نشده.\nاولین نفر باش و تجربه‌ات رو به اشتراک بذار!"); return; }
     for (const item of tops) {
       const mineC = isMine(item), card = node("article", "aaCommentCard " + (mineC ? "aaMine" : "aaOther"));
+      card.dataset.cid = item.id;
       const head = node("div", "aaUser"), info = node("div"), nm = nameOf(item), avatar = node("div", "aaAvatar", nm.trim().slice(0, 1));
       if (mineC && !item.is_anonymous) { try { const social = JSON.parse(localStorage.getItem("aa_elegant_profile_v2_" + myId()) || "{}"); const src = social.avatar || (typeof getProfile === "function" ? getProfile()?.avatar : "") || ""; if (src) { avatar.textContent = ""; const pic = document.createElement("img"); pic.src = src; pic.alt = "تصویر پروفایل"; pic.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"; avatar.append(pic); } } catch (e) {} }
       info.append(node("strong", "", nm));
+      if (subActive(profileOf(item))) info.append(subBadge());
       if(item.is_anonymous) info.append(node("span", "aaAnonymousMark", "ناشناس"));
       info.append(node("div", "aaDate", dateStr(item.createdAt) + (item.is_edited ? " · ویرایش‌شده" : "")));
       head.append(avatar, info); card.append(head);
@@ -21080,8 +21311,8 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
       } else card.append(node("p", "aaBody", item.content));
       const replies = all.filter(x => x.parent_id === item.id);
       const actions = node("div", "aaActions"), reply = node("button", "aaAction aaReplyAction", "↩ پاسخ"); reply.type = "button"; actions.append(reply);
-      const sendReply = (v, to) => act(() => createRow({ display_name: myName() || "کاربر", content: v.slice(0, 2000), parent_id: item.id, ...(to ? { reply_to_name: to } : {}) }).then(() => expanded.add(item.id)), "پاسخ ثبت شد");
-      const openReply = to => { if (needLogin()) return; editor(card, { title: to ? "پاسخ به " + to : "پاسخ به نظر", label: "ارسال پاسخ", max: 2000, onSend: v => sendReply(v, to) }); };
+      const sendReply = (v, to, toUid) => act(() => createRow({ display_name: myName() || "کاربر", content: v.slice(0, 2000), parent_id: item.id, ...(to ? { reply_to_name: to } : {}) }).then(row => { expanded.add(item.id); notifyReply(row, item, toUid || item.user_id); }), "پاسخ ثبت شد");
+      const openReply = (to, toUid) => { if (needLogin()) return; editor(card, { title: to ? "پاسخ به " + to : "پاسخ به نظر", label: "ارسال پاسخ", max: 2000, onSend: v => sendReply(v, to, toUid) }); };
       reply.onclick = () => openReply("");
       if (mineC) actions.append(moreMenu(false,
         () => editor(card, { title: "ویرایش نظر", label: "ذخیره تغییرات", max: 2000, value: item.content, onSend: v => act(async () => { await owned(item.id); await commentsTablesDB.updateRow({ ...T, rowId: item.id, data: { content: v.slice(0, 2000), is_edited: true } }); }, "نظر ویرایش شد") }),
@@ -21093,13 +21324,15 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
         const exp = node("button", "aaExpandReplies", label(open)); exp.type = "button";
         for (const r of replies) {
           const box = node("div", "aaReply"), rh = node("div", "aaReplyHead"), rn = nameOf(r), meta = node("div", "aaReplyMeta");
+          box.dataset.cid = r.id;
           meta.append(node("strong", "", rn));
+          if (subActive(profileOf(r))) meta.append(subBadge());
           if(r.is_anonymous) meta.append(node("span", "aaAnonymousMark", "ناشناس"));
           meta.append(node("small", "", dateStr(r.createdAt) + (r.is_edited ? " · ویرایش‌شده" : "")));
           rh.append(node("span", "aaReplyAvatar", rn.trim().slice(0, 1)), meta); box.append(rh);
           if (r.reply_to_name) box.append(node("div", "aaReplyTo", "↪ در پاسخ به " + r.reply_to_name));
           box.append(node("p", "", r.content));
-          const tools = node("div", "aaReplyTools"), respond = node("button", "aaReplyMini", "↩ پاسخ"); respond.type = "button"; respond.onclick = () => openReply(rn); tools.append(respond);
+          const tools = node("div", "aaReplyTools"), respond = node("button", "aaReplyMini", "↩ پاسخ"); respond.type = "button"; respond.onclick = () => openReply(rn, r.user_id); tools.append(respond);
           if (isMine(r)) tools.append(moreMenu(true,
             () => editor(card, { title: "ویرایش پاسخ", label: "ذخیره تغییرات", max: 2000, value: r.content, onSend: v => act(async () => { await owned(r.id); await commentsTablesDB.updateRow({ ...T, rowId: r.id, data: { content: v.slice(0, 2000), is_edited: true } }); expanded.add(item.id); }, "پاسخ ویرایش شد") }),
             async () => { if (!await askDelete("این پاسخ حذف شود؟", "حذف پاسخ", "حذف پاسخ")) return; expanded.add(item.id); act(async () => { await owned(r.id); await commentsTablesDB.deleteRow({ ...T, rowId: r.id }); }, "پاسخ حذف شد"); },
@@ -21111,11 +21344,12 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
       }
       list.append(card);
     }
+    applyFocus();
   }
   async function refresh(showLoading = true) {
     if (!workId()) return;
     if (showLoading) message("⏳", "در حال بارگذاری نظرات...");
-    try { commentsCache = await fetchComments(); renderComments(commentsCache); }
+    try { commentsCache = await fetchComments(); await loadProfiles(commentsCache); renderComments(commentsCache); }
     catch (e) { console.error("load comments", e); message("⚠️", "نتوانستیم نظرات را بارگذاری کنیم. اتصال اینترنت یا دسترسی را بررسی کنید."); }
   }
   function open() {
@@ -21174,7 +21408,19 @@ function aaClearFileOnly(prefix){const el=document.getElementById(prefix+"File")
   window.aaRefreshCommentsPreview = function () {
     // lightweight count refresh when returning to detail
     if (!workId() || !commentsReady) return;
-    fetchComments().then(items => updatePreviewCount(items.filter(x=>!x.parent_id).length)).catch(() => {});
+    fetchComments().then(items => updatePreviewCount(countVisible(items))).catch(() => {});
+  };
+  window.aaGoToComment = function (d) {
+    try {
+      d = d || {};
+      const w = (typeof allWorks !== "undefined" ? allWorks : []).find(x => x && String(x.$id || x.id) === String(d.workId));
+      if (!w) { showToast("این انیمه پیدا نشد"); return; }
+      if (typeof window.aaCommentsEnabled === "function" && !window.aaCommentsEnabled(w.id)) { showToast("نظرها برای این انیمه بسته است"); return; }
+      openDetail(w);
+      if (String(currentWork?.id || "") !== String(w.id)) return;
+      pendingFocus = { parentId: String(d.parentId || ""), replyId: String(d.replyId || "") };
+      open();
+    } catch (e) { console.warn("go to comment", e); }
   };
 
   // After login, if user returns to comments page, identity updates
@@ -21745,7 +21991,7 @@ function paintBar(kind){
   const b = vb[kind], v = kind === "bri" ? (bri - BRI_MIN) / (BRI_MAX - BRI_MIN) : (video.muted ? 0 : video.volume);
   const r = clamp(v, 0, 1) * 100;
   b.querySelector(".fil").style.height = r + "%"; b.querySelector(".knb").style.bottom = r + "%";
-  b.querySelector(".pct").textContent = kind === "bri" ? Math.round(bri * 100) + "٪" : Math.round((video.muted ? 0 : video.volume) * 100) + "٪";
+  b.querySelector(".pct").textContent = kind === "bri" ? Math.round(r) + "٪" : Math.round((video.muted ? 0 : video.volume) * 100) + "٪";
   b.querySelector(".ico").innerHTML = svg(kind === "bri" ? IC.sun : (video.muted || video.volume === 0 ? IC.v0 : video.volume < .5 ? IC.v1 : IC.v3), 17);
 }
 function showBar(kind, hold){
@@ -21777,7 +22023,7 @@ el.gest.addEventListener("pointerdown", ev=>{
   try{ el.gest.setPointerCapture(ev.pointerId); }catch(e){}
   const P = localPt(ev);
   g = { x:P.x, y:P.y, mode:null, w:P.w, h:P.h, left:0, t0:video.currentTime || 0, v0:video.volume, b0:bri, side:P.x < P.w / 2 ? "l" : "r", target:0 };
-  lpTimer = setTimeout(()=>{ if(g && !g.mode){ g.mode = "speed"; prevRate = video.playbackRate; video.playbackRate = 2; hud("سرعت ۲٫۰×"); } }, 600);
+  lpTimer = setTimeout(()=>{ if(g && !g.mode){ g.mode = "speed"; prevRate = video.playbackRate; video.playbackRate = 2; hud("سرعت 2.0×"); } }, 600);
 });
 el.gest.addEventListener("pointermove", ev=>{
   if(!g) return;
@@ -22047,7 +22293,7 @@ async function unzipSubs(buf){
 function buildSubSheet(){
   const sh = el.shSub; sh.innerHTML = "<h4>زیرنویس</h4>";
   const list = document.createElement("div"); list.className = "aaPList";
-  const add = (id, label, fn) => { const b = document.createElement("button"); b.type = "button"; b.className = "aaPItem" + (subSel === id ? " sel" : ""); b.textContent = label; b.onclick = fn; list.appendChild(b); };
+  const add = (id, label, fn) => { const b = document.createElement("button"); b.type = "button"; b.className = "aaPItem" + (subSel === id ? " sel" : ""); b.textContent = label; b.title = label; b.onclick = fn; list.appendChild(b); };
   add("off", "خاموش", ()=>{ loadSource(null); });
   subSources.forEach(s => add(s.id, s.label, ()=>loadSource(s)));
   const file = document.createElement("button"); file.type = "button"; file.className = "aaPItem aaPAdd"; file.innerHTML = svg(IC.plus, 18) + "<span>افزودن فایل زیرنویس از دستگاه (srt / ass / vtt / zip)</span>";
@@ -22260,5 +22506,183 @@ applyPicture(); applyAspect(); applySubStyle(); paintProgress();
 })();
 </script>
 
+<script id="aaAdvancedSearch">
+(function(){
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const MAX_GENRES = 3, MAX_STUDIOS = 8;
+  const adv = { type:"any", year:"any", imdb:0, genres:[], studios:[], seasons:"any", eps:0 };
+  let lastRun = null;
+  const yearNow = new Date().getFullYear();
+
+  function fillSelects(){
+    const y = $("aaAdvYear"), im = $("aaAdvImdb");
+    if(y && !y.options.length){
+      let h = '<option value="any">فرقی نمی‌کند</option><optgroup label="از این سال به بعد">';
+      [2020,2010,2000,1990,1980,1970,1960,1900].forEach(v => { h += '<option value="from:'+v+'">از '+v+' به بعد</option>'; });
+      h += '</optgroup><optgroup label="فقط همین سال">';
+      for(let v = yearNow; v >= 1960; v--) h += '<option value="y:'+v+'">'+v+'</option>';
+      h += '</optgroup>';
+      y.innerHTML = h;
+    }
+    if(im && !im.options.length){
+      let h = '<option value="0">فرقی نمی‌کند</option>';
+      for(let v = 1; v <= 10; v++) h += '<option value="'+v+'">'+v+' به بالا</option>';
+      im.innerHTML = h;
+    }
+  }
+  function chip(label, on, fn){
+    const b = document.createElement("button"); b.type = "button"; b.textContent = label; if(on) b.className = "sel"; b.onclick = fn; return b;
+  }
+  function renderType(){
+    const box = $("aaAdvType"); if(!box) return; box.innerHTML = "";
+    [["any","فرقی نمی‌کند"],["serial","سریالی"],["movie","سینمایی"]].forEach(([v,l]) => box.appendChild(chip(l, adv.type === v, () => { adv.type = v; if(v !== "serial"){ adv.seasons = "any"; adv.eps = 0; } renderType(); renderSerial(); })));
+  }
+  function renderSerial(){
+    const wrap = $("aaAdvSerialOnly"); if(!wrap) return;
+    wrap.hidden = adv.type !== "serial";
+    const sb = $("aaAdvSeasons"), eb = $("aaAdvEps"); if(!sb || !eb) return;
+    sb.innerHTML = ""; eb.innerHTML = "";
+    [["any","فرقی نمی‌کند"],["1","تک‌فصل"],["lt2","کمتر از ۲ فصل"],["lt3","کمتر از ۳ فصل"],["lt4","کمتر از ۴ فصل"]].forEach(([v,l]) =>
+      sb.appendChild(chip(l, adv.seasons === v, () => { adv.seasons = v; renderSerial(); })));
+    [[0,"فرقی نمی‌کند"],[10,"حدود ۱۰ قسمت"],[12,"حدود ۱۲ قسمت"],[24,"حدود ۲۴ قسمت"],[50,"حدود ۵۰ قسمت"],[100,"۱۰۰ قسمت و بیشتر"]].forEach(([v,l]) =>
+      eb.appendChild(chip(l, adv.eps === v, () => { adv.eps = v; renderSerial(); })));
+  }
+  function seasonsOk(w){
+    const n = (w.seasons && w.seasons.length) ? w.seasons.length : 1;
+    if(adv.seasons === "any") return true;
+    if(adv.seasons === "1") return n === 1;
+    if(adv.seasons === "lt2") return n < 2;
+    if(adv.seasons === "lt3") return n < 3;
+    if(adv.seasons === "lt4") return n < 4;
+    return true;
+  }
+  function epsOk(w){
+    if(!adv.eps) return true;
+    const c = countWorkEpisodes(w);
+    if(adv.eps >= 100) return c >= 100;
+    return c >= adv.eps * 0.7 && c <= adv.eps * 1.3;
+  }
+  function genreNames(){
+    try{ return (getGenres() || []).filter(g => g && !isRestrictedGenreName(g)); }catch(e){ return []; }
+  }
+  function renderGenres(){
+    const box = $("aaAdvGenres"); if(!box) return; box.innerHTML = "";
+    const names = genreNames();
+    if(!names.length){ box.textContent = "ژانری ثبت نشده است."; }
+    names.forEach(g => {
+      const on = adv.genres.includes(g);
+      box.appendChild(chip(g, on, () => {
+        if(on) adv.genres = adv.genres.filter(x => x !== g);
+        else if(adv.genres.length >= MAX_GENRES){ showToast("حداکثر " + MAX_GENRES + " ژانر"); return; }
+        else adv.genres.push(g);
+        renderGenres();
+      }));
+    });
+    const c = $("aaAdvGenreCount"); if(c) c.textContent = adv.genres.length ? adv.genres.length + " از " + MAX_GENRES : "تا " + MAX_GENRES + " مورد";
+  }
+  function renderStudios(){
+    const box = $("aaAdvStudios"); if(!box) return; box.innerHTML = "";
+    const q = normalizeText($("aaAdvStudioFilter")?.value || "");
+    let list = [];
+    try{ list = getPublishedStudios().slice(); }catch(e){}
+    list.sort((a,b) => String(a.nameFa || a.nameEn || "").localeCompare(String(b.nameFa || b.nameEn || ""), "fa"));
+    let shown = 0;
+    list.forEach(st => {
+      const label = st.nameFa || st.nameEn || ""; if(!label) return;
+      if(q && !normalizeText(label + " " + (st.nameEn || "") + " " + (st.nameFa || "")).includes(q)) return;
+      const on = adv.studios.includes(st.id); shown++;
+      box.appendChild(chip(label, on, () => {
+        if(on) adv.studios = adv.studios.filter(x => x !== st.id);
+        else if(adv.studios.length >= MAX_STUDIOS){ showToast("حداکثر " + MAX_STUDIOS + " استودیو"); return; }
+        else adv.studios.push(st.id);
+        renderStudios();
+      }));
+    });
+    if(!shown) box.textContent = list.length ? "استودیویی پیدا نشد." : "استودیویی ثبت نشده است.";
+    const c = $("aaAdvStudioCount"); if(c) c.textContent = adv.studios.length ? adv.studios.length + " از " + MAX_STUDIOS : "تا " + MAX_STUDIOS + " مورد";
+  }
+  function openSheet(){
+    fillSelects();
+    $("aaAdvYear").value = adv.year; $("aaAdvImdb").value = String(adv.imdb);
+    renderType(); renderSerial(); renderGenres(); renderStudios();
+    $("aaAdvOverlay").classList.add("open"); $("aaAdvOverlay").setAttribute("aria-hidden","false");
+  }
+  function closeSheet(){ $("aaAdvOverlay")?.classList.remove("open"); $("aaAdvOverlay")?.setAttribute("aria-hidden","true"); }
+  function reset(){
+    adv.type = "any"; adv.year = "any"; adv.imdb = 0; adv.genres = []; adv.studios = []; adv.seasons = "any"; adv.eps = 0;
+    $("aaAdvYear").value = "any"; $("aaAdvImdb").value = "0"; if($("aaAdvStudioFilter")) $("aaAdvStudioFilter").value = "";
+    renderType(); renderSerial(); renderGenres(); renderStudios();
+  }
+  function yearOk(w, val){
+    const wy = Number(w.year) || 0; if(!wy) return false;
+    if(val.startsWith("y:")) return wy === Number(val.slice(2));
+    if(val.startsWith("from:")) return wy >= Number(val.slice(5));
+    return true;
+  }
+  function run(){
+    adv.year = $("aaAdvYear").value; adv.imdb = Number($("aaAdvImdb").value) || 0;
+    const base = (allWorks || []).filter(w => w && !w.isDraft && !w.unpublished && !isRestrictedWork(w));
+    let list = base;
+    if(adv.type !== "any") list = list.filter(w => w.type === adv.type);
+    if(adv.type === "serial") list = list.filter(w => seasonsOk(w) && epsOk(w));
+    if(adv.year !== "any") list = list.filter(w => yearOk(w, adv.year));
+    if(adv.imdb > 0) list = list.filter(w => (Number(w.imdb) || 0) >= adv.imdb);
+    if(adv.studios.length) list = list.filter(w => { try{ return studiosMatchingWork(w).some(st => adv.studios.includes(st.id)); }catch(e){ return false; } });
+
+    let out;
+    if(adv.genres.length){
+      const sel = adv.genres.map(normalizeText);
+      out = list.map(w => {
+        const wg = (workGenres(w) || []).map(normalizeText);
+        const m = sel.filter(g => wg.includes(g)).length;
+        const score = (m / sel.length) * 100 + (m / Math.max(wg.length, 1)) * 25 + (Number(w.imdb) || 0) * 1.5;
+        return { w, m, score };
+      }).filter(x => x.m > 0)
+        .sort((a,b) => b.score - a.score || (b.w.createdAt || 0) - (a.w.createdAt || 0))
+        .map(x => x.w);
+    }else{
+      out = list.slice().sort((a,b) => (Number(b.imdb) || 0) - (Number(a.imdb) || 0) || (Number(b.year) || 0) - (Number(a.year) || 0) || (b.createdAt || 0) - (a.createdAt || 0));
+    }
+
+    let msg = "انیمه‌ای با این مشخصات پیدا نشد.";
+    if(!out.length && adv.year !== "any"){
+      const inYear = base.filter(w => (adv.type === "any" || w.type === adv.type) && yearOk(w, adv.year));
+      if(!inYear.length){
+        msg = adv.year.startsWith("y:") ? "در سال " + adv.year.slice(2) + " هیچ انیمه‌ای وجود ندارد." : "از سال " + adv.year.slice(5) + " به بعد هیچ انیمه‌ای وجود ندارد.";
+      }
+    }
+    closeSheet();
+    lastRun = { ids: out.map(w => w.id), msg };
+    window.__aaAdvActive = true;
+    render();
+    showPage("listPage");
+  }
+  function render(){
+    if(!lastRun) return;
+    const byId = new Map((allWorks || []).map(w => [w.id, w]));
+    const out = lastRun.ids.map(id => byId.get(id)).filter(Boolean);
+    $("listTitle").textContent = "نتایج جستجوی پیشرفته";
+    fillBooksBox("listBooks", out, lastRun.msg);
+  }
+  window.aaAdvRestore = function(){ if(window.__aaAdvActive && lastRun) render(); };
+  function bind(){
+    $("aaAdvBtn")?.addEventListener("click", e => { e.stopPropagation(); openSheet(); });
+    $("aaAdvBtnHome")?.addEventListener("click", e => { e.stopPropagation(); openSheet(); });
+    $("aaAdvBtnHome")?.addEventListener("keydown", e => e.stopPropagation());
+    $("aaAdvClose")?.addEventListener("click", closeSheet);
+    $("aaAdvOverlay")?.addEventListener("click", e => { if(e.target === $("aaAdvOverlay")) closeSheet(); });
+    $("aaAdvReset")?.addEventListener("click", reset);
+    $("aaAdvGo")?.addEventListener("click", run);
+    $("aaAdvStudioFilter")?.addEventListener("input", renderStudios);
+    /* ضربه روی هر جای نوار جستجو → تایپ */
+    document.querySelector("#searchPage .searchBox")?.addEventListener("click", e => {
+      if(e.target.closest("button, #clearSearch")) return;
+      $("searchInput")?.focus();
+    });
+  }
+  bind();
+})();
+</script>
 </body>
 </html>
